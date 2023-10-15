@@ -1,11 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600&display=swap');
 
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --header-height: 92px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,10 +20,24 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: #fff;
+  font-family: 'Commissioner', sans-serif;
+}
+
+header {
+    height: var(--header-height);
+}
+.map {
+    height: calc(100vh - var(--header-height));
+}
+.leaflet-container {
+    font-family: inherit !important;
+}
+.leaflet-tooltip {
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+.leaflet-tooltip-bottom::before {
+    border-bottom-color: transparent !important;
 }
