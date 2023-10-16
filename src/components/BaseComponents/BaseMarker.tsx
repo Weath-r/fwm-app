@@ -7,10 +7,12 @@ export default function BaseMarker({
     position, 
     children,
     handleClick,
+    stationId,
     }: {
         position: [number, number],
         children: ReactNode,
         handleClick: any,
+        stationId: number,
     }) {
     return (
         <Marker
@@ -23,8 +25,7 @@ export default function BaseMarker({
             }
             eventHandlers={{
                 click: () => {
-                  console.log('marker clicked')
-                  return handleClick(true);
+                  return handleClick(true, stationId);
                 },
             }}
         >
