@@ -33,11 +33,7 @@ header {
 .leaflet-container {
     font-family: inherit !important;
 }
-.leaflet-tooltip {
-    background-color: transparent !important;
+.leaflet-div-icon {
+    background: transparent !important;
     border: 0 !important;
-    box-shadow: none !important;
-}
-.leaflet-tooltip-bottom::before {
-    border-bottom-color: transparent !important;
 }

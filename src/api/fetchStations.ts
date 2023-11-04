@@ -5,5 +5,5 @@ const URLS = {
 };
 
 export const fetchWeatherStations = () => {
-    return api.get(`${URLS.stations}`);
+    return api.get(`${URLS.stations}?fields=id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.isDayTime`);
 };

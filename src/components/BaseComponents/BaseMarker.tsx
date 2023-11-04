@@ -1,35 +1,42 @@
 'use client';
-import { Marker } from "react-leaflet";
-import { Icon } from "leaflet";
-import { ReactNode } from "react";
+import DivIconMarker from "@/common/DivIconMarker";
+import BaseWeatherIcon from "./BaseWeatherIcon";
 
 export default function BaseMarker({
     position, 
-    children,
     handleClick,
     stationId,
+    stationName,
+    isDay,
+    iconImg,
     }: {
         position: [number, number],
-        children: ReactNode,
         handleClick: any,
         stationId: number,
+        stationName: String,
+        isDay: boolean,
+        iconImg: String,
     }) {
+
+    const marker = {position, eventHandlers: {
+        click: () => {
+            return handleClick(true, stationId)
+        }
+    }};
+    const container = { tagName: "div" };
     return (
-        <Marker
-            position={position}
-            icon={
-                new Icon({
-                    iconUrl: "markers/sunny.png",
-                    iconSize: [32, 32],
-                })
-            }
-            eventHandlers={{
-                click: () => {
-                  return handleClick(true, stationId);
-                },
-            }}
+        <DivIconMarker 
+            marker={marker} 
+            container={container}
         >
-            {children}
-        </Marker>
+            <div className="flex flex-col justify-center items-center">
+                <div className="w-[58px]">
+                    <BaseWeatherIcon iconImg={iconImg} isDay={isDay} />
+                </div>
+                {/* <div className="bg-white p-1 opacity-75 rounded border-solid border truncate overflow-hidden font-medium color-black max-w-[92px] text-black">
+                    {stationName}
+                </div> */}
+            </div>
+        </DivIconMarker>
     );
 }

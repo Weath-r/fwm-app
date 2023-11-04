@@ -25,13 +25,16 @@ export default function HomepageMap() {
             position={station.location.coordinates.reverse()}
             key={station.id}
             stationId={station.id}
+            stationName={station.name}
+            iconImg={station.accuweather_location.current_weather_description}
+            isDay={station.accuweather_location.isDayTime}
             handleClick={handleModal}
         >
-            <Tooltip direction="bottom" offset={[0, 2]} opacity={1} permanent>
+            {/* <Tooltip direction="bottom" offset={[0, 2]} opacity={1} permanent>
                 <div className="bg-white p-1 opacity-75 rounded-full border-solid border truncate overflow-hidden max-w-[80px] font-medium">
                     {station.name}
                 </div>
-            </Tooltip>
+            </Tooltip> */}
         </BaseMarker>)
     });
 
