@@ -2,14 +2,15 @@
     "root": true,
     "parser": "@typescript-eslint/parser",
     "plugins": [
-      "@typescript-eslint",
-      "prettier"  ],
+      "@typescript-eslint"
+       ],
     "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended",
-      "prettier",
-      "next/core-web-vitals"  ],
+      "plugin:react/recommended",      
+      "next/core-web-vitals"  
+    ],
     "rules": {
       "no-console": 1,       // Means warning
       "prettier/prettier": 2 // Means error  }

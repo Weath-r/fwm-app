@@ -1,6 +1,7 @@
-import 'leaflet/dist/leaflet.css';
-import HomepageMap from '@/components/Home/HomepageMap';
-import { Provider } from "@/context/stations";
+"use client";
+import "leaflet/dist/leaflet.css";
+import HomepageMap from "@/components/Home/HomepageMap";
+import { Provider } from "@/context/stations"
 
 export default function Home() {
     return (

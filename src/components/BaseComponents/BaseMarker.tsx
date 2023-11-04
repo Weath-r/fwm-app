@@ -1,19 +1,19 @@
-'use client';
-import DivIconMarker from "@/common/DivIconMarker";
+import dynamic from "next/dynamic";
 import BaseWeatherIcon from "./BaseWeatherIcon";
+const DivIconMarker = dynamic(() => import("@/components/Common/DivIconMarker"), {
+    ssr: false,
+});
 
 export default function BaseMarker({
     position, 
     handleClick,
     stationId,
-    stationName,
     isDay,
     iconImg,
     }: {
         position: [number, number],
         handleClick: any,
         stationId: number,
-        stationName: String,
         isDay: boolean,
         iconImg: String,
     }) {

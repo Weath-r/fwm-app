@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import SVG from "react-inlinesvg";
 
 export default function BaseWeatherIcon({

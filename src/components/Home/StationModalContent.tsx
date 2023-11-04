@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useState, useEffect } from "react";
 import {fetchWeatherData} from "@/api/fetchData";
 import { withAsync } from "@/helpers/withAsync";

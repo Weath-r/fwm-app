@@ -1,5 +1,4 @@
-'use client';
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import { CONFIG } from "@/common/mapSettings";
 import { PropsWithChildren } from "react";
 
@@ -21,8 +20,3 @@ export default function BaseMap(props: PropsWithChildren) {
     </MapContainer>
     );
 }
-// mapbox://styles/virtuosofriend/clmnouy23002y01qn4ckjbav3
-// mapbox://styles/virtuosofriend/cipcir9ze005lcqniifuijd3u
-//mapbox://styles/virtuosofriend/clobm4h3q012t01qxhzb40lli
-//mapbox://styles/virtuosofriend/clobm9a28014901qseym8egoz
-// mapbox://styles/virtuosofriend/clobmjbzm013j01qmbjlof6g0

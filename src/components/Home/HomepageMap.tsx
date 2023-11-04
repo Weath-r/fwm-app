@@ -1,12 +1,15 @@
-'use client';
-import { Tooltip } from "react-leaflet";
-import BaseMap from '@/components/BaseComponents/BaseMap';
-import BaseMarker from "@/components/BaseComponents/BaseMarker";
-import BaseModal from '@/components/BaseComponents/BaseModal';
-import StationModalContent from "@/components/Home/StationModalContent";
-
+import dynamic from "next/dynamic";
 import { useContext, useState } from "react";
 import StationsContext from "@/context/stations";
+
+import BaseModal from "@/components/BaseComponents/BaseModal";
+import StationModalContent from "@/components/Home/StationModalContent";
+const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
+    ssr: false,
+});
+const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"), {
+      ssr: false,
+});
 
 export default function HomepageMap() {
     // Create the state for the modal info
@@ -18,30 +21,22 @@ export default function HomepageMap() {
     };
     const isModalOpen = providerData.isStationModalOpen;
 
-
     const markers = providerData.stations.map(station => {
         return (
         <BaseMarker
             position={station.location.coordinates.reverse()}
             key={station.id}
             stationId={station.id}
-            stationName={station.name}
             iconImg={station.accuweather_location.current_weather_description}
             isDay={station.accuweather_location.isDayTime}
             handleClick={handleModal}
-        >
-            {/* <Tooltip direction="bottom" offset={[0, 2]} opacity={1} permanent>
-                <div className="bg-white p-1 opacity-75 rounded-full border-solid border truncate overflow-hidden max-w-[80px] font-medium">
-                    {station.name}
-                </div>
-            </Tooltip> */}
-        </BaseMarker>)
+        />)
     });
 
     return (
         <BaseMap>
             {markers}
-            <div className='absolute top-0'>
+            <div className="absolute top-0">
                     <BaseModal
                         isOpen={isModalOpen}
                         >
