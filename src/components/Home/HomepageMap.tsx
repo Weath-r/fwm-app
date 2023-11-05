@@ -39,7 +39,7 @@ export default function HomepageMap() {
             <div className="absolute top-0">
                     <BaseModal
                         isOpen={isModalOpen}
-                        >
+                    >
                         <StationModalContent
                             isOpen={isModalOpen}
                             activeStation={activeStation}
