@@ -15,6 +15,7 @@ export default function BaseModal({
     return (
         <Popup
             open={isOpen}
+            onClose={closeModal}
         >
             <div className="bg-white w-[400px] h-[auto] rounded-lg relative">
                 <a className="text-black cursor-pointer absolute top-[2px] right-[8px]" onClick={closeModal}> &times;</a>
