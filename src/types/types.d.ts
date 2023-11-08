@@ -27,3 +27,11 @@ type WeatherDataType = {
     weather_condition_id: Object,
     weather_station_id: WeatherStationType
 };
+
+type mapLeaflet = {
+    children: PropsWithChildren;
+    center: [number, number];
+    zoom: number;
+    maxBounds: [[number, number], [number, number]],
+    minZoom: number
+};
