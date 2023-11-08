@@ -51,7 +51,9 @@ export default function StationModalContent({
         return (
             <div className="p-2 flex text-black flex-col" key={elem.station.id}>
                 <h2 className="mx-auto text-lg">
-                    {elem.station.name}
+                    <a href={elem.station.website_url} target="_blank">
+                        {elem.station.name}
+                    </a>
                 </h2>
                 <ul>
                     <li>
