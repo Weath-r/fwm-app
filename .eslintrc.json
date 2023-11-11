@@ -1,18 +1,38 @@
 {
-    "root": true,
     "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
-       ],
+    "plugins": ["@typescript-eslint", "react-hooks"],
     "extends": [
       "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended",
-      "plugin:react/recommended",      
-      "next/core-web-vitals"  
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "eslint-config-prettier"
     ],
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+    },
     "rules": {
-      "no-console": 1,       // Means warning
-      "prettier/prettier": 2 // Means error  }
+        "quotes": ["error", "double"],
+        "indent": ["error", 4],
+        "react/jsx-uses-react": "off",
+        "react/react-in-jsx-scope": "off",
+        "@typescript-eslint/semi": ["error"],
+        "semi": "error",
+        "@typescript-eslint/comma-dangle": ["error", {
+            "arrays": "never",
+            "objects": "always-multiline",
+            "imports": "never",
+            "exports": "never",
+            "functions": "never"
+        }],
+        "@typescript-eslint/no-explicit-any": "off",
+        "object-curly-spacing": ["error", "always"]
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
     }
 }

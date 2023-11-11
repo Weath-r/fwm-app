@@ -3,7 +3,7 @@ type WeatherStationType = {
     date_updated: Date;
     foreign_id: string;
     id: number;
-    location: Object;
+    location: object;
     name: string;
     prefecture_id: number;
     sort: number | null;
@@ -24,7 +24,7 @@ type WeatherDataType = {
     rainrate: number,
     windspd: number,
     winddir: number,
-    weather_condition_id: Object,
+    weather_condition_id: object,
     weather_station_id: WeatherStationType
 };
 

@@ -10,19 +10,19 @@ export default function BaseMarker({
     stationId,
     isDay,
     iconImg,
-    }: {
+}: {
         position: [number, number],
         handleClick: any,
         stationId: number,
         isDay: boolean,
-        iconImg: String,
+        iconImg: string,
     }) {
 
-    const marker = {position, eventHandlers: {
+    const marker = { position, eventHandlers: {
         click: () => {
-            return handleClick(true, stationId)
-        }
-    }};
+            return handleClick(true, stationId);
+        },
+    } };
     const container = { tagName: "div" };
     return (
         <DivIconMarker 

@@ -6,7 +6,7 @@ const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
     ssr: false,
 });
 const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"), {
-      ssr: false,
+    ssr: false,
 });
 
 import BaseModal from "@/components/BaseComponents/BaseModal";
@@ -30,14 +30,14 @@ export default function HomepageMap() {
 
     const markers = providerData.stations.map(station => {
         return (
-        <BaseMarker
-            position={station.location.coordinates.reverse()}
-            key={station.id}
-            stationId={station.id}
-            iconImg={station.accuweather_location.current_weather_description}
-            isDay={station.accuweather_location.isDayTime}
-            handleClick={handleModal}
-        />)
+            <BaseMarker
+                position={station.location.coordinates.reverse()}
+                key={station.id}
+                stationId={station.id}
+                iconImg={station.accuweather_location.current_weather_description}
+                isDay={station.accuweather_location.isDayTime}
+                handleClick={handleModal}
+            />);
     });
     
     return (
@@ -52,15 +52,15 @@ export default function HomepageMap() {
                 <MapControls />
             </div>
             <div className="absolute bottom-0">
-                    <BaseModal
+                <BaseModal
+                    isOpen={isModalOpen}
+                >
+                    <StationModalContent
                         isOpen={isModalOpen}
-                    >
-                        <StationModalContent
-                            isOpen={isModalOpen}
-                            activeStation={activeStation}
-                        ></StationModalContent>
-                    </BaseModal>
-                </div>
+                        activeStation={activeStation}
+                    ></StationModalContent>
+                </BaseModal>
+            </div>
         </BaseMap>
     );
 }
