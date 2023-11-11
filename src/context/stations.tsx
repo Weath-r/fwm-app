@@ -7,10 +7,16 @@ import { useEffect, useState, createContext } from "react";
 interface CurrentStationContextType {
     stations: any[];
     isStationModalOpen: boolean,
-    handleModal: any
+    handleModal: any,
+    appVersion: string
 }
 
-const StationsContext = createContext<CurrentStationContextType>({stations: [], isStationModalOpen: false, handleModal: null});
+const StationsContext = createContext<CurrentStationContextType>({
+    stations: [],
+    isStationModalOpen: false,
+    handleModal: null,
+    appVersion: "0.0.1"
+});
 
 function Provider(props: PropsWithChildren) {
     // Need to rename this Provider context
@@ -30,9 +36,10 @@ function Provider(props: PropsWithChildren) {
     }, []);
 
     return <StationsContext.Provider value={{
-        stations: stations,
-        isStationModalOpen: isStationModalOpen,
-        handleModal: setIsStationModalOpen
+            stations: stations,
+            isStationModalOpen: isStationModalOpen,
+            handleModal: setIsStationModalOpen,
+            appVersion: process.env.NEXT_PUBLIC_APP_VERSION || ""
         }}>
         {props.children}
     </StationsContext.Provider>
