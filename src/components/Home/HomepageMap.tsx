@@ -1,15 +1,17 @@
 import dynamic from "next/dynamic";
 import { useContext, useState } from "react";
 import StationsContext from "@/context/stations";
-import BaseModal from "@/components/BaseComponents/BaseModal";
-import StationModalContent from "@/components/Home/StationModalContent";
+import { CONFIG } from "@/common/mapSettings";
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
     ssr: false,
 });
 const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"), {
       ssr: false,
 });
-import { CONFIG } from "@/common/mapSettings";
+
+import BaseModal from "@/components/BaseComponents/BaseModal";
+import StationModalContent from "@/components/Home/StationModalContent";
+import MapControls from "@/components/MapControls/MapControls";
 
 export default function HomepageMap() {
     const zoomLevel = CONFIG.default_zoom_level;
@@ -37,7 +39,7 @@ export default function HomepageMap() {
             handleClick={handleModal}
         />)
     });
-
+    
     return (
         <BaseMap
             zoom={zoomLevel}
@@ -46,7 +48,10 @@ export default function HomepageMap() {
             minZoom={minZoom}
         >
             {markers}
-            <div className="absolute top-0">
+            <div className="absolute bottom-2 left-2 z-[401]">
+                <MapControls />
+            </div>
+            <div className="absolute bottom-0">
                     <BaseModal
                         isOpen={isModalOpen}
                     >
