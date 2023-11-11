@@ -8,21 +8,21 @@ const fontFamily = Commissioner({
     weight: ["100", "300", "400", "600"],
 });
 export const metadata: Metadata = {
-  title: "Weather conditions in Central Greece",
-  description: "Weather application",
+    title: "Weather conditions in Central Greece",
+    description: "Weather application",
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <html lang="en">
-        <body className={fontFamily.className}>
-            <Header></Header>
-            {children}
-        </body>
-    </html>
-  )
+    return (
+        <html lang="en">
+            <body className={fontFamily.className}>
+                <Header></Header>
+                {children}
+            </body>
+        </html>
+    );
 }

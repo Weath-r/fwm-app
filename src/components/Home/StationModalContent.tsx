@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import {fetchWeatherData} from "@/api/fetchData";
+import { fetchWeatherData } from "@/api/fetchData";
 import { withAsync } from "@/helpers/withAsync";
 
 interface ExportedWeatherData {
@@ -15,32 +15,32 @@ interface ExportedWeatherData {
     station: WeatherStationType
 };
 export default function StationModalContent({ 
-    activeStation, isOpen 
-    }: {
+    activeStation, isOpen, 
+}: {
         activeStation: number,
         isOpen: boolean
     }) {
     const [weatherData, setWeatherData] = useState<{[key: string]: any}>([]);
 
     const getWeatherData = async () => {
-        const {response, error} = await withAsync(fetchWeatherData, activeStation);
-            if (response) {
-                const weather_data : ExportedWeatherData[] = response.data.data.map((elem: WeatherDataType) => {
-                    return {
-                        date_created: elem.date_created,
-                        temperature: elem.temperature,
-                        humidity: elem.humidity,
-                        barometer: elem.barometer,
-                        percipitation: elem.percipitation,
-                        rainrate: elem.rainrate,
-                        windspd: elem.windspd,
-                        winddir: elem.winddir,
-                        station: elem.weather_station_id
-                    }
-                });
-                return setWeatherData(weather_data);
-            }
-            return setWeatherData([]);
+        const { response } = await withAsync(fetchWeatherData, activeStation);
+        if (response) {
+            const weather_data : ExportedWeatherData[] = response.data.data.map((elem: WeatherDataType) => {
+                return {
+                    date_created: elem.date_created,
+                    temperature: elem.temperature,
+                    humidity: elem.humidity,
+                    barometer: elem.barometer,
+                    percipitation: elem.percipitation,
+                    rainrate: elem.rainrate,
+                    windspd: elem.windspd,
+                    winddir: elem.winddir,
+                    station: elem.weather_station_id,
+                };
+            });
+            return setWeatherData(weather_data);
+        }
+        return setWeatherData([]);
     };
     
     useEffect(() => {
@@ -51,7 +51,7 @@ export default function StationModalContent({
         return (
             <div className="p-2 flex text-black flex-col" key={elem.station.id}>
                 <h2 className="mx-auto text-lg">
-                    <a href={elem.station.website_url} target="_blank">
+                    <a href={elem.station.website_url} target="_blank" rel="noreferrer">
                         {elem.station.name}
                     </a>
                 </h2>
@@ -73,10 +73,10 @@ export default function StationModalContent({
                     </li>
                 </ul>
             </div>
-        )
+        );
     });
 
     return (<div>
         {displayedData}
-    </div>)
+    </div>);
 }

@@ -15,7 +15,7 @@ const StationsContext = createContext<CurrentStationContextType>({
     stations: [],
     isStationModalOpen: false,
     handleModal: null,
-    appVersion: "0.0.1"
+    appVersion: "0.0.1",
 });
 
 function Provider(props: PropsWithChildren) {
@@ -25,10 +25,10 @@ function Provider(props: PropsWithChildren) {
     const [isStationModalOpen, setIsStationModalOpen] = useState(false);
 
     const fetchStationsData = async () => {
-        const {response, error} = await withAsync(fetchWeatherStations);
-            if (response) {
-                setStations(response.data.data);
-            }
+        const { response } = await withAsync(fetchWeatherStations);
+        if (response) {
+            setStations(response.data.data);
+        }
     };
     
     useEffect(() => {
@@ -36,13 +36,13 @@ function Provider(props: PropsWithChildren) {
     }, []);
 
     return <StationsContext.Provider value={{
-            stations: stations,
-            isStationModalOpen: isStationModalOpen,
-            handleModal: setIsStationModalOpen,
-            appVersion: process.env.NEXT_PUBLIC_APP_VERSION || ""
-        }}>
+        stations: stations,
+        isStationModalOpen: isStationModalOpen,
+        handleModal: setIsStationModalOpen,
+        appVersion: process.env.NEXT_PUBLIC_APP_VERSION || "",
+    }}>
         {props.children}
-    </StationsContext.Provider>
+    </StationsContext.Provider>;
 };
 
 export { Provider };

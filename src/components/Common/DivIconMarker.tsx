@@ -1,5 +1,5 @@
 "use client";
-import { Marker, MarkerProps } from "react-leaflet";
+import { Marker } from "react-leaflet";
 import { DivIcon } from "leaflet";
 import { createPortal } from "react-dom";
 import L from "leaflet";
@@ -11,10 +11,10 @@ const DivIconMarker = ({
     container,
     children,
 }: any) => {
-const { tagName, className } = container;
-const element = L.DomUtil.create(tagName, className);
-const divIcon = new DivIcon({ html: element });
-const portal = createPortal(children, element);
+    const { tagName, className } = container;
+    const element = L.DomUtil.create(tagName, className);
+    const divIcon = new DivIcon({ html: element });
+    const portal = createPortal(children, element);
     useEffect(() => {
         return () => {
             L.DomUtil.remove(element);
@@ -25,12 +25,12 @@ const portal = createPortal(children, element);
     return (
         <>
             {portal}
-        <Marker
-            position={position}
-            icon={divIcon}
-            eventHandlers={eventHandlers}
-        >
-        </Marker>
+            <Marker
+                position={position}
+                icon={divIcon}
+                eventHandlers={eventHandlers}
+            >
+            </Marker>
         </>
     );
 };

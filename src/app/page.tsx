@@ -1,7 +1,7 @@
 "use client";
 import "leaflet/dist/leaflet.css";
 import HomepageMap from "@/components/Home/HomepageMap";
-import { Provider } from "@/context/stations"
+import { Provider } from "@/context/stations";
 
 export default function Home() {
     return (
@@ -10,5 +10,5 @@ export default function Home() {
                 <HomepageMap></HomepageMap>
             </main>
         </Provider>
-    )
+    );
 }

@@ -3,9 +3,9 @@ import SVG from "react-inlinesvg";
 
 export default function BaseWeatherIcon({
     iconImg,
-    isDay
-    }: {
-        iconImg: String,
+    isDay,
+}: {
+        iconImg: string,
         isDay: boolean,
     }) {
     

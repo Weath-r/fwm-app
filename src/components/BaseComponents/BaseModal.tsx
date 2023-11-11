@@ -9,12 +9,12 @@ import { XCircleIcon } from "@heroicons/react/24/solid";
 export default function BaseModal({
     children,
     isOpen,
-    }:{ 
+}:{ 
         isOpen: boolean,
         children: ReactNode,
     }) {
-        const providerData = useContext(StationsContext);
-        const closeModal = () => providerData?.handleModal(false);
+    const providerData = useContext(StationsContext);
+    const closeModal = () => providerData?.handleModal(false);
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog 
@@ -52,6 +52,6 @@ export default function BaseModal({
                     </div>
                 </div>
             </Dialog>
-      </Transition>
-    )
+        </Transition>
+    );
 }

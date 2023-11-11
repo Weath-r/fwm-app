@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const colors = require("tailwindcss/colors");
 
 const config: Config = {
@@ -8,7 +9,7 @@ const config: Config = {
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
         "./app/**/*.{js,ts,jsx,tsx,mdx}",
         "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-        "./components/**/*.{js,ts,jsx,tsx,mdx}",
+        "./components/**/*.{js,ts,jsx,tsx,mdx}"
     ],
     theme: {
         colors: {
@@ -19,7 +20,7 @@ const config: Config = {
             primary: "#3D5361",
             accent: "#D6B7B5",
             gray: "#D4C6BD",
-            danger: "#BE3144"
+            danger: "#BE3144",
         },
         extend: {
             backgroundImage: {
@@ -30,5 +31,5 @@ const config: Config = {
         },
     },
     plugins: [],
-}
+};
 export default config;

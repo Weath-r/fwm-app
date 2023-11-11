@@ -2,11 +2,11 @@ import { PropsWithChildren } from "react";
 
 type Props = {
     icon?: HTMLElement,
-    className?: String,
+    className?: string,
     rounded?: boolean,
-    color: String,
+    color: string,
     handleClick: () => void
-}
+};
 export default function Btn(props: PropsWithChildren<Props>) {
     let extraClass = "";
     if (props.rounded) {
@@ -22,5 +22,5 @@ export default function Btn(props: PropsWithChildren<Props>) {
         <button className={`bg-white ${textColor} ${extraClass} ${props.className}`} onClick={props.handleClick}>
             {props.children}
         </button>
-    )
+    );
 }
