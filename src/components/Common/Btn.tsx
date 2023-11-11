@@ -12,8 +12,14 @@ export default function Btn(props: PropsWithChildren<Props>) {
     if (props.rounded) {
         extraClass += "rounded";
     }
+    let textColor = "";
+    if (props.color === "primary") {
+        textColor = "text-primary";
+    } else if (props.color === "danger") {
+        textColor = "text-danger";
+    }
     return (
-        <button className={`bg-white text-${props.color} ${extraClass} ${props.className}`} onClick={props.handleClick}>
+        <button className={`bg-white ${textColor} ${extraClass} ${props.className}`} onClick={props.handleClick}>
             {props.children}
         </button>
     )
