@@ -37,3 +37,7 @@ header {
     background: transparent !important;
     border: 0 !important;
 }
+#headlessui-portal-root {
+    position: absolute;
+    z-index: 402;
+}
