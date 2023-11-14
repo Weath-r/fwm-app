@@ -1,17 +1,19 @@
 import dynamic from "next/dynamic";
-import { useContext, useState } from "react";
-import StationsContext from "@/context/stations";
+import { useMemo, useState } from "react";
+import { useStationsProvider } from "@/providers/StationsProvider";
 import { CONFIG } from "@/common/mapSettings";
-const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
-    ssr: false,
-});
-const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"), {
-    ssr: false,
-});
-
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
 import MapControls from "@/components/MapControls/MapControls";
+const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
+    ssr: false,
+});
+const BaseMarker = dynamic(
+    () => import("@/components/BaseComponents/BaseMarker"),
+    {
+        ssr: false,
+    }
+);
 
 export default function HomepageMap() {
     const zoomLevel = CONFIG.default_zoom_level;
@@ -21,25 +23,34 @@ export default function HomepageMap() {
 
     // Create the state for the modal info
     const [activeStation, setActiveStation] = useState(0);
-    const providerData = useContext(StationsContext);
-    const handleModal = (value:boolean, stationId: number) => {
-        providerData.handleModal(value);
+    const [markers, setMarkers] = useState<any>([]);
+    const stationsProvider = useStationsProvider();
+    const handleModal = (value: boolean, stationId: number) => {
+        stationsProvider.handleModal(value);
         setActiveStation(stationId);
     };
-    const isModalOpen = providerData.isStationModalOpen;
+    const isModalOpen = stationsProvider.isStationModalOpen;
 
-    const markers = providerData.stations.map(station => {
-        return (
-            <BaseMarker
-                position={station.location.coordinates.reverse()}
-                key={station.id}
-                stationId={station.id}
-                iconImg={station.accuweather_location.current_weather_description}
-                isDay={station.accuweather_location.isDayTime}
-                handleClick={handleModal}
-            />);
-    });
-    
+    useMemo(() => {
+        setMarkers(
+            stationsProvider.stations.map((station) => {
+                return (
+                    <BaseMarker
+                        position={station.location.coordinates.reverse()}
+                        key={station.id}
+                        stationId={station.id}
+                        iconImg={
+                            station.accuweather_location
+                                .current_weather_description
+                        }
+                        isDay={station.accuweather_location.isDayTime}
+                        handleClick={handleModal}
+                    />
+                );
+            })
+        );
+    }, [stationsProvider.stations]);
+
     return (
         <BaseMap
             zoom={zoomLevel}
@@ -52,9 +63,7 @@ export default function HomepageMap() {
                 <MapControls />
             </div>
             <div className="absolute bottom-0">
-                <BaseModal
-                    isOpen={isModalOpen}
-                >
+                <BaseModal isOpen={isModalOpen}>
                     <StationModalContent
                         isOpen={isModalOpen}
                         activeStation={activeStation}

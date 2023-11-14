@@ -1,10 +1,12 @@
 import { MapContainer, TileLayer } from "react-leaflet";
-import StationsContext from "@/context/stations";
-import { useContext } from "react";
+import { MapLeafletType } from "@/types";
+import configuration from "../../app/appConfig";
 
-export default function BaseMap(props: mapLeaflet) {
-    const { appVersion } = useContext(StationsContext);
-    const attribution = process.env.NODE_ENV === "development" ? `| App version: ${appVersion}` : "";
+export default function BaseMap(props: Readonly<MapLeafletType>) {
+    const attribution =
+        process.env.NODE_ENV === "development"
+            ? `| App version: ${configuration.appVersion}`
+            : "";
     return (
         <MapContainer
             center={props.center}
