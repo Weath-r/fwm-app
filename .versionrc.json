@@ -1,0 +1,9 @@
+{
+  "types": [
+    {"type": "feat", "section": "Features"},
+    {"type": "task", "section": "Tasks"},
+    {"type": "fix", "section": "Bug Fixes"}
+  ],
+  "commitUrlFormat": "https://github.com/Virtuosofriend/fwm-app/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/Virtuosofriend/fwm-app/compare/{{previousTag}}...{{currentTag}}"
+}

@@ -32,3 +32,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Update Changelog
+
+To generate a new entry in Changelog before releasing a newer version to deploy in Production, execute `npm run release:<type>`, where type is the release version type, `major`, `minor` or `patch`. Changelog notes are automatically populated using the Git commits following the rules configured in `.versionrc.json`. The library used in the [standard-version](https://github.com/conventional-changelog/standard-version).
