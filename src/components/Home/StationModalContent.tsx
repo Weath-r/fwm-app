@@ -11,7 +11,7 @@ type StationModalContentProps = {
 export default function StationModalContent({
     activeStation,
     isOpen,
-}: StationModalContentProps) {
+}: Readonly<StationModalContentProps>) {
     const dataService = new DataService();
     const [weatherData, setWeatherData] = useState<{ [key: string]: any }>([]);
 

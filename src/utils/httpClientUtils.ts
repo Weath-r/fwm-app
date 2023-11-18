@@ -1,7 +1,11 @@
 import axios from "axios";
 import configuration from "../app/appConfig";
 
-const getHeaders = (customHeaders = {}) => {
+type CustomeHeaders = {
+    [key: string]: string;
+};
+
+const getHeaders = (customHeaders: CustomeHeaders) => {
     return {
         ...customHeaders,
         Accept: "application/json",
@@ -9,7 +13,7 @@ const getHeaders = (customHeaders = {}) => {
     };
 };
 
-export const createAxiosInstance = (customHeaders: any) => {
+export const createAxiosInstance = (customHeaders: CustomeHeaders = {}) => {
     return axios.create({
         baseURL: configuration.baseUrl,
         headers: getHeaders(customHeaders),

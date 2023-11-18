@@ -14,7 +14,7 @@ export class DataService {
     client: AxiosInstance;
 
     constructor() {
-        this.client = createAxiosInstance({});
+        this.client = createAxiosInstance();
     }
 
     fetchWeatherDataByStation = (station_id: number): Promise<any> => {

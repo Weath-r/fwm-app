@@ -1,5 +1,5 @@
 import { useMap } from "react-leaflet/hooks";
-import Btn from "@/components/Common/Btn";
+import CommonButton from "@/components/Common/CommonButton";
 import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/solid";
 
 export default function MapControls() {
@@ -14,19 +14,16 @@ export default function MapControls() {
     };
     return (
         <div className="flex shadow-md bg-white rounded">
-            <Btn 
+            <CommonButton
                 color="primary"
                 className={"mr-1"}
                 handleClick={btnZoomIn}
             >
                 <PlusCircleIcon className="h-8 w-8 p-1"></PlusCircleIcon>
-            </Btn>
-            <Btn 
-                color="primary"
-                handleClick={btnZoomOut}
-            >
+            </CommonButton>
+            <CommonButton color="primary" handleClick={btnZoomOut}>
                 <MinusCircleIcon className="h-8 w-8 p-1"></MinusCircleIcon>
-            </Btn>
+            </CommonButton>
         </div>
     );
 }
