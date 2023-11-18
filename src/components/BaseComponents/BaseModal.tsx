@@ -1,8 +1,8 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { ReactNode, useContext } from "react";
-import StationsContext from "@/context/stations";
+import { ReactNode } from "react";
+import { useStationsProvider } from "@/providers/StationsProvider";
 import Btn from "@/components/Common/Btn";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 
@@ -13,8 +13,8 @@ export default function BaseModal({
         isOpen: boolean,
         children: ReactNode,
     }) {
-    const providerData = useContext(StationsContext);
-    const closeModal = () => providerData?.handleModal(false);
+    const stationsProvider = useStationsProvider();
+    const closeModal = () => stationsProvider.handleModal(false);
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog 
