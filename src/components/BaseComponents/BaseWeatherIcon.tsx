@@ -1,21 +1,12 @@
 "use client";
-import SVG from "react-inlinesvg";
+import InlineSVG from "react-inlinesvg";
 
-export default function BaseWeatherIcon({
-    iconImg,
-    isDay,
-}: {
-        iconImg: string,
-        isDay: boolean,
-    }) {
-    
+type BaseWeatherIconProps = {
+    iconImg: string;
+    isDay: boolean;
+};
+
+export default function BaseWeatherIcon({ iconImg, isDay }: Readonly<BaseWeatherIconProps>) {
     const renderImg = `weather_conditions/${isDay ? "day" : "night"}/${iconImg}`;
-    return (
-        <SVG
-            src={`${renderImg}.svg`}
-            width="auto"
-            height="auto"
-            title="Weather icon"
-        />
-    );
+    return <InlineSVG src={`${renderImg}.svg`} width="100%" height="100%" title="Weather icon" />;
 }
