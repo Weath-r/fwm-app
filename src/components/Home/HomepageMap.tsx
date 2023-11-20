@@ -1,7 +1,10 @@
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { useStationsProvider } from "@/providers/StationsProvider";
+import L, { MarkerCluster } from "leaflet";
 import { CONFIG } from "@/common/mapSettings";
+import { MarkerCustomAttrs } from "@/types/customMarker";
+
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
 import MapControls from "@/components/MapControls/MapControls";
@@ -10,6 +13,12 @@ const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
 });
 const BaseMarker = dynamic(
     () => import("@/components/BaseComponents/BaseMarker"),
+    {
+        ssr: false,
+    }
+);
+const MarkerClusterGroup = dynamic(
+    () => import("react-leaflet-cluster"),
     {
         ssr: false,
     }
@@ -31,6 +40,30 @@ export default function HomepageMap() {
     };
     const isModalOpen = stationsProvider.isStationModalOpen;
 
+    const createClusterCustomIcon = function (cluster: MarkerCluster) {
+        const markersInCluster: L.Marker[]  = cluster.getAllChildMarkers();
+        const iconsOfCluster: string[] = [];
+        markersInCluster.forEach((element) => {
+            if (element.options.customAttr) {
+                const { isDay, iconImg } : MarkerCustomAttrs = element.options.customAttr;
+                const renderImg = `weather_conditions/${isDay ? "day" : "night"}/${iconImg}`;
+                iconsOfCluster.push(renderImg);
+            }
+        });
+        return L.divIcon({
+            html: `<div class="flex justify-center items-center relative">
+                <div class="w-[58px] h-[58px]">
+                    <img src="${iconsOfCluster[0]}.svg" class="w-full h-full" alt="Weather Icon" />
+                </div>
+                <div class="absolute bottom-0 right-0 bg-primary rounded px-1">
+                    ${cluster.getChildCount()}
+                </div>
+            </div>`,
+            className: "",
+            iconSize: L.point(33, 33, true),
+        });
+    };
+
     useMemo(() => {
         setMarkers(
             stationsProvider.stations.map((station) => {
@@ -49,6 +82,7 @@ export default function HomepageMap() {
                 );
             })
         );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [stationsProvider.stations]);
 
     return (
@@ -58,7 +92,20 @@ export default function HomepageMap() {
             maxBounds={maxBounds}
             minZoom={minZoom}
         >
-            {markers}
+            <MarkerClusterGroup
+                chunkedLoading
+                iconCreateFunction={createClusterCustomIcon}
+                polygonOptions={{
+                    fillColor: "#F5F0ED",
+                    color: "#3D5361",
+                    weight: 2,
+                    opacity: 0.8,
+                    fillOpacity: 0.5,
+                }}
+                showCoverageOnHover={false}
+            >
+                {markers}
+            </MarkerClusterGroup>
             <div className="absolute bottom-2 left-2 z-[401]">
                 <MapControls />
             </div>

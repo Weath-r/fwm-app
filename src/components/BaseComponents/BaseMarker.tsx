@@ -4,10 +4,14 @@ import { DivIconLeafletMarker, DivIconContainer } from "@/components/Common/DivI
 const DivIconMarker = dynamic(() => import("@/components/Common/DivIconMarker"), {
     ssr: false,
 });
+/**
+* @todo This is more of a specific Marker with a modal functionality and less a base one.
+Refactor might be possible here. https://tzoupy.atlassian.net/browse/FWM-38
+*/
 
 type BaseMarkerProps = {
     position: [number, number];
-    handleClick: (selected: boolean, stationId: number) => void;
+    handleClick?: any;
     stationId: number;
     isDay: boolean;
     iconImg: string;
@@ -22,6 +26,8 @@ export default function BaseMarker({
 }: Readonly<BaseMarkerProps>) {
     const marker: DivIconLeafletMarker = {
         position,
+        iconImg,
+        isDay,
         eventHandlers: {
             click: () => {
                 return handleClick(true, stationId);
@@ -39,9 +45,6 @@ export default function BaseMarker({
                 <div className="w-[58px]">
                     <BaseWeatherIcon iconImg={iconImg} isDay={isDay} />
                 </div>
-                {/* <div className="bg-white p-1 opacity-75 rounded border-solid border truncate overflow-hidden font-medium color-black max-w-[92px] text-black">
-                    {stationName}
-                </div> */}
             </div>
         </DivIconMarker>
     );
