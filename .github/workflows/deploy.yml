@@ -1,0 +1,46 @@
+name: Deploy FWM NextJs App
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '17'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update version of FWM App
+        run: npm run release
+
+      - name: Changelog actions
+        run: |
+            git config user.email 'dimitris.sakella@gmail.com'
+            git config user.name 'Dimitris Sakellariou'
+            git add .
+            git commit -m 'Update changelog & bump version'
+            git push origin main
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to the server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          script: |
+            cd /home/fwm/fwm-docker-stack/fwm-app
+            git pull main -r
+            cd /home/fwm/fwm-docker-stack/
+            docker-compose build next-app
+            docker-compose up next-app 
