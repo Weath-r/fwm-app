@@ -26,12 +26,39 @@ jobs:
         run: |
             git config user.email 'dimitris.sakella@gmail.com'
             git config user.name 'Dimitris Sakellariou'
+            git checkout -b release-branch
             git add .
             git commit -m 'Update changelog & bump version'
-            git push origin main
+            git push origin release-branch
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create pull request
+        run: |
+              # Create a pull request
+              gh pr create --base main --head release-branch --title "Auto-created PR" --body "Automatically created pull request."
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+      - name: Approve the pull request
+        run: |
+            # Approve the pull request
+            PR_NUMBER=$(gh pr list --json number,state,headRefName --base main | \
+            jq -r 'select(.state == "open" and .headRefName == "release-branch") | .number')
+            gh pr review --approve --body "Auto-approved by GitHub Actions." --comment "Auto-approved by GitHub Actions." --pull-request $PR_NUMBER
+
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Delete the release branch
+        run: |
+            # Delete the release branch
+            gh pr list --json number,state,headRefName --base main | \
+                jq -r 'select(.state == "closed" and .headRefName == "release-branch") | .number' | \
+                xargs -I {} gh pr delete {}
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Deploy to the server
         uses: appleboy/ssh-action@master
         with:
