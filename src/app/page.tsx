@@ -1,14 +1,20 @@
 "use client";
 import "leaflet/dist/leaflet.css";
-import HomepageMap from "@/components/Home/HomepageMap";
-import { Provider } from "@/context/stations";
+import { StationsProvider } from "@/providers/StationsProvider";
+import dynamic from "next/dynamic";
 
+const HomepageMap = dynamic(
+    () => import("@/components/Home/HomepageMap"),
+    {
+        ssr: false,
+    }
+);
 export default function Home() {
     return (
-        <Provider>
+        <StationsProvider>
             <main className="flex flex-col flex-1 relative">
                 <HomepageMap></HomepageMap>
             </main>
-        </Provider>
+        </StationsProvider>
     );
 }

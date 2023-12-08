@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Commissioner } from "next/font/google";
 import Header from "@/components/Header/Header";
 
-const fontFamily = Commissioner({ 
+const fontFamily = Commissioner({
     subsets: ["latin"],
     weight: ["100", "300", "400", "600"],
 });
@@ -12,11 +12,11 @@ export const metadata: Metadata = {
     description: "Weather application",
 };
 
-export default function RootLayout({
-    children,
-}: {
-  children: React.ReactNode
-}) {
+type RootLayoutProps = {
+    children: React.ReactNode;
+};
+
+export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
     return (
         <html lang="en">
             <body className={fontFamily.className}>

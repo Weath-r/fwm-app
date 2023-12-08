@@ -1,17 +1,28 @@
 import dynamic from "next/dynamic";
-import { useContext, useState } from "react";
-import StationsContext from "@/context/stations";
+import { useMemo, useState } from "react";
+import { useStationsProvider } from "@/providers/StationsProvider";
+import L, { MarkerCluster } from "leaflet";
 import { CONFIG } from "@/common/mapSettings";
-const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
-    ssr: false,
-});
-const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"), {
-    ssr: false,
-});
+import { MarkerCustomAttrs } from "@/types/customMarker";
 
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
 import MapControls from "@/components/MapControls/MapControls";
+const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
+    ssr: false,
+});
+const BaseMarker = dynamic(
+    () => import("@/components/BaseComponents/BaseMarker"),
+    {
+        ssr: false,
+    }
+);
+const MarkerClusterGroup = dynamic(
+    () => import("react-leaflet-cluster"),
+    {
+        ssr: false,
+    }
+);
 
 export default function HomepageMap() {
     const zoomLevel = CONFIG.default_zoom_level;
@@ -21,25 +32,59 @@ export default function HomepageMap() {
 
     // Create the state for the modal info
     const [activeStation, setActiveStation] = useState(0);
-    const providerData = useContext(StationsContext);
-    const handleModal = (value:boolean, stationId: number) => {
-        providerData.handleModal(value);
+    const [markers, setMarkers] = useState<any>([]);
+    const stationsProvider = useStationsProvider();
+    const handleModal = (value: boolean, stationId: number) => {
+        stationsProvider.handleModal(value);
         setActiveStation(stationId);
     };
-    const isModalOpen = providerData.isStationModalOpen;
+    const isModalOpen = stationsProvider.isStationModalOpen;
 
-    const markers = providerData.stations.map(station => {
-        return (
-            <BaseMarker
-                position={station.location.coordinates.reverse()}
-                key={station.id}
-                stationId={station.id}
-                iconImg={station.accuweather_location.current_weather_description}
-                isDay={station.accuweather_location.isDayTime}
-                handleClick={handleModal}
-            />);
-    });
-    
+    const createClusterCustomIcon = function (cluster: MarkerCluster) {
+        const markersInCluster: L.Marker[]  = cluster.getAllChildMarkers();
+        const iconsOfCluster: string[] = [];
+        markersInCluster.forEach((element) => {
+            if (element.options.customAttr) {
+                const { isDay, iconImg } : MarkerCustomAttrs = element.options.customAttr;
+                const renderImg = `weather_conditions/${isDay ? "day" : "night"}/${iconImg}`;
+                iconsOfCluster.push(renderImg);
+            }
+        });
+        return L.divIcon({
+            html: `<div class="flex justify-center items-center relative">
+                <div class="w-[58px] h-[58px]">
+                    <img src="${iconsOfCluster[0]}.svg" class="w-full h-full" alt="Weather Icon" />
+                </div>
+                <div class="absolute bottom-0 right-0 bg-primary rounded px-1">
+                    ${cluster.getChildCount()}
+                </div>
+            </div>`,
+            className: "",
+            iconSize: L.point(33, 33, true),
+        });
+    };
+
+    useMemo(() => {
+        setMarkers(
+            stationsProvider.stations.map((station) => {
+                return (
+                    <BaseMarker
+                        position={station.location.coordinates.reverse()}
+                        key={station.id}
+                        stationId={station.id}
+                        iconImg={
+                            station.accuweather_location
+                                .current_weather_description
+                        }
+                        isDay={station.accuweather_location.isDayTime}
+                        handleClick={handleModal}
+                    />
+                );
+            })
+        );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [stationsProvider.stations]);
+
     return (
         <BaseMap
             zoom={zoomLevel}
@@ -47,14 +92,25 @@ export default function HomepageMap() {
             maxBounds={maxBounds}
             minZoom={minZoom}
         >
-            {markers}
+            <MarkerClusterGroup
+                chunkedLoading
+                iconCreateFunction={createClusterCustomIcon}
+                polygonOptions={{
+                    fillColor: "#F5F0ED",
+                    color: "#3D5361",
+                    weight: 2,
+                    opacity: 0.8,
+                    fillOpacity: 0.5,
+                }}
+                showCoverageOnHover={false}
+            >
+                {markers}
+            </MarkerClusterGroup>
             <div className="absolute bottom-2 left-2 z-[401]">
                 <MapControls />
             </div>
             <div className="absolute bottom-0">
-                <BaseModal
-                    isOpen={isModalOpen}
-                >
+                <BaseModal isOpen={isModalOpen}>
                     <StationModalContent
                         isOpen={isModalOpen}
                         activeStation={activeStation}
