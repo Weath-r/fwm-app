@@ -21,17 +21,28 @@ jobs:
 
       - name: Update version of FWM App
         run: npm run release
-
-      - name: Changelog actions
+        
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            commit-message: Update changelog & bump version
+            title: Update version
+            body: Update version to reflect release changes
+            branch: release-branch
+            delete-branch: true
+            base: main
+        
+      - name: Pull request number
         run: |
-            git config user.email 'dimitris.sakella@gmail.com'
-            git config user.name 'Dimitris Sakellariou'
-            git add .
-            git commit -m 'Update changelog & bump version'
-            git push origin main
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+            echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+    
+      - name: Approve pull Request
+        if: ${{ steps.cpr.outputs.pull-request-number}}
+        uses: hmarr/auto-approve-action@v2
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+      
       - name: Deploy to the server
         uses: appleboy/ssh-action@master
         with:
@@ -40,7 +51,7 @@ jobs:
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
             cd /home/fwm/fwm-docker-stack/fwm-app
-            git pull main -r
+            git pull -r
             cd /home/fwm/fwm-docker-stack/
             docker-compose build next-app
             docker-compose up next-app 
