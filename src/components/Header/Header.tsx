@@ -1,5 +1,6 @@
 import Image from "next/image";
 import appLogo from "@/assets/logos/logo.png";
+import configuration from "@/app/appConfig";
 
 export default function Header() {
     return (<header className="bg-white border-solid border-b-2 border-gray-300">
@@ -11,7 +12,7 @@ export default function Header() {
                 />
             </div>
             <div className="w-full">
-                <form>   
+                <form style={{ display: (configuration.searchBarToggle ? "block" : "none") }}>   
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only">
                         Search
                     </label>
