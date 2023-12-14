@@ -28,7 +28,8 @@
             "functions": "never"
         }],
         "@typescript-eslint/no-explicit-any": "off",
-        "object-curly-spacing": ["error", "always"]
+        "object-curly-spacing": ["error", "always"],
+        "react-hooks/exhaustive-deps": "off"
     },
     "settings": {
       "react": {

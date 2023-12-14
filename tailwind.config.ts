@@ -21,6 +21,7 @@ const config: Config = {
             accent: "#D6B7B5",
             gray: "#D4C6BD",
             danger: "#BE3144",
+            info: "#61B4BD",
         },
         extend: {
             backgroundImage: {

@@ -19,7 +19,7 @@ export class DataService {
 
     fetchWeatherDataByStation = (station_id: number): Promise<any> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
-        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=*.*`;
+        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label, weather_station_id.accuweather_location.isDayTime`;
         const WEATHER_DATA_PATH = `${WEATHER_DATA_FILTER_PREFIX}${WEATHER_DATA_FILTER}`;
 
         return new Promise<any>((resolve, reject) => {
