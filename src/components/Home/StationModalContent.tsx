@@ -5,6 +5,7 @@ import { ExportedWeatherData, WeatherData } from "@/types";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import { LinkIcon } from "@heroicons/react/24/solid";
 import SvgInline from "@/components/Common/SvgInline";
+import LoadingSpinner from "@/components/Common/LoadingSpinner";
 
 type StationModalContentProps = {
     activeStation: number;
@@ -54,12 +55,15 @@ const literals: literalOptions = {
     hazy_moonlight: "Hazy moonlight",
 };
 
+const MODAL_TIMEOUT: number = 600;
+
 export default function StationModalContent({
     activeStation,
     isOpen,
 }: Readonly<StationModalContentProps>) {
     const dataService = new DataService();
     const [weatherData, setWeatherData] = useState<{ [key: string]: any }>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const buildExportedWeatherDataObject = (elem: WeatherData) => {
         return {
@@ -90,13 +94,16 @@ export default function StationModalContent({
                 // TO-DO handle error properly
                 console.log(error);
                 return setWeatherData([]);
+            }).finally(() => {
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, MODAL_TIMEOUT);
             });
     };
 
     useEffect(() => {
         isOpen && getWeatherData();
     }, [isOpen]);
-
     const formatDate = (inputDate: Date): string => {
         const options: Intl.DateTimeFormatOptions = {
             weekday: "short",
@@ -114,9 +121,16 @@ export default function StationModalContent({
     const weatherConditionsText = (text: string): string => {
         return literals[text];
     };
+
+    const loadingBlock = (
+        <div className="absolute w-full h-full flex justify-center items-center bg-white z-[1]">
+            <LoadingSpinner />
+        </div>
+    );
     const displayedData = weatherData.map((elem: ExportedWeatherData) => {
         return (
-            <div className="p-2 flex text-black flex-col" key={elem.station.id}>
+            <div className="p-2 flex text-black flex-col relative" key={elem.station.id}>
+                {isLoading && loadingBlock }
                 <div className="flex flex-col">
                     <a 
                         href={elem.station.website_url}
@@ -184,7 +198,7 @@ export default function StationModalContent({
                             <div className="border-[0.5px] border-white h-[1px] my-4"></div>
                             <div className="flex items-center justify-around">
                                 <div className="flex items-center w-[100px]">
-                                    <div className="h-6 w-6">
+                                    <div className="h-4 w-6">
                                         <SvgInline
                                             path="weather_icons/wind.svg"
                                             title="Wind icon"
