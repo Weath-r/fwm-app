@@ -28,13 +28,15 @@ export default function BaseModal({ children, isOpen }: Readonly<BaseModalProps>
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all">
-                                <Dialog.Description as="section">{children}</Dialog.Description>
-                                <div className="absolute top-2 right-2">
-                                    <CommonButton handleClick={closeModal} color="danger">
-                                        <XCircleIcon className="h-8 w-8 p-1"></XCircleIcon>
-                                    </CommonButton>
-                                </div>
+                            <Dialog.Panel className="w-full max-w-xs transform overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all">
+                                <Dialog.Description as="section">
+                                    {children}
+                                    <div className="absolute top-3 right-3">
+                                        <CommonButton handleClick={closeModal} color="danger">
+                                            <XCircleIcon className="h-8 w-8 p-1"></XCircleIcon>
+                                        </CommonButton>
+                                    </div>
+                                </Dialog.Description>
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>

@@ -51,12 +51,14 @@ export default function HomepageMap() {
             }
         });
         return L.divIcon({
-            html: `<div class="flex justify-center items-center relative">
-                <div class="w-[58px] h-[58px]">
+            html: `<div class="flex justify-center items-center">
+                <div class="w-[58px] h-[58px] relative">
                     <img src="${iconsOfCluster[0]}.svg" class="w-full h-full" alt="Weather Icon" />
+                    <div class="absolute bottom-0 right-0 bg-primary rounded px-1">
+                    <p class="text-white">
+                        ${cluster.getChildCount()}
+                    </p>
                 </div>
-                <div class="absolute bottom-0 right-0 bg-primary rounded px-1">
-                    ${cluster.getChildCount()}
                 </div>
             </div>`,
             className: "",
