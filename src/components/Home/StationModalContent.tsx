@@ -5,6 +5,7 @@ import { ExportedWeatherData, WeatherData } from "@/types";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import { LinkIcon } from "@heroicons/react/24/solid";
 import SvgInline from "@/components/Common/SvgInline";
+import LoadingSpinner from "@/components/Common/LoadingSpinner";
 
 type StationModalContentProps = {
     activeStation: number;
@@ -60,6 +61,7 @@ export default function StationModalContent({
 }: Readonly<StationModalContentProps>) {
     const dataService = new DataService();
     const [weatherData, setWeatherData] = useState<{ [key: string]: any }>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const buildExportedWeatherDataObject = (elem: WeatherData) => {
         return {
@@ -77,6 +79,7 @@ export default function StationModalContent({
     };
 
     const getWeatherData = async () => {
+        setIsLoading(true);
         await dataService
             .fetchWeatherDataByStation(activeStation)
             .then((response) => {
@@ -90,6 +93,8 @@ export default function StationModalContent({
                 // TO-DO handle error properly
                 console.log(error);
                 return setWeatherData([]);
+            }).finally(() => {
+                setTimeout(() => setIsLoading(false), 500);
             });
     };
 
@@ -114,9 +119,16 @@ export default function StationModalContent({
     const weatherConditionsText = (text: string): string => {
         return literals[text];
     };
+
+    const loadingBlock = (
+        <div className="absolute w-full h-full flex justify-center items-center bg-white z-[1]">
+            <LoadingSpinner />
+        </div>
+    );
     const displayedData = weatherData.map((elem: ExportedWeatherData) => {
         return (
-            <div className="p-2 flex text-black flex-col" key={elem.station.id}>
+            <div className="p-2 flex text-black flex-col relative" key={elem.station.id}>
+                {isLoading && loadingBlock }
                 <div className="flex flex-col">
                     <a 
                         href={elem.station.website_url}
