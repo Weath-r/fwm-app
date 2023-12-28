@@ -10,11 +10,10 @@ export type ExportedWeatherData = {
     windspd: number;
     winddir: number;
     station: WeatherStation;
+    iconImg: string;
 };
 
 export type WeatherData = {
-    id: number;
-    sort: number | null;
     date_created: Date;
     temperature: number;
     humidity: number;
@@ -25,4 +24,5 @@ export type WeatherData = {
     winddir: number;
     weather_condition_id: object;
     weather_station_id: WeatherStation;
+    weather_condition: string;
 };

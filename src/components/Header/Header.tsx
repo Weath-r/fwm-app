@@ -1,17 +1,22 @@
 import Image from "next/image";
-import appLogo from "@/assets/logos/logo.png";
+import appLogo from "@/assets/logos/myweathr.png";
+import configuration from "@/app/appConfig";
 
 export default function Header() {
-    return (<header className="bg-white border-solid border-b-2 border-gray-300">
-        <div className="flex w-full h-full items-center container mx-auto">
-            <div className="w-24">
+    return (<header className="bg-white border-solid border-b-1 border-gray">
+        <div className="flex h-full items-center container mx-auto">
+            <div className="w-full px-4 m:p-0">
                 <Image
                     src={appLogo}
+                    className="object-contain h-full w-48 m:w-60"
                     alt="FWM"
                 />
+                <p className="text-primary text-sm mt-2">
+                    Weather conditions for Central Greece
+                </p>
             </div>
-            <div className="w-full">
-                <form>   
+            <div className="m:w-full hidden">
+                <form style={{ display: (configuration.searchBarToggle ? "block" : "none") }}>   
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only">
                         Search
                     </label>
