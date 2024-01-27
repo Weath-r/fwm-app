@@ -4,6 +4,7 @@ import { useStationsProvider } from "@/providers/StationsProvider";
 import L, { MarkerCluster } from "leaflet";
 import { CONFIG } from "@/common/mapSettings";
 import { MarkerCustomAttrs } from "@/types/customMarker";
+import { assetUrl } from "@/common/assetsHandling";
 
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
@@ -45,15 +46,15 @@ export default function HomepageMap() {
         const iconsOfCluster: string[] = [];
         markersInCluster.forEach((element) => {
             if (element.options.customAttr) {
-                const { isDay, iconImg } : MarkerCustomAttrs = element.options.customAttr;
-                const renderImg = `weather_conditions/${isDay ? "day" : "night"}/${iconImg}`;
+                const { assetId } : MarkerCustomAttrs = element.options.customAttr;
+                const renderImg = assetUrl(assetId);
                 iconsOfCluster.push(renderImg);
             }
         });
         return L.divIcon({
             html: `<div class="flex justify-center items-center">
                 <div class="w-[58px] h-[58px] relative">
-                    <img src="${iconsOfCluster[0]}.svg" class="w-full h-full" alt="Weather Icon" />
+                    <img src="${iconsOfCluster[0]}" class="w-full h-full" alt="Weather Icon" />
                     <div class="absolute bottom-0 right-0 bg-primary rounded px-1">
                     <p class="text-white">
                         ${cluster.getChildCount()}
@@ -74,17 +75,16 @@ export default function HomepageMap() {
                         position={station.location.coordinates.reverse()}
                         key={station.id}
                         stationId={station.id}
-                        iconImg={
+                        weatherDescription={
                             station.accuweather_location
                                 .current_weather_description
                         }
-                        isDay={station.accuweather_location.isDayTime}
+                        assetId={station.accuweather_location.weather_condition_icon.asset}
                         handleClick={handleModal}
                     />
                 );
             })
         );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [stationsProvider.stations]);
 
     return (

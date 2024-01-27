@@ -76,7 +76,8 @@ export default function StationModalContent({
             windspd: elem.windspd,
             winddir: elem.winddir,
             station: elem.weather_station_id,
-            iconImg: elem.weather_condition,
+            weatherDescription: elem.weather_condition,
+            assetId: elem.weather_condition_icon,
         };
     };
 
@@ -149,12 +150,12 @@ export default function StationModalContent({
                     </p>
                     <div className="mt-6 flex items-center">
                         <div className="h-24 mx-auto">
-                            <BaseWeatherIcon iconImg={elem.iconImg} isDay={elem.station.accuweather_location.isDayTime} />
+                            <BaseWeatherIcon assetId={elem.assetId} weatherDescriptionText={elem.weatherDescription} />
                         </div>
                         <h3 className="text-5xl font-bold mx-auto">
                             {elem.temperature}<sup className="font-normal text-lg ml-1">°C</sup>
                             <small className="block text-base font-normal">
-                                {weatherConditionsText(elem.iconImg)}
+                                {weatherConditionsText(elem.weatherDescription)}
                             </small>
                         </h3>
                     </div>

@@ -12,8 +12,8 @@ export type DivIconContainer = {
 export type DivIconLeafletMarker = {
     position: [number, number];
     eventHandlers: any;
-    iconImg: string,
-    isDay: boolean,
+    weatherDescription: string;
+    assetId: string;
 };
 
 type DivIconMarkerProps = {
@@ -34,7 +34,7 @@ const DivIconMarker = ({ leafletMarker, container, children }: DivIconMarkerProp
         };
     });
 
-    const { position, eventHandlers, iconImg, isDay } = leafletMarker;
+    const { position, eventHandlers, weatherDescription, assetId } = leafletMarker;
     return (
         <>
             {portal}
@@ -42,7 +42,7 @@ const DivIconMarker = ({ leafletMarker, container, children }: DivIconMarkerProp
                 position={position}
                 icon={divIcon}
                 eventHandlers={eventHandlers}
-                customAttr={{ iconImg, isDay }}
+                customAttr={{ weatherDescription, assetId }}
             >
             </Marker>
         </>
