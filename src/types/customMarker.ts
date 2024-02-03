@@ -1,6 +1,6 @@
 export type MarkerCustomAttrs = {
-    iconImg: string
-    isDay: boolean
+    weatherDescription: string;
+    assetId: string;
 };
 
 declare module "leaflet" {

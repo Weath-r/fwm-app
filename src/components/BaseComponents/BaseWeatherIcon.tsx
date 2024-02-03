@@ -1,10 +1,15 @@
 "use client";
+import { assetUrl } from "@/common/assetsHandling";
 type BaseWeatherIconProps = {
-    iconImg: string;
-    isDay: boolean;
+    weatherDescriptionText: string;
+    assetId: string;
 };
 
-export default function BaseWeatherIcon({ iconImg, isDay }: Readonly<BaseWeatherIconProps>) {
-    const renderImg = `weather_conditions/${isDay ? "day" : "night"}/${iconImg}`;
-    return <img src={`${renderImg}.svg`} alt="Weather icon" className="!w-full h-full" />;
+export default function BaseWeatherIcon({ weatherDescriptionText, assetId }: Readonly<BaseWeatherIconProps>) {
+    const imagePath = assetUrl(assetId);
+    return <img 
+        src={`${imagePath}`} 
+        alt={weatherDescriptionText}
+        className="!w-full h-full" 
+    />;
 }

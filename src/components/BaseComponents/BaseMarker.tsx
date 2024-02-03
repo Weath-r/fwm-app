@@ -13,21 +13,21 @@ type BaseMarkerProps = {
     position: [number, number];
     handleClick?: any;
     stationId: number;
-    isDay: boolean;
-    iconImg: string;
+    weatherDescription: string;
+    assetId: string;
 };
 
 export default function BaseMarker({
     position,
     handleClick,
     stationId,
-    isDay,
-    iconImg,
+    weatherDescription,
+    assetId,
 }: Readonly<BaseMarkerProps>) {
     const marker: DivIconLeafletMarker = {
         position,
-        iconImg,
-        isDay,
+        weatherDescription,
+        assetId,
         eventHandlers: {
             click: () => {
                 return handleClick(true, stationId);
@@ -43,7 +43,10 @@ export default function BaseMarker({
         <DivIconMarker leafletMarker={marker} container={container}>
             <div className="flex flex-col justify-center items-center">
                 <div className="w-[58px]">
-                    <BaseWeatherIcon iconImg={iconImg} isDay={isDay} />
+                    <BaseWeatherIcon 
+                        weatherDescriptionText={weatherDescription} 
+                        assetId={assetId} 
+                    />
                 </div>
             </div>
         </DivIconMarker>
