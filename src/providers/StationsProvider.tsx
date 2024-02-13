@@ -1,24 +1,13 @@
 "use client";
-import {
-    ReactElement,
-    useContext,
-    useMemo,
-    useEffect,
-    useState,
-    createContext
-} from "react";
+import { ReactElement, useContext, createContext, useMemo, useState, useEffect } from "react";
 import { DataService } from "@/services/DataService";
 
 interface CurrentStationContextType {
     stations: any[];
-    isStationModalOpen: boolean;
-    handleModal: (isStationModalOpen: boolean) => void;
 }
 
 const StationsContext = createContext<CurrentStationContextType>({
     stations: [],
-    isStationModalOpen: false,
-    handleModal: () => null,
 });
 
 type StationsProviderProps = {
@@ -26,10 +15,8 @@ type StationsProviderProps = {
 };
 
 export const StationsProvider = ({ children }: StationsProviderProps) => {
-    // TO-DO move generic states to AppStore
     const dataService = new DataService();
     const [stations, setStations] = useState([]);
-    const [isStationModalOpen, setIsStationModalOpen] = useState(false);
 
     const fetchStationsData = async () => {
         await dataService
@@ -44,10 +31,6 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
             });
     };
 
-    const handleModal = (isStationModalOpen: boolean) => {
-        setIsStationModalOpen(isStationModalOpen);
-    };
-
     useEffect(() => {
         fetchStationsData();
     }, []);
@@ -55,17 +38,11 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
     const value = useMemo(
         () => ({
             stations,
-            isStationModalOpen,
-            handleModal,
         }),
-        [stations, isStationModalOpen]
+        [stations]
     );
 
-    return (
-        <StationsContext.Provider value={value}>
-            {children}
-        </StationsContext.Provider>
-    );
+    return <StationsContext.Provider value={value}>{children}</StationsContext.Provider>;
 };
 
 export const useStationsProvider = () => {

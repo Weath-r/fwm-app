@@ -1,26 +1,25 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, ReactNode } from "react";
-import { useStationsProvider } from "@/providers/StationsProvider";
 import CommonButton from "@/components/Common/CommonButton";
 import { XCircleIcon } from "@heroicons/react/24/solid";
+import { useAppStore } from "@/hooks/useAppStore";
 
 type BaseModalProps = {
-    isOpen: boolean;
     children: ReactNode;
 };
 
-export default function BaseModal({ children, isOpen }: Readonly<BaseModalProps>) {
-    const stationsProvider = useStationsProvider();
-    const closeModal = () => stationsProvider.handleModal(false);
+export default function BaseModal({ children }: Readonly<BaseModalProps>) {
+    const { isStationModalOpen, setIsStationModalOpen, setActiveStation } = useAppStore();
+    const closeModal = () => {
+        setIsStationModalOpen(false);
+        setActiveStation(0);
+    };
+
     return (
-        <Transition 
-            appear 
-            show={isOpen} 
-            as={Fragment}
-        >
-            <Dialog 
-                open={isOpen}
+        <Transition appear show={isStationModalOpen} as={Fragment}>
+            <Dialog
+                open={isStationModalOpen}
                 onClose={closeModal}
                 as="div"
                 className="relative z-10"
