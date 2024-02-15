@@ -4,4 +4,4 @@ const nextConfig = {
     optimizeCss: false,
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;
