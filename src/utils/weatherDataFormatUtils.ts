@@ -1,4 +1,4 @@
-import { WeatherData } from "@/types";
+import { WeatherDataResponse } from "@/types";
 
 type literalOptions = {
     [key: string]: string;
@@ -47,21 +47,22 @@ export const weatherConditionsText = (text: string): string => {
     return literals[text];
 };
 
+const options: Intl.DateTimeFormatOptions = {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+};
+
 export const formatDate = (inputDate: Date): string => {
-    const options: Intl.DateTimeFormatOptions = {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: false,
-    };
     const date: Date = new Date(inputDate);
     const formattedDate: string = date.toLocaleDateString("en-US", options);
     return formattedDate;
 };
 
-export const buildExportedWeatherDataObject = (elem: WeatherData) => {
+export const buildExportedWeatherDataObject = (elem: WeatherDataResponse) => {
     return {
         date_created: elem.date_created,
         temperature: elem.temperature,
@@ -75,4 +76,8 @@ export const buildExportedWeatherDataObject = (elem: WeatherData) => {
         weatherDescription: elem.weather_condition,
         assetId: elem.weather_condition_icon,
     };
+};
+
+export const getReversedCoordinates = (coordinates: [number, number]): [number, number] => {
+    return [coordinates[1], coordinates[0]];
 };

@@ -1,10 +1,25 @@
 import { ExportedWeatherData } from "@/types";
 import SvgInline from "@/components/Common/SvgInline";
 
+enum WeatherConditions {
+    HUMIDITY = "Humidity",
+    BAROMETER = "Barometer",
+    WIND = "Wind",
+    RAIN = "Rain",
+}
+
+enum Measurements {
+    PERCENTAGE = "%",
+    PRESSURE = "hPa",
+    SPEED = "km/h",
+    MILLIMETER = "mm",
+}
+
 export function StationWeatherDetails(elem: Readonly<ExportedWeatherData>) {
+    const title = "Details";
     return (
         <div className="my-2">
-            <h4 className="font-bold text-lg my-2">Details</h4>
+            <h4 className="font-bold text-lg my-2">{title}</h4>
             <div className="bg-info rounded-2xl p-4">
                 <div className="flex items-center justify-around">
                     <div className="flex items-center w-[100px]">
@@ -16,8 +31,11 @@ export function StationWeatherDetails(elem: Readonly<ExportedWeatherData>) {
                             />
                         </div>
                         <p className="text-sm text-white leading-tight ml-2">
-                            Humidity
-                            <span className="block font-bold text-xs">{elem.humidity}%</span>
+                            {WeatherConditions.HUMIDITY}
+                            <span className="block font-bold text-xs">
+                                {elem.humidity}
+                                {Measurements.PERCENTAGE}
+                            </span>
                         </p>
                     </div>
                     <div className="flex items-center w-[100px]">
@@ -29,8 +47,10 @@ export function StationWeatherDetails(elem: Readonly<ExportedWeatherData>) {
                             />
                         </div>
                         <p className="text-sm text-white leading-tight ml-2">
-                            Barometer
-                            <span className="block font-bold text-xs">{elem.barometer} hPa</span>
+                            {WeatherConditions.BAROMETER}
+                            <span className="block font-bold text-xs">
+                                {elem.barometer} {Measurements.PRESSURE}
+                            </span>
                         </p>
                     </div>
                 </div>
@@ -48,8 +68,10 @@ export function StationWeatherDetails(elem: Readonly<ExportedWeatherData>) {
                             />
                         </div>
                         <p className="text-sm text-white leading-tight ml-2">
-                            Wind
-                            <span className="block font-bold text-xs">{elem.windspd} km/h</span>
+                            {WeatherConditions.WIND}
+                            <span className="block font-bold text-xs">
+                                {elem.windspd} {Measurements.SPEED}
+                            </span>
                         </p>
                     </div>
                     <div className="flex items-center w-[100px]">
@@ -61,8 +83,10 @@ export function StationWeatherDetails(elem: Readonly<ExportedWeatherData>) {
                             />
                         </div>
                         <p className="text-sm text-white leading-tight ml-2">
-                            Rain
-                            <span className="block font-bold text-xs">{elem.percipitation} mm</span>
+                            {WeatherConditions.RAIN}
+                            <span className="block font-bold text-xs">
+                                {elem.percipitation} {Measurements.MILLIMETER}
+                            </span>
                         </p>
                     </div>
                 </div>

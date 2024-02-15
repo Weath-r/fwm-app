@@ -2,13 +2,13 @@ import dynamic from "next/dynamic";
 import { useStationsProvider } from "@/providers/StationsProvider";
 import L, { MarkerCluster } from "leaflet";
 import { CONFIG } from "@/common/mapSettings";
-import { MarkerCustomAttrs } from "@/types/customMarker";
-import { assetUrl } from "@/common/assetsHandling";
+import { assetUrl } from "@/helpers/assetsHandling";
 
 import { useAppStore } from "@/hooks/useAppStore";
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
 import MapControls from "@/components/MapControls/MapControls";
+import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
     ssr: false,
 });
@@ -18,6 +18,43 @@ const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"
 const MarkerClusterGroup = dynamic(() => import("react-leaflet-cluster"), {
     ssr: false,
 });
+
+type MarkerCustomAttrs = {
+    weatherDescription: string;
+    assetId: string;
+};
+
+declare module "leaflet" {
+    interface MarkerOptions {
+        customAttr?: MarkerCustomAttrs;
+    }
+}
+
+const createClusterCustomIcon = function (cluster: MarkerCluster) {
+    const markersInCluster: L.Marker[] = cluster.getAllChildMarkers();
+    const iconsOfCluster: string[] = [];
+    markersInCluster.forEach((element) => {
+        if (element.options.customAttr) {
+            const { assetId }: MarkerCustomAttrs = element.options.customAttr;
+            const renderImg = assetUrl(assetId);
+            iconsOfCluster.push(renderImg);
+        }
+    });
+    return L.divIcon({
+        html: `<div class="flex justify-center items-center">
+            <div class="w-[58px] h-[58px] relative">
+                <img src="${iconsOfCluster[0]}" class="w-full h-full" alt="Weather Icon" />
+                <div class="absolute bottom-0 right-0 bg-primary rounded px-1">
+                <p class="text-white">
+                    ${cluster.getChildCount()}
+                </p>
+            </div>
+            </div>
+        </div>`,
+        className: "",
+        iconSize: L.point(33, 33, true),
+    });
+};
 
 export default function HomepageMap() {
     const zoomLevel = CONFIG.default_zoom_level;
@@ -34,36 +71,10 @@ export default function HomepageMap() {
         setActiveStation(stationId);
     };
 
-    const createClusterCustomIcon = function (cluster: MarkerCluster) {
-        const markersInCluster: L.Marker[] = cluster.getAllChildMarkers();
-        const iconsOfCluster: string[] = [];
-        markersInCluster.forEach((element) => {
-            if (element.options.customAttr) {
-                const { assetId }: MarkerCustomAttrs = element.options.customAttr;
-                const renderImg = assetUrl(assetId);
-                iconsOfCluster.push(renderImg);
-            }
-        });
-        return L.divIcon({
-            html: `<div class="flex justify-center items-center">
-                <div class="w-[58px] h-[58px] relative">
-                    <img src="${iconsOfCluster[0]}" class="w-full h-full" alt="Weather Icon" />
-                    <div class="absolute bottom-0 right-0 bg-primary rounded px-1">
-                    <p class="text-white">
-                        ${cluster.getChildCount()}
-                    </p>
-                </div>
-                </div>
-            </div>`,
-            className: "",
-            iconSize: L.point(33, 33, true),
-        });
-    };
-
     const markers = stations.map((station) => {
         return (
             <BaseMarker
-                position={station.location.coordinates.reverse()}
+                position={getReversedCoordinates(station.location.coordinates)}
                 key={station.id}
                 stationId={station.id}
                 weatherDescription={station.accuweather_location.current_weather_description}

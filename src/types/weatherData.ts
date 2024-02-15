@@ -14,7 +14,7 @@ export type ExportedWeatherData = {
     weatherDescription: string;
 };
 
-export type WeatherData = {
+export type WeatherDataResponse = {
     date_created: Date;
     temperature: number;
     humidity: number;

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { DataService } from "@/services/DataService";
-import { ExportedWeatherData, WeatherData } from "@/types";
+import { ExportedWeatherData, WeatherDataResponse } from "@/types";
 import LoadingSpinner from "@/components/Common/LoadingSpinner";
 import { useAppStore } from "@/hooks/useAppStore";
 import { buildExportedWeatherDataObject } from "@/utils/weatherDataFormatUtils";
@@ -18,7 +18,7 @@ const loadingBlock = (
 
 export default function StationModalContent() {
     const dataService = new DataService();
-    const [weatherData, setWeatherData] = useState<{ [key: string]: any }>([]);
+    const [weatherData, setWeatherData] = useState<ExportedWeatherData[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { activeStation } = useAppStore();
 
@@ -26,8 +26,8 @@ export default function StationModalContent() {
         await dataService
             .fetchWeatherDataByStation(activeStation)
             .then((response) => {
-                const weather_data: ExportedWeatherData[] = response.data.data.map(
-                    (elem: WeatherData) => {
+                const weather_data: ExportedWeatherData[] = response.map(
+                    (elem: WeatherDataResponse) => {
                         return buildExportedWeatherDataObject(elem);
                     }
                 );
