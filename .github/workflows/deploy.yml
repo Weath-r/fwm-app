@@ -18,31 +18,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Update version of FWM App
-        run: npm run release
-        
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v5
-        with:
-            commit-message: Update changelog & bump version
-            title: Update version
-            body: Update version to reflect release changes
-            branch: release-branch
-            labels: "automation"
-            base: main
-        
-      - name: Pull request number
-        run: |
-            echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-    
-      - name: Approve pull Request
-        if: ${{ steps.cpr.outputs.pull-request-number}}
-        uses: hmarr/auto-approve-action@v3
-        with:
-            github-token: ${{ secrets.PAT }}
-            pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
       
       - name: Deploy to the server
         uses: appleboy/ssh-action@master
