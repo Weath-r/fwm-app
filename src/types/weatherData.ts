@@ -10,7 +10,8 @@ export type ExportedWeatherData = {
     windspd: number;
     winddir: number;
     station: WeatherStation;
-    iconImg: string;
+    assetId: string;
+    weatherDescription: string;
 };
 
 export type WeatherData = {
@@ -22,7 +23,7 @@ export type WeatherData = {
     rainrate: number;
     windspd: number;
     winddir: number;
-    weather_condition_id: object;
     weather_station_id: WeatherStation;
     weather_condition: string;
+    weather_condition_icon: string;
 };
