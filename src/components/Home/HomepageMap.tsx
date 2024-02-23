@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { useStationsProvider } from "@/providers/StationsProvider";
 import L, { MarkerCluster } from "leaflet";
-import { CONFIG } from "@/common/mapSettings";
+
 import { assetUrl } from "@/helpers/assetsHandling";
 
 import { useAppStore } from "@/hooks/useAppStore";
@@ -9,6 +9,7 @@ import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
 import MapControls from "@/components/MapControls/MapControls";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
+import { MAP_CONFIG } from "@/types";
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
     ssr: false,
 });
@@ -57,10 +58,10 @@ const createClusterCustomIcon = function (cluster: MarkerCluster) {
 };
 
 export default function HomepageMap() {
-    const zoomLevel = CONFIG.default_zoom_level;
-    const defaultCenter = CONFIG.center;
-    const maxBounds = CONFIG.bounds;
-    const minZoom = CONFIG.minZoom;
+    const zoomLevel = MAP_CONFIG.zoom;
+    const defaultCenter = MAP_CONFIG.center;
+    const maxBounds = MAP_CONFIG.maxBounds;
+    const minZoom = MAP_CONFIG.minZoom;
 
     // Create the state for the modal info
     const { setIsStationModalOpen, setActiveStation } = useAppStore();

@@ -1,22 +1,7 @@
 "use client";
 import { ReactElement, useContext, createContext, useMemo, useState, useEffect } from "react";
 import { DataService } from "@/services/DataService";
-
-export type Station = {
-    id: number;
-    name: string;
-    location: {
-        type: string;
-        coordinates: [number, number];
-    };
-    website_url: string;
-    accuweather_location: {
-        current_weather_description: string;
-        weather_condition_icon: {
-            asset: string;
-        };
-    };
-};
+import { Station } from "@/types";
 
 interface CurrentStationContextType {
     stations: Station[];

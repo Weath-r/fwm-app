@@ -56,7 +56,7 @@ const options: Intl.DateTimeFormatOptions = {
     hour12: false,
 };
 
-export const formatDate = (inputDate: Date): string => {
+export const formatDateToUSLocale = (inputDate: Date): string => {
     const date: Date = new Date(inputDate);
     const formattedDate: string = date.toLocaleDateString("en-US", options);
     return formattedDate;

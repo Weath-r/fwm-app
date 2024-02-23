@@ -2,6 +2,22 @@ type WeatherConditionIcon = {
     asset: string;
 };
 
+export type Station = {
+    id: number;
+    name: string;
+    location: {
+        type: string;
+        coordinates: [number, number];
+    };
+    website_url: string;
+    accuweather_location: {
+        current_weather_description: string;
+        weather_condition_icon: {
+            asset: string;
+        };
+    };
+};
+
 type StationPerfecture = {
     id: number;
     label: string;

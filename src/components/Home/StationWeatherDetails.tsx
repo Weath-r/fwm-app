@@ -1,19 +1,5 @@
-import { ExportedWeatherData } from "@/types";
+import { ExportedWeatherData, Measurements, WeatherConditions } from "@/types";
 import SvgInline from "@/components/Common/SvgInline";
-
-enum WeatherConditions {
-    HUMIDITY = "Humidity",
-    BAROMETER = "Barometer",
-    WIND = "Wind",
-    RAIN = "Rain",
-}
-
-enum Measurements {
-    PERCENTAGE = "%",
-    PRESSURE = "hPa",
-    SPEED = "km/h",
-    MILLIMETER = "mm",
-}
 
 export function StationWeatherDetails(elem: Readonly<ExportedWeatherData>) {
     const title = "Details";
