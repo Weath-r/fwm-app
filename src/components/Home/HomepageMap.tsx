@@ -78,8 +78,8 @@ export default function HomepageMap() {
                 position={getReversedCoordinates(station.location.coordinates)}
                 key={station.id}
                 stationId={station.id}
-                weatherDescription={station.accuweather_location.current_weather_description}
-                assetId={station.accuweather_location.weather_condition_icon.asset}
+                weatherDescription={station.currentWeatherDescription}
+                assetId={station.currentWeatherConditionIcon}
                 handleClick={handleModal}
             />
         );

@@ -1,5 +1,4 @@
-import { Station } from "@/providers/StationsProvider";
-import { WeatherDataResponse } from "@/types";
+import { StationResponse, WeatherDataResponse } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance } from "axios";
 
@@ -29,6 +28,7 @@ export class DataService {
                 .get(`${WEATHER_DATA_PATH}`)
                 .then((response) => {
                     // TO-DO check against the type with zod and return error
+                    console.log(response.data.data);
                     resolve(response.data.data);
                 })
                 .catch((error) => {
@@ -37,7 +37,7 @@ export class DataService {
         });
     };
 
-    fetchWeatherStations = (): Promise<Station[]> => {
+    fetchWeatherStations = (): Promise<StationResponse[]> => {
         const STATIONS_FILTER_PREFIX = "items/weather_stations";
         const STATIONS_FILTER =
             "?fields=id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.weather_condition_icon.asset&filter[_and][0][_and][0][status][_eq]=published";
@@ -48,6 +48,7 @@ export class DataService {
                 .get(`${STATIONS_PATH}`)
                 .then((response) => {
                     // TO-DO check against the type with zod and return error
+                    console.log(response.data.data);
                     resolve(response.data.data);
                 })
                 .catch((error) => {

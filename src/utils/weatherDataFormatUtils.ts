@@ -1,4 +1,4 @@
-import { WeatherDataResponse } from "@/types";
+import { StationResponse, WeatherDataResponse } from "@/types";
 
 type literalOptions = {
     [key: string]: string;
@@ -62,9 +62,9 @@ export const formatDateToUSLocale = (inputDate: Date): string => {
     return formattedDate;
 };
 
-export const buildExportedWeatherDataObject = (elem: WeatherDataResponse) => {
+export const buildWeatherData = (elem: WeatherDataResponse) => {
     return {
-        date_created: elem.date_created,
+        dateCreated: elem.date_created,
         temperature: elem.temperature,
         humidity: elem.humidity,
         barometer: elem.barometer,
@@ -80,4 +80,14 @@ export const buildExportedWeatherDataObject = (elem: WeatherDataResponse) => {
 
 export const getReversedCoordinates = (coordinates: [number, number]): [number, number] => {
     return [coordinates[1], coordinates[0]];
+};
+
+export const buildStation = (elem: StationResponse) => {
+    return {
+        id: elem.id,
+        name: elem.name,
+        location: elem.location,
+        currentWeatherDescription: elem.accuweather_location.current_weather_description,
+        currentWeatherConditionIcon: elem.accuweather_location.weather_condition_icon.asset,
+    };
 };

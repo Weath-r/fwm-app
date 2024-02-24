@@ -1,7 +1,7 @@
-import { ExportedWeatherData, Measurements, WeatherConditions } from "@/types";
+import { WeatherData, Measurements, WeatherConditions } from "@/types";
 import SvgInline from "@/components/Common/SvgInline";
 
-export function StationWeatherDetails(elem: Readonly<ExportedWeatherData>) {
+export function StationWeatherDetails(elem: Readonly<WeatherData>) {
     const title = "Details";
     return (
         <div className="my-2">
