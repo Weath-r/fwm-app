@@ -1,9 +1,11 @@
 "use client";
 import { ReactElement, useContext, createContext, useMemo, useState, useEffect } from "react";
 import { DataService } from "@/services/DataService";
+import { Station, StationResponse } from "@/types";
+import { buildStation } from "@/utils/weatherDataFormatUtils";
 
 interface CurrentStationContextType {
-    stations: any[];
+    stations: Station[];
 }
 
 const StationsContext = createContext<CurrentStationContextType>({
@@ -16,13 +18,16 @@ type StationsProviderProps = {
 
 export const StationsProvider = ({ children }: StationsProviderProps) => {
     const dataService = new DataService();
-    const [stations, setStations] = useState([]);
+    const [stations, setStations] = useState<Station[]>([]);
 
     const fetchStationsData = async () => {
         await dataService
             .fetchWeatherStations()
             .then((response) => {
-                setStations(response.data.data);
+                const exportedStations = response.map((elem: StationResponse) => {
+                    return buildStation(elem);
+                });
+                setStations(exportedStations);
             })
             .catch((error) => {
                 // TO-DO handle error properly

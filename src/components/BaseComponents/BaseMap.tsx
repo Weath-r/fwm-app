@@ -1,12 +1,10 @@
 import { MapContainer, TileLayer } from "react-leaflet";
-import { MapLeafletType } from "@/types";
 import configuration from "../../app/appConfig";
+import { MapLeafletType } from "@/types";
 
 export default function BaseMap(props: Readonly<MapLeafletType>) {
     const attribution =
-        process.env.NODE_ENV === "development"
-            ? `| App version: ${configuration.appVersion}`
-            : "";
+        process.env.NODE_ENV === "development" ? `| App version: ${configuration.appVersion}` : "";
     return (
         <MapContainer
             center={props.center}

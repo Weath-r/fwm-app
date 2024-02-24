@@ -1,5 +1,5 @@
 "use client";
-import { assetUrl } from "@/common/assetsHandling";
+import { assetUrl } from "@/helpers/assetsHandling";
 type BaseWeatherIconProps = {
     weatherDescriptionText: string;
     assetId: string;

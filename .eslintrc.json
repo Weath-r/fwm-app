@@ -25,7 +25,8 @@
             "objects": "always-multiline",
             "imports": "never",
             "exports": "never",
-            "functions": "never"
+            "functions": "never",
+            "enums": "always-multiline"
         }],
         "@typescript-eslint/no-explicit-any": "off",
         "object-curly-spacing": ["error", "always"],

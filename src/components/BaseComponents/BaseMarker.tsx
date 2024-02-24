@@ -43,9 +43,9 @@ export default function BaseMarker({
         <DivIconMarker leafletMarker={marker} container={container}>
             <div className="flex flex-col justify-center items-center">
                 <div className="w-[58px]">
-                    <BaseWeatherIcon 
-                        weatherDescriptionText={weatherDescription} 
-                        assetId={assetId} 
+                    <BaseWeatherIcon
+                        weatherDescriptionText={weatherDescription}
+                        assetId={assetId}
                     />
                 </div>
             </div>

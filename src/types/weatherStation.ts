@@ -1,18 +1,28 @@
-import { StationPerfecture } from "./stationPerfecture";
-import { StationAccuweatherLocation } from "./stationAccuweatherLocation";
+type Location = {
+    type: string;
+    coordinates: [number, number];
+};
+type WeatherConditionIcon = {
+    asset: string;
+};
 
-export type WeatherStation = {
-    date_created: Date;
-    date_updated: Date;
-    foreign_id: string;
+type AccuWeatherLocation = {
+    current_weather_description: string;
+    weather_condition_icon: WeatherConditionIcon;
+};
+
+export type StationResponse = {
     id: number;
-    location: object;
     name: string;
-    prefecture_id: StationPerfecture;
-    sort: number | null;
-    station_type: number;
-    status: string;
-    user_updated: string;
+    location: Location;
     website_url: string;
-    accuweather_location: StationAccuweatherLocation;
+    accuweather_location: AccuWeatherLocation;
+};
+
+export type Station = {
+    id: number;
+    name: string;
+    location: Location;
+    currentWeatherDescription: string;
+    currentWeatherConditionIcon: string;
 };
