@@ -1,7 +1,7 @@
 import { ExportedWeatherData } from "@/types";
 import { LinkIcon } from "@heroicons/react/24/solid";
 import BaseWeatherIcon from "../BaseComponents/BaseWeatherIcon";
-import { formatDate, weatherConditionsText } from "@/utils/weatherDataFormatUtils";
+import { formatDate } from "@/utils/weatherDataFormatUtils";
 
 export function StationWeatherSummary(elem: Readonly<ExportedWeatherData>) {
     return (
@@ -29,8 +29,8 @@ export function StationWeatherSummary(elem: Readonly<ExportedWeatherData>) {
                 <h3 className="text-5xl font-bold mx-auto">
                     {elem.temperature}
                     <sup className="font-normal text-lg ml-1">°C</sup>
-                    <small className="block text-base font-normal">
-                        {weatherConditionsText(elem.weatherDescription)}
+                    <small className="block text-base font-normal capitalize">
+                        {elem.weatherDescription}
                     </small>
                 </h3>
             </div>
