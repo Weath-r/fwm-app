@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { DataService } from "@/services/DataService";
-import { ExportedWeatherData, WeatherData } from "@/types";
+import { WeatherData, WeatherDataResponse } from "@/types";
 import LoadingSpinner from "@/components/Common/LoadingSpinner";
 import { useAppStore } from "@/hooks/useAppStore";
-import { buildExportedWeatherDataObject } from "@/utils/weatherDataFormatUtils";
+import { buildWeatherData } from "@/utils/weatherDataFormatUtils";
 import { StationWeatherSummary } from "./StationWeatherSummary";
 import { StationWeatherDetails } from "./StationWeatherDetails";
 
@@ -18,7 +18,7 @@ const loadingBlock = (
 
 export default function StationModalContent() {
     const dataService = new DataService();
-    const [weatherData, setWeatherData] = useState<{ [key: string]: any }>([]);
+    const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { activeStation } = useAppStore();
 
@@ -26,12 +26,10 @@ export default function StationModalContent() {
         await dataService
             .fetchWeatherDataByStation(activeStation)
             .then((response) => {
-                const weather_data: ExportedWeatherData[] = response.data.data.map(
-                    (elem: WeatherData) => {
-                        return buildExportedWeatherDataObject(elem);
-                    }
-                );
-                return setWeatherData(weather_data);
+                const weatherData: WeatherData[] = response.map((elem: WeatherDataResponse) => {
+                    return buildWeatherData(elem);
+                });
+                return setWeatherData(weatherData);
             })
             .catch((error) => {
                 // TO-DO handle error properly
@@ -51,7 +49,7 @@ export default function StationModalContent() {
 
     return (
         <div>
-            {weatherData.map((elem: ExportedWeatherData) => {
+            {weatherData.map((elem: WeatherData) => {
                 return (
                     <div className="p-2 flex text-black flex-col relative" key={elem.station.id}>
                         {isLoading && loadingBlock}
