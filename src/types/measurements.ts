@@ -3,6 +3,8 @@ export enum WeatherConditions {
   BAROMETER = "Barometer",
   WIND = "Wind",
   RAIN = "Rain",
+  TEMP = "Temperature",
+  WINDDIR = "Wind direction",
 }
 
 export enum Measurements {
@@ -10,4 +12,5 @@ export enum Measurements {
   PRESSURE = "hPa",
   SPEED = "km/h",
   MILLIMETER = "mm",
+  CELCIUS = "°C",
 }

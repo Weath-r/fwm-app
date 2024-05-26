@@ -1,21 +1,30 @@
+"use client";
 import Image from "next/image";
 import appLogo from "@/assets/logos/myweathr.png";
 import configuration from "@/app/appConfig";
-
+import HeaderMenu from "./HeaderMenu";
+import MobileHeaderMenu from "./MobileHeaderMenu";
 export default function Header() {
+    
     return (<header className="bg-white border-solid border-b-1 border-gray">
-        <div className="flex h-full items-center container mx-auto">
-            <div className="w-full px-4 m:p-0">
+        <div className="flex h-full container mx-auto">
+            <div className="px-4 my-auto">
                 <Image
                     src={appLogo}
                     className="object-contain h-full w-48 m:w-60"
-                    alt="FWM"
+                    alt="FWM - Your weather application for Central Greece"
                 />
                 <p className="text-primary text-sm mt-2">
                     Weather conditions for Central Greece
                 </p>
             </div>
-            <div className="m:w-full hidden">
+            <div className="justify-between ml-auto my-auto hidden md:flex">
+                <HeaderMenu></HeaderMenu>
+            </div>
+            <div className="md:hidden z-[401] flex flex-col w-2/3 mt-10 items-center">
+                <MobileHeaderMenu></MobileHeaderMenu>
+            </div>
+            <div className="m:w-full">
                 <form style={{ display: (configuration.searchBarToggle ? "block" : "none") }}>   
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only">
                         Search
