@@ -1,9 +1,9 @@
-import { ExportedWeatherData } from "@/types";
+import { WeatherData } from "@/types";
+import { formatDateToUSLocale } from "@/utils/weatherDataFormatUtils";
 import { LinkIcon } from "@heroicons/react/24/solid";
 import BaseWeatherIcon from "../BaseComponents/BaseWeatherIcon";
-import { formatDate } from "@/utils/weatherDataFormatUtils";
 
-export function StationWeatherSummary(elem: Readonly<ExportedWeatherData>) {
+export function StationWeatherSummary(elem: Readonly<WeatherData>) {
     return (
         <>
             <a
@@ -18,7 +18,7 @@ export function StationWeatherSummary(elem: Readonly<ExportedWeatherData>) {
                 {elem.station.name}
                 <span className="text-base font-medium">, {elem.station.prefecture_id.label}</span>
             </h2>
-            <p className="text-sm opacity-60">{formatDate(elem.date_created)}</p>
+            <p className="text-sm opacity-60">{formatDateToUSLocale(elem.dateCreated)}</p>
             <div className="mt-6 flex items-center">
                 <div className="h-24 mx-auto">
                     <BaseWeatherIcon
