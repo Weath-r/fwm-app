@@ -15,6 +15,19 @@ export const formatDateToUSLocale = (inputDate: Date): string => {
     return formattedDate;
 };
 
+export const formatDateToNumeric = (inputDate: Date): string => {
+    const date: Date = new Date(inputDate);
+    const options: Intl.DateTimeFormatOptions = {
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: false,
+    };
+    const formattedDate: string = date.toLocaleDateString("el", options);
+    return formattedDate.replace(",", " @ ");
+};
+
 export const buildWeatherData = (elem: WeatherDataResponse) => {
     return {
         dateCreated: elem.date_created,

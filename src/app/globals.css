@@ -20,7 +20,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: #fff;
+  background: #f7f7f7;
   font-family: 'Commissioner', sans-serif;
 }
 

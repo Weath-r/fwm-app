@@ -6,6 +6,7 @@ type CommonWeatherData = {
     rainrate: number;
     windspd: number;
     winddir: number;
+    temp_difference?: number;
 };
 
 type WeatherStation = {
