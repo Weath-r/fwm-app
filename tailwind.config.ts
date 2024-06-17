@@ -16,6 +16,9 @@ const config: Config = {
             danger: "#BE3144",
             success: "#00c9b0",
             info: "#61B4BD",
+            warning_yellow: "rgb(255, 218, 34)",
+            warning_orange: "rgb(255, 147, 0)",
+            warning_red: "rgb(255, 0, 0)",
         },
         extend: {
             backgroundImage: {

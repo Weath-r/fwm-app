@@ -9,10 +9,17 @@ const HomepageMap = dynamic(
         ssr: false,
     }
 );
+const WarningsPanel = dynamic(
+    () => import("@/components/Warnings/WarningsPanel"),
+    {
+        ssr: false,
+    }
+);
 export default function Home() {
     return (
         <StationsProvider>
             <main className="flex flex-col flex-1 relative">
+                <WarningsPanel></WarningsPanel>
                 <HomepageMap></HomepageMap>
             </main>
         </StationsProvider>
