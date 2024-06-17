@@ -1,4 +1,4 @@
-import { StationResponse, WeatherDataResponse } from "@/types";
+import { StationResponse, WeatherDataResponse, WeatherWarnings } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance } from "axios";
 
@@ -84,6 +84,25 @@ export class DataService {
                         return a.weather_station_id.name.localeCompare(b.weather_station_id.name);
                     });
                     resolve(result);
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchWeatherWarningsByCreatedDate = (date:string): Promise<WeatherWarnings[]> => {
+        const WARNINGS_PREFIX = "items/weather_warnings";
+        const WARNING_FILTER =
+            `?fields=id,date_created,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,level_id.id,level_id.label,level_id.color,hazard_id.label,hazard_id.asset&filter[_and][0][date_created][_gt]=${date}`;
+        const WARNINGS_PATH = `${WARNINGS_PREFIX}${WARNING_FILTER}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${WARNINGS_PATH}`)
+                .then((response) => {
+                    // TO-DO check against the type with zod and return error
+                    resolve(response.data.data);
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));
