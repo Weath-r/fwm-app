@@ -4,7 +4,7 @@ type CommonButtonProps = {
     className?: string;
     rounded?: boolean;
     color: string;
-    handleClick: () => void;
+    handleClick?: () => void;
     children: ReactElement;
 };
 

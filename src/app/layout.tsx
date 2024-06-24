@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Commissioner } from "next/font/google";
+import { ClientProvider } from "@/providers/clientProvider";
 import Header from "@/components/Header/Header";
 
 const fontFamily = Commissioner({
@@ -25,8 +26,10 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
             <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
             <link rel="manifest" href="/site.webmanifest" />
             <body className={fontFamily.className}>
-                <Header></Header>
-                {children}
+                <ClientProvider>
+                    <Header></Header>
+                    {children}
+                </ClientProvider>
             </body>
         </html>
     );

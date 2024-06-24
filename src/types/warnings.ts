@@ -3,13 +3,14 @@ type WarningLocation = {
     value: string;
 };
 
-type WarningLevel = {
+export type WarningLevel = {
     id: number;
     label: string;
     color: string;
 };
 
-type WarningHazard = {
+export type WarningHazard = {
+    id: number;
     label: string;
     asset: string;
 };
@@ -17,6 +18,7 @@ type WarningHazard = {
 export type WeatherWarnings = {
     id: number;
     date_created: Date;
+    meteoalarm_warning_id: string;
     start_date: Date;
     end_date: Date;
     description_en: string;

@@ -1,70 +1,113 @@
 import { useStationsProvider } from "@/providers/StationsProvider";
-import { formatDateToNumeric } from "@/utils/weatherDataFormatUtils";
-import CollapsedCard from "../Common/CollapsedCard";
-import SvgInline from "../Common/SvgInline";
+import { timeFromNowUtil, timeOnlyUtil, dayWithNameUtil } from "@/utils/dateTimeUtils";
 import { assetUrl } from "@/helpers/assetsHandling";
+import { useGeneralStore } from "@/stores/settingsStore";
+import SvgInline from "@/components/Common/SvgInline";
+import BaseControlledModal from "@/components/BaseComponents/BaseControlledModal";
+import WarningHazardsLegend from "./components/WarningHazardsLegend";
+import WarningLevelsLegend from "./components/WarningLevelsLegend";
 
 export default function WarningsPanel() {
+    const { hazards, warningLevels } = useGeneralStore();
     const { warnings } = useStationsProvider();
-
-    const panels = warnings.map((warning) => {
-        const startingDate = formatDateToNumeric(warning.start_date);
-        const endingDate = formatDateToNumeric(warning.end_date);
-        const imagePath = assetUrl(warning.hazard_id.asset);
-        const theme = warning.level_id.id > 1 
-            ? {
-                collapseCard: "dark",
-                textColor: "text-white",
-                svgFillColor: "fill-white",
-            } : {
-                collapseCard: "light",
-                textColor: "text-primary",
-                svgFillColor: "fill-primary",
-            };
-
+    const today = dayWithNameUtil(new Date());
+    
+    const panelContent = warnings.map(elem => {
         return (
-            <CollapsedCard
-                key={warning.id}
-                theme={theme.collapseCard}
-                title={
-                    <div className="flex items-center justify-between gap-2 w-full">
-                        <p className={`font-bold text-left ${theme.textColor}`}>
-                            {warning.warning_location_id.label}
-                            <span className="block font-medium">
-                                {warning.level_id.label} warning
-                            </span>
-                        </p>
-                        <div className="mr-1 w-8 h-8">
-                            <SvgInline 
-                                path={imagePath} 
-                                title={warning.hazard_id.label} 
-                                className={theme.svgFillColor}
-                            ></SvgInline>
-                        </div>
-                    </div>
-                }
-                style={{
-                    "backgroundColor": warning.level_id.color,
-                }}
-                class="w-full lg:w-80 mb-1 shadow-lg p-[5px] pt-0"
+            <div 
+                className="flex flex-col"
+                key={elem.location}
             >
-                <div className="rounded-lg px-2 py-3 bg-white text-primary">
-                    <p 
-                        className="text-sm"
-                    >
-                        {warning.description_en}
-                    </p>
-                    <p className="text-xs mt-3 pt-1 opacity-60 border-t border-secondary">
-                        {startingDate} - {endingDate}
-                    </p>
-                </div>
-            </CollapsedCard>
+                <h3 className="text-primary text-lg my-4">
+                    {elem.location}
+                </h3>
+                {elem.warnings.map(warning => {
+                    const startingDate = timeOnlyUtil(warning.start_date);
+                    const endingDate = timeOnlyUtil(warning.end_date);
+                    const createdDate = timeFromNowUtil(warning.date_created);
+                    const imagePath = assetUrl(warning.hazard_id.asset);
+                    const theme = warning.level_id.id > 1 
+                        ? {
+                            collapseCard: "dark",
+                            textColor: "text-white",
+                            svgFillColor: "fill-white",
+                        } : {
+                            collapseCard: "light",
+                            textColor: "text-primary",
+                            svgFillColor: "fill-primary",
+                        };
+                    return (
+                        <div 
+                            className="rounded-r-lg bg-white text-primary p-4 my-1 border-l-4"
+                            key={warning.id}
+                            style={{
+                                "borderColor": warning.level_id.color,
+                            }}
+                        >
+                            <div className="flex items-center">
+                                <div 
+                                    className="mr-2 w-9 h-9 my-2 rounded-lg p-2"
+                                    style={{
+                                        "backgroundColor": warning.level_id.color,
+                                    }}
+                                >
+                                    <SvgInline 
+                                        path={imagePath} 
+                                        title={warning.hazard_id.label} 
+                                        className={theme.svgFillColor}
+                                    ></SvgInline>
+                                </div>
+                                <p className="text-primary opacity-60 text-sm ml-2">
+                                    {createdDate}
+                                </p>
+                                <div className="ml-auto">
+                                    <p className="text-xs text-primary opacity-60">
+                                        {warning.meteoalarm_warning_id ? "EMY" : "System"}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col mt-2">
+                                <p className="text-sm">
+                                    {warning.description_en}
+                                </p>
+                                <p className="text-xs pt-2 mt-3 opacity-60 border-t border-secondary">
+                                    Valid for {startingDate} - {endingDate}
+                                </p>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         );
     });
 
-    return (
-        <section className="absolute top-1 right-1 flex flex-col z-[410] w-full lg:w-auto">
-            {panels}
+    const panelLayout = (
+        <section className="flex flex-col bg-white/90 lg:bg-white/70 overflow-hidden w-full h-full lg:w-1/5 lg:absolute lg:top-0 lg:right-0 lg:z-[410]">
+            <div className="flex flex-col p-3 h-full">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-primary font-bold text-lg">
+                        Active warnings
+                        <small className="block opacity-60 text-xs">
+                            {today}
+                        </small>
+                    </h2>
+                    <BaseControlledModal
+                        trigger={
+                            <SvgInline path="icons/circle-info.svg" className="fill-primary w-3 h-3"></SvgInline>
+                        }
+                    >
+                        <section>
+                            <WarningHazardsLegend hazards={hazards}></WarningHazardsLegend>
+                            <WarningLevelsLegend levels={warningLevels}></WarningLevelsLegend>
+                        </section>
+                    </BaseControlledModal>
+                </div>
+                <div className="overflow-y-auto flex-1 pb-4">
+                    {panelContent}
+                </div>
+            </div>
         </section>
     );
+
+    return warnings.length > 0 && panelLayout;
 }
