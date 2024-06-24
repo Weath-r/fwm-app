@@ -4,8 +4,8 @@ import appLogo from "@/assets/logos/myweathr.png";
 import configuration from "@/app/appConfig";
 import HeaderMenu from "./HeaderMenu";
 import MobileHeaderMenu from "./MobileHeaderMenu";
+
 export default function Header() {
-    
     return (<header className="bg-white border-solid border-b-1 border-gray">
         <div className="flex h-full container mx-auto">
             <div className="px-4 my-auto">
@@ -21,7 +21,7 @@ export default function Header() {
             <div className="justify-between ml-auto my-auto hidden md:flex">
                 <HeaderMenu></HeaderMenu>
             </div>
-            <div className="md:hidden z-[401] flex flex-col w-2/3 mt-10 items-center">
+            <div className="md:hidden z-[500] flex flex-col w-2/3 mt-10 items-center">
                 <MobileHeaderMenu></MobileHeaderMenu>
             </div>
             <div className="m:w-full">

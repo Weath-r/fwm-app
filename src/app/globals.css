@@ -41,3 +41,6 @@ header {
     position: absolute;
     z-index: 402;
 }
+.leaflet-control-attribution {
+    display: none;
+}

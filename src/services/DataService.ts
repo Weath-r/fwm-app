@@ -1,4 +1,10 @@
-import { StationResponse, WeatherDataResponse, WeatherWarnings } from "@/types";
+import { 
+    StationResponse,
+    WeatherDataResponse,
+    WeatherWarnings,
+    WarningHazard,
+    WarningLevel
+} from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance } from "axios";
 
@@ -94,12 +100,48 @@ export class DataService {
     fetchWeatherWarningsByCreatedDate = (date:string): Promise<WeatherWarnings[]> => {
         const WARNINGS_PREFIX = "items/weather_warnings";
         const WARNING_FILTER =
-            `?fields=id,date_created,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,level_id.id,level_id.label,level_id.color,hazard_id.label,hazard_id.asset&filter[_and][0][date_created][_gt]=${date}`;
+            `?fields=id,date_created,meteoalarm_warning_id,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,level_id.id,level_id.label,level_id.color,hazard_id.label,hazard_id.asset&filter[_and][0][_and][0][date_created][_gt]=${date}&filter[_and][0][_and][1][end_date][_gt]=$NOW`;
         const WARNINGS_PATH = `${WARNINGS_PREFIX}${WARNING_FILTER}`;
 
         return new Promise<any>((resolve, reject) => {
             return this.client
                 .get(`${WARNINGS_PATH}`)
+                .then((response) => {
+                    // TO-DO check against the type with zod and return error
+                    resolve(response.data.data);
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchWeatherHazards = (): Promise<WarningHazard[]> => {
+        const HAZARD_TYPES_PREFIX = "items/hazard_types";
+        const HAZARD_FILTER = "?fields=id,label,asset";
+        const HAZARD_PATH = `${HAZARD_TYPES_PREFIX}${HAZARD_FILTER}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${HAZARD_PATH}`)
+                .then((response) => {
+                    // TO-DO check against the type with zod and return error
+                    resolve(response.data.data);
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchWarningLevels = (): Promise<WarningLevel[]> => {
+        const WARNING_LEVELS_PREFIX = "items/warning_levels";
+        const WARNING_LEVELS_FILTER = "?fields=id,label,color";
+        const WARNING_LEVELS_PATH = `${WARNING_LEVELS_PREFIX}${WARNING_LEVELS_FILTER}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${WARNING_LEVELS_PATH}`)
                 .then((response) => {
                     // TO-DO check against the type with zod and return error
                     resolve(response.data.data);
