@@ -15,11 +15,23 @@ const WarningsPanel = dynamic(
         ssr: false,
     }
 );
+const MobileWarnings = dynamic(
+    () => import("@/components/Warnings/MobileWarnings"),
+    {
+        ssr: false,
+    }
+);
+
 export default function Home() {
     return (
         <StationsProvider>
             <main className="flex flex-col flex-1 relative">
-                <WarningsPanel></WarningsPanel>
+                <aside className="hidden lg:inline-block">
+                    <WarningsPanel></WarningsPanel>
+                </aside>
+                <aside className="absolute z-[402] top-0 right-0 w-full lg:hidden">
+                    <MobileWarnings></MobileWarnings>
+                </aside>
                 <HomepageMap></HomepageMap>
             </main>
         </StationsProvider>
