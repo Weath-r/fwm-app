@@ -8,6 +8,7 @@ import { useAppStore } from "@/hooks/useAppStore";
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
 import MapControls from "@/components/MapControls/MapControls";
+import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
 import { MAP_CONFIG } from "@/types";
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
@@ -58,9 +59,8 @@ const createClusterCustomIcon = function (cluster: MarkerCluster) {
 };
 
 export default function HomepageMap() {
-    // Create the state for the modal info
     const { setIsStationModalOpen, setActiveStation } = useAppStore();
-    const { stations } = useStationsProvider();
+    const { stations, warnings, shouldRenderWarnings } = useStationsProvider();
 
     const handleModal = (value: boolean, stationId: number) => {
         setIsStationModalOpen(value);
@@ -101,6 +101,10 @@ export default function HomepageMap() {
             >
                 {markers}
             </MarkerClusterGroup>
+            <MapWarningsGeojsonGroup
+                groupedWarnings={warnings}
+                shouldRender={shouldRenderWarnings}
+            ></MapWarningsGeojsonGroup>
             <div className="absolute bottom-2 left-2 z-[401]">
                 <MapControls />
             </div>
