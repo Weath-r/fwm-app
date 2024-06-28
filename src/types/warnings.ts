@@ -1,8 +1,8 @@
 type WarningLocation = {
     label: string;
     value: string;
-    geojson: string;
-    order: number;
+    geojson?: string;
+    order?: number;
 };
 
 export type WarningLevel = {
@@ -41,4 +41,9 @@ export type GroupedWarnings = {
     geojson: string;
     warningLevel: WarningLevel;
     order: number;
+};
+
+export type WarningsWithPages = {
+    warnings: WeatherWarnings[];
+    totalPages: number;
 };

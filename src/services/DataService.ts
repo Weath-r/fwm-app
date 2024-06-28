@@ -3,7 +3,8 @@ import {
     WeatherDataResponse,
     WeatherWarnings,
     WarningHazard,
-    WarningLevel
+    WarningLevel,
+    WarningsWithPages
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance } from "axios";
@@ -145,6 +146,31 @@ export class DataService {
                 .then((response) => {
                     // TO-DO check against the type with zod and return error
                     resolve(response.data.data);
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchAllWeatherWarnings = (page:number): Promise<WarningsWithPages> => {
+        const limitPerPage = 50;
+        const WARNINGS_PREFIX = "items/weather_warnings";
+        const WARNING_FILTER =
+            `?fields=id,date_created,meteoalarm_warning_id,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,level_id.id,level_id.label,level_id.color,hazard_id.label,hazard_id.asset&sort=-date_created&limit=${limitPerPage}&page=${page}`;
+        const WARNINGS_PATH = `${WARNINGS_PREFIX}${WARNING_FILTER}`;
+        const COUNT_PATH = "items/weather_warnings?aggregate[countDistinct]=id";
+
+        return new Promise<any>((resolve, reject) => {
+            const warningsPromise = this.client.get(WARNINGS_PATH);
+            const countPromise = this.client.get(COUNT_PATH);
+            Promise.all([warningsPromise, countPromise])
+                .then(([warningsResponse, countResponse]) => {
+                    const totalPages = Math.ceil(+countResponse.data.data[0].countDistinct.id / limitPerPage);
+                    resolve({
+                        warnings: warningsResponse.data.data,
+                        totalPages,
+                    });
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));

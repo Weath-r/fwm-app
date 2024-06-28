@@ -10,6 +10,9 @@ const menu: LinkConfig[] = [
     },{
         pathName: "/stations",
         text: "Stations",
+    },{
+        pathName: "/warnings",
+        text: "Warnings",
     }
 ];
 

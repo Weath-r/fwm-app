@@ -1,33 +1,5 @@
 import { StationResponse, WeatherDataResponse } from "@/types";
 
-const options: Intl.DateTimeFormatOptions = {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: false,
-};
-
-export const formatDateToUSLocale = (inputDate: Date): string => {
-    const date: Date = new Date(inputDate);
-    const formattedDate: string = date.toLocaleDateString("en-US", options);
-    return formattedDate;
-};
-
-export const formatDateToNumeric = (inputDate: Date): string => {
-    const date: Date = new Date(inputDate);
-    const options: Intl.DateTimeFormatOptions = {
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: false,
-    };
-    const formattedDate: string = date.toLocaleDateString("el", options);
-    return formattedDate.replace(",", " @ ");
-};
-
 export const buildWeatherData = (elem: WeatherDataResponse) => {
     return {
         dateCreated: elem.date_created,
