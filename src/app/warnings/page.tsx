@@ -2,17 +2,17 @@
 import "leaflet/dist/leaflet.css";
 import dynamic from "next/dynamic";
 
-const StationsPage = dynamic(
-    () => import("@/components/Stations/StationsPage"),
+const WarningsPage = dynamic(
+    () => import("@/components/Warnings/WarningsPage"),
     {
         ssr: false,
     }
 );
 
-export default function Stations() {
+export default function Warnings() {
     return (
         <main className="flex flex-col flex-1 relative">
-            <StationsPage></StationsPage>
+            <WarningsPage></WarningsPage>
         </main>
     );
 }

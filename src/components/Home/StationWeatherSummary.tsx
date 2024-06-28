@@ -1,5 +1,5 @@
 import { WeatherData } from "@/types";
-import { formatDateToUSLocale } from "@/utils/weatherDataFormatUtils";
+import { dateWithNameTime } from "@/utils/dateTimeUtils";
 import { LinkIcon } from "@heroicons/react/24/solid";
 import BaseWeatherIcon from "../BaseComponents/BaseWeatherIcon";
 
@@ -18,7 +18,7 @@ export function StationWeatherSummary(elem: Readonly<WeatherData>) {
                 {elem.station.name}
                 <span className="text-base font-medium">, {elem.station.prefecture_id.label}</span>
             </h2>
-            <p className="text-sm opacity-60">{formatDateToUSLocale(elem.dateCreated)}</p>
+            <p className="text-sm opacity-60">{dateWithNameTime(elem.dateCreated)}</p>
             <div className="mt-6 flex items-center">
                 <div className="h-24 mx-auto">
                     <BaseWeatherIcon
