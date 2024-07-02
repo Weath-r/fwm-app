@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useStationsProvider } from "@/providers/StationsProvider";
+import { useStationsProvider, useWarningsProvider } from "@/providers/StationsProvider";
 import L, { MarkerCluster } from "leaflet";
 
 import { assetUrl } from "@/helpers/assetsHandling";
@@ -60,7 +60,8 @@ const createClusterCustomIcon = function (cluster: MarkerCluster) {
 
 export default function HomepageMap() {
     const { setIsStationModalOpen, setActiveStation } = useAppStore();
-    const { stations, warnings, shouldRenderWarnings } = useStationsProvider();
+    const { stations } = useStationsProvider();
+    const { warnings, shouldRenderWarnings } = useWarningsProvider();
 
     const handleModal = (value: boolean, stationId: number) => {
         setIsStationModalOpen(value);

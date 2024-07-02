@@ -1,15 +1,17 @@
-import { useStationsProvider } from "@/providers/StationsProvider";
+import { useWarningsProvider } from "@/providers/StationsProvider";
 import { timeFromNowUtil, timeOnlyUtil, dayWithNameUtil } from "@/utils/dateTimeUtils";
-import { assetUrl } from "@/helpers/assetsHandling";
 import { useGeneralStore } from "@/stores/settingsStore";
 import SvgInline from "@/components/Common/SvgInline";
 import BaseControlledModal from "@/components/BaseComponents/BaseControlledModal";
 import WarningHazardsLegend from "./components/WarningHazardsLegend";
 import WarningLevelsLegend from "./components/WarningLevelsLegend";
+import HazardIcon from "./components/HazardIcon";
+
+import { printIssuedByUser } from "./utils/warningsHelpers";
 
 export default function WarningsPanel() {
     const { hazards, warningLevels } = useGeneralStore();
-    const { warnings } = useStationsProvider();
+    const { warnings } = useWarningsProvider();
     const today = dayWithNameUtil(new Date());
     
     const panelContent = warnings.map(elem => {
@@ -25,7 +27,6 @@ export default function WarningsPanel() {
                     const startingDate = timeOnlyUtil(warning.start_date);
                     const endingDate = timeOnlyUtil(warning.end_date);
                     const createdDate = timeFromNowUtil(warning.date_created);
-                    const imagePath = assetUrl(warning.hazard_id.asset);
                     const theme = warning.level_id.id > 1 
                         ? {
                             collapseCard: "dark",
@@ -51,18 +52,18 @@ export default function WarningsPanel() {
                                         "backgroundColor": warning.level_id.color,
                                     }}
                                 >
-                                    <SvgInline 
-                                        path={imagePath} 
-                                        title={warning.hazard_id.label} 
+                                    <HazardIcon
+                                        asset={warning.hazard_id.asset}
+                                        label={warning.hazard_id.label}
                                         className={theme.svgFillColor}
-                                    ></SvgInline>
+                                    ></HazardIcon>
                                 </div>
                                 <p className="text-primary opacity-60 text-sm ml-2">
                                     {createdDate}
                                 </p>
                                 <div className="ml-auto">
                                     <p className="text-xs text-primary opacity-60">
-                                        {warning.meteoalarm_warning_id ? "EMY" : "System"}
+                                        {printIssuedByUser(warning.meteoalarm_warning_id)}
                                     </p>
                                 </div>
                             </div>

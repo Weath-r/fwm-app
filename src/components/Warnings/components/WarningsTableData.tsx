@@ -7,111 +7,86 @@ import {
     SortingFn,
     SortingState
 } from "@tanstack/react-table";
-import { WeatherDataResponse, Measurements, WeatherConditions } from "@/types";
-import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
+import { WeatherWarnings } from "@/types";
+import HazardIcon from "./HazardIcon";
 import SvgInline from "@/components/Common/SvgInline";
 
 import { useState } from "react";
-import { fullDateWithTime } from "@/utils/dateTimeUtils";
+import { timeOnlyUtil, fullDateNoTime } from "@/utils/dateTimeUtils";
+import { printIssuedByUser } from "../utils/warningsHelpers";
 
 type TableDataProps = {
-    data: WeatherDataResponse[]
+    data: WeatherWarnings[]
 };
 
 // Sorting Fns
-const sortStatusFn: SortingFn<WeatherDataResponse> = (rowA, rowB) => {
-    return rowA.original.weather_station_id.name.localeCompare(rowB.original.weather_station_id.name);
-};
-const sortTemperatureFn: SortingFn<WeatherDataResponse> = (rowA, rowB) => {
-    return rowA.original.temperature - rowB.original.temperature; 
+const sortHazardFn: SortingFn<WeatherWarnings> = (rowA, rowB) => {
+    return rowA.original.hazard_id.asset.localeCompare(rowB.original.hazard_id.asset);
 };
 
 // Columns initialisation
-const columnHelper = createColumnHelper<WeatherDataResponse>();
+const columnHelper = createColumnHelper<WeatherWarnings>();
 const columns = [
-    columnHelper.accessor(row => `${row.weather_station_id.name}--${row.weather_station_id.prefecture_id.label}`, {
-        id: "stationName",
-        cell: info => {
-            const label = info.getValue().split("--");
-            return (
-                <p className="pr-6 font-bold text-primary whitespace-nowrap">{label[0]} <span className="block text-primary opacity-30 font-normal">{label[1]}</span></p>
-            );
-        },
-        header: () => <span>Station name</span>,
-        sortingFn: sortStatusFn,
-    }),
-    columnHelper.accessor(row => row.weather_condition_icon, {
-        id: "stationWeatherIcon",
-        cell: info => {
-            return (
-                <div className="w-10">
-                    <BaseWeatherIcon assetId={info.getValue()} weatherDescriptionText="icon" ></BaseWeatherIcon>
-                </div>
-            );
-        },
-        header: () => <span>Current conditions</span>,
-    }),
-    columnHelper.accessor(row => `${row.temperature}--${row.temp_difference}`, {
-        id: "stationTemp",
-        cell: info => {
-            const tempLabel = info.getValue().split("--");
-            const trendArrowStyle = +tempLabel[1] > 0 ? "fill-success" : "fill-danger";
-            const trendArrowIcon = +tempLabel[1] > 0 ? "icons/arrow-up.svg" : "icons/arrow-down.svg";
-            const trendArrow = +tempLabel[1] !== 0 && <SvgInline 
-                path={trendArrowIcon}
-                title={`${tempLabel[1]}${Measurements.CELCIUS} in last 30 mins`}
-                className={`w-2 ${trendArrowStyle}`}
-            ></SvgInline>;
-            return (
-                <p className="flex items-center gap-1">
-                    {tempLabel[0]}
-                    {trendArrow}
-                </p>
-            );
-        },
-        header: () => <p>{WeatherConditions.TEMP}<span className="text-xs ml-1">({Measurements.CELCIUS})</span></p>,
-        sortingFn: sortTemperatureFn,
-    }),
-    columnHelper.accessor(row => row.humidity, {
-        id: "stationHum",
-        cell: info => <span>{info.getValue()}</span>,
-        header: () => <p>{WeatherConditions.HUMIDITY}<span className="text-xs ml-1">({Measurements.PERCENTAGE})</span></p>,
-    }),
-    columnHelper.accessor(row => row.percipitation, {
-        id: "stationPerc",
-        cell: info => <span>{info.getValue()}</span>,
-        header: () => <p>{WeatherConditions.RAIN}<span className="text-xs ml-1">({Measurements.MILLIMETER})</span></p>,
-    }),
-    columnHelper.accessor(row => row.windspd, {
-        id: "stationWindSpd",
-        cell: info => <span>{info.getValue()}</span>,
-        header: () => <p>{WeatherConditions.WIND}<span className="text-xs ml-1">({Measurements.SPEED})</span></p>,
-    }),
-    columnHelper.accessor(row => row.winddir, {
-        id: "stationWindDir",
-        cell: info => {
-            const windspd = info.getValue();
-            return (
-                <div className="h-4 w-6">
-                    <SvgInline
-                        path="weather_icons/wind.svg"
-                        title="Wind icon"
-                        className="fill-primary"
-                        style={{
-                            transform: `rotate(${windspd}deg)`,
-                        }}
-                    />
-                </div>
-            );
-        },
-        header: () => <p>{WeatherConditions.WINDDIR}</p>,
-    }),
     columnHelper.accessor(row => row.date_created, {
-        id: "stationUpdate",
+        id: "dateCreated",
         cell: info => {
-            return <span>{fullDateWithTime(info.getValue())}</span>;
+            return <p>{fullDateNoTime(info.getValue())} <span className="block opacity-60">{timeOnlyUtil(info.getValue())}</span></p>;
         },
-        header: () => <p>Last update</p>,
+        header: () => <p>Date created</p>,
+    }),
+    columnHelper.accessor(row => row.warning_location_id.label, {
+        id: "location",
+        cell: info => <span>{info.getValue()}</span>,
+        header: () => <span>Location</span>,
+    }),
+    columnHelper.accessor(row => row.level_id, {
+        id: "warningLevel",
+        cell: info => <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-lg" style={{ backgroundColor: info.getValue().color }}></div>
+            <p>
+                {info.getValue().label}
+            </p>
+        </div>,
+        header: () => <span>Level</span>,
+    }),
+    columnHelper.accessor(row => row.hazard_id, {
+        id: "hazard",
+        cell: info => {
+            const { label, asset } = info.getValue();
+            return <HazardIcon label={label} asset={asset} className="w-6 h-6 fill-primary"></HazardIcon>;
+        },
+        header: () => <span>Hazard</span>,
+        sortingFn: sortHazardFn,
+    }),
+    columnHelper.accessor(row => row.description_en, {
+        id: "warningDescription",
+        cell: info => <span>{info.getValue()}</span>,
+        header: () => <span>Description</span>,
+        enableSorting: false,
+    }),
+    columnHelper.accessor(row => row.start_date, {
+        id: "warningStart",
+        cell: info => {
+            return <p>{fullDateNoTime(info.getValue())} <span className="block opacity-60">{timeOnlyUtil(info.getValue())}</span></p>;
+        },
+        header: () => <p>Starting time</p>,
+        enableSorting: false,
+    }),
+    columnHelper.accessor(row => row.end_date, {
+        id: "warningEnd",
+        cell: info => {
+            return <p>{fullDateNoTime(info.getValue())} <span className="block opacity-60">{timeOnlyUtil(info.getValue())}</span></p>;
+        },
+        header: () => <p>Ending time</p>,
+        enableSorting: false,
+    }),
+    columnHelper.accessor(row => row.meteoalarm_warning_id, {
+        id: "userCreated",
+        cell: info => {
+            const warningId = info.getValue();
+            return <span>{printIssuedByUser(warningId)}</span>;
+        },
+        header: () => <span>Issued by</span>,
         enableSorting: false,
     })
 ];

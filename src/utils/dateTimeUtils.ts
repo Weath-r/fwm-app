@@ -15,3 +15,15 @@ export const timeOnlyUtil = (inputDate: Date): string => {
 export const dayWithNameUtil = (inputDate: Date): string => {
     return dayjs(inputDate).format("dddd, DD MMM");
 };
+
+export const fullDateWithTime = (inputDate: Date): string => {
+    return dayjs(inputDate).format("DD/MM/YYYY, HH:mm");
+};
+
+export const fullDateNoTime = (inputDate: Date): string => {
+    return dayjs(inputDate).format("DD/MM/YYYY");
+};
+
+export const dateWithNameTime = (inputDate: Date): string => {
+    return dayjs(inputDate).format("ddd, MMM DD, HH:mm");
+};

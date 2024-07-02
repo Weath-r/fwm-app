@@ -16,7 +16,6 @@ export default function MapWarningsGeojsonGroup(props: GeoJsonGroupTypes) {
     useEffect(() => {
         const newPanes: string[] = [];
         const sortedWarnings = [...props.groupedWarnings].sort((a, b) => a.order - b.order);
-        console.log(sortedWarnings);
         sortedWarnings.forEach((group, index) => {
             const PANE = `warningGroup_${index}`;
             map.createPane(PANE);

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import menu from "@/helpers/menuLinks";
+import { useConfigurationStore } from "@/stores/configurationStore";
 
 export default function HeaderMenu() {
     const pathname = usePathname();
+    const { menu } = useConfigurationStore();
     
     return (<section>
         {menu.map(element => 

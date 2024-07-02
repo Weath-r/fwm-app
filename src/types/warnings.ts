@@ -42,3 +42,8 @@ export type GroupedWarnings = {
     warningLevel: WarningLevel;
     order: number;
 };
+
+export type WarningsWithPages = {
+    warnings: WeatherWarnings[];
+    totalPages: number;
+};
