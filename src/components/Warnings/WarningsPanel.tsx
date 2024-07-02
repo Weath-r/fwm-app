@@ -1,4 +1,4 @@
-import { useStationsProvider } from "@/providers/StationsProvider";
+import { useWarningsProvider } from "@/providers/StationsProvider";
 import { timeFromNowUtil, timeOnlyUtil, dayWithNameUtil } from "@/utils/dateTimeUtils";
 import { useGeneralStore } from "@/stores/settingsStore";
 import SvgInline from "@/components/Common/SvgInline";
@@ -11,7 +11,7 @@ import { printIssuedByUser } from "./utils/warningsHelpers";
 
 export default function WarningsPanel() {
     const { hazards, warningLevels } = useGeneralStore();
-    const { warnings } = useStationsProvider();
+    const { warnings } = useWarningsProvider();
     const today = dayWithNameUtil(new Date());
     
     const panelContent = warnings.map(elem => {

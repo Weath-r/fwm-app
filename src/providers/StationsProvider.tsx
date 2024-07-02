@@ -10,15 +10,22 @@ import {
 import { DataService } from "@/services/DataService";
 import { Station, StationResponse, GroupedWarnings } from "@/types";
 import { buildStation } from "@/utils/weatherDataFormatUtils";
+import { useConfigurationStore } from "@/stores/configurationStore";
 
 interface CurrentStationContextType {
     stations: Station[];
+}
+
+interface WarningsContextType {
     warnings: GroupedWarnings[];
     shouldRenderWarnings: boolean;
 }
 
 const StationsContext = createContext<CurrentStationContextType>({
     stations: [],
+});
+
+const WarningsContext = createContext<WarningsContextType>({
     warnings: [],
     shouldRenderWarnings: false,
 });
@@ -38,6 +45,8 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
     const [stations, setStations] = useState<Station[]>([]);
     const [warnings, setWarnings] = useState<GroupedWarnings[]>([]);
     const [shouldRenderWarnings, setShouldRenderWarnings] = useState<boolean>(false);
+    const { featureFlags } = useConfigurationStore();
+    const areWarningsEnabled = featureFlags.warnings?.showWarningsPanel;
 
     const fetchStationsData = async () => {
         await dataService
@@ -101,21 +110,40 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
 
     useEffect(() => {
         fetchStationsData();
-        fetchWarnings();
     }, []);
 
-    const value = useMemo(
+    useEffect(() => {
+        areWarningsEnabled && fetchWarnings();
+    }, [areWarningsEnabled]);
+
+    const stationValue = useMemo(
         () => ({
             stations,
+        }),
+        [stations]
+    );
+
+    const warningsValue = useMemo(
+        () => ({
             warnings,
             shouldRenderWarnings,
         }),
-        [stations, warnings, shouldRenderWarnings]
+        [warnings]
     );
 
-    return <StationsContext.Provider value={value}>{children}</StationsContext.Provider>;
+    return (
+        <StationsContext.Provider value={stationValue}>
+            <WarningsContext.Provider value={warningsValue}>
+                {children}
+            </WarningsContext.Provider>
+        </StationsContext.Provider>
+    );
 };
 
 export const useStationsProvider = () => {
     return useContext(StationsContext);
+};
+
+export const useWarningsProvider = () => {
+    return useContext(WarningsContext);
 };

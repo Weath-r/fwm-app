@@ -4,7 +4,8 @@ import {
     WeatherWarnings,
     WarningHazard,
     WarningLevel,
-    WarningsWithPages
+    WarningsWithPages,
+    Configurations
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance } from "axios";
@@ -171,6 +172,23 @@ export class DataService {
                         warnings: warningsResponse.data.data,
                         totalPages,
                     });
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchConfiguration = (): Promise<Configurations[]> => {
+        const CONFIG_PREFIX = "items/configurations";
+        const CONFIG_FILTER = "?fields=id,value,config&filter[_and][0][frontend][_eq]=true";
+        const CONFIG_PATH = `${CONFIG_PREFIX}${CONFIG_FILTER}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${CONFIG_PATH}`)
+                .then((response) => {
+                    resolve(response.data.data);
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));

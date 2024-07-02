@@ -1,8 +1,8 @@
 type WarningLocation = {
     label: string;
     value: string;
-    geojson?: string;
-    order?: number;
+    geojson: string;
+    order: number;
 };
 
 export type WarningLevel = {

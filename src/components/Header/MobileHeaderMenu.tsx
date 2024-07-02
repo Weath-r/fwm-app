@@ -1,11 +1,12 @@
 import { Menu } from "@headlessui/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import menu from "@/helpers/menuLinks";
+import { useConfigurationStore } from "@/stores/configurationStore";
 import SvgInline from "../Common/SvgInline";
 
 export default function MobileHeaderMenu() {
     const pathname = usePathname();
+    const { menu } = useConfigurationStore();
 
     return (
         <Menu>

@@ -1,10 +1,10 @@
 import WarningsPanel from "./WarningsPanel";
 import { Popover } from "@headlessui/react";
-import { useStationsProvider } from "@/providers/StationsProvider";
+import { useWarningsProvider } from "@/providers/StationsProvider";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 
 export default function MobileWarnings() {
-    const { warnings } = useStationsProvider();
+    const { warnings } = useWarningsProvider();
     const perRegionWarnings = Object.values(warnings).reduce((acc, current):number => {
         const warningsLegth = current.warnings.length;
         acc += warningsLegth;
