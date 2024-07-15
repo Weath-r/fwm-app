@@ -64,7 +64,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
             <h4 className="font-bold text-xs opacity-70 uppercase my-4">
                 {title}
             </h4>
-            <div className="flex gap-2">
+            <div className="flex overflow-x-auto gap-2">
                 {Object.keys(structuredForecast).map((item,index) => {
                     const activeClass = activeBtn === index ? "!bg-info text-white" : "";
                     return (
