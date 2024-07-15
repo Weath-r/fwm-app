@@ -5,8 +5,10 @@ import { WeatherData, WeatherDataResponse } from "@/types";
 import LoadingSpinner from "@/components/Common/LoadingSpinner";
 import { useAppStore } from "@/hooks/useAppStore";
 import { buildWeatherData } from "@/utils/weatherDataFormatUtils";
-import { StationWeatherSummary } from "./StationWeatherSummary";
-import { StationWeatherDetails } from "./StationWeatherDetails";
+import { StationModalWeatherSummary } from "./WeatherModal/StationModalWeatherSummary";
+import { StationWeatherForecastDetails } from "./WeatherModal/StationWeatherForecastDetails";
+import { StationModalHeading } from "./WeatherModal/StationModalHeading";
+import { useConfigurationStore } from "@/stores/configurationStore";
 
 const MODAL_TIMEOUT: number = 600;
 
@@ -21,18 +23,34 @@ export default function StationModalContent() {
     const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { activeStation } = useAppStore();
+    const { featureFlags } = useConfigurationStore();
+    const isForecastEnabled = featureFlags?.forecasts.modalForecast;
 
     const getWeatherData = async () => {
         await dataService
             .fetchWeatherDataByStation(activeStation)
-            .then((response) => {
+            .then(async (response) => {
                 const weatherData: WeatherData[] = response.map((elem: WeatherDataResponse) => {
                     return buildWeatherData(elem);
                 });
-                return setWeatherData(weatherData);
+                await dataService
+                    .fetchForecastByStation(activeStation)
+                    .then((response) => {
+                        const newResponse = weatherData.map(elem => {
+                            return {
+                                ...elem,
+                                full_forecast: response[0].full_forecast,
+
+                            };
+                        });
+                        return setWeatherData(newResponse);
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             })
             .catch((error) => {
-                // TO-DO handle error properly
                 console.log(error);
                 return setWeatherData([]);
             })
@@ -48,18 +66,21 @@ export default function StationModalContent() {
     }, []);
 
     return (
-        <div>
-            {weatherData.map((elem: WeatherData) => {
-                return (
-                    <div className="p-2 flex text-black flex-col relative" key={elem.station.id}>
-                        {isLoading && loadingBlock}
-                        <div className="flex flex-col">
-                            <StationWeatherSummary {...elem} />
-                            <StationWeatherDetails {...elem} />
-                        </div>
+        weatherData.map((elem: WeatherData) => {
+            return (
+                <div className="h-full flex flex-col text-black p-2" key={elem.station.id}>
+                    {isLoading && loadingBlock}
+                    <div className="w-full">
+                        <StationModalHeading {...elem} />
                     </div>
-                );
-            })}
-        </div>
+                    <div className="mt-2">
+                        <StationModalWeatherSummary {...elem} />
+                    </div>
+                    <div className="mt-2">
+                        {isForecastEnabled && <StationWeatherForecastDetails {...elem} />}
+                    </div>
+                </div>
+            );
+        })
     );
 }

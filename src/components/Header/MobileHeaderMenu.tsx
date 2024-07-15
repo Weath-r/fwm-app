@@ -23,7 +23,7 @@ export default function MobileHeaderMenu() {
                 {menu.map(elem =>
                     <Menu.Item key={elem.text}>
                         <Link
-                            className={`text-primary p-1 pl-0 text-md ${pathname === elem.pathName ? "font-bold text-accent" : ""}`}
+                            className={`text-primary p-1 pl-0 text-md ${pathname === elem.pathName ? "font-bold text-success" : ""}`}
                             href={elem.pathName}
                         >
                             {elem.text}
