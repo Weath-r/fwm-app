@@ -30,7 +30,7 @@ export default function BaseMarker({
         assetId,
         eventHandlers: {
             click: () => {
-                return handleClick(true, stationId);
+                return handleClick(stationId);
             },
         },
     };
