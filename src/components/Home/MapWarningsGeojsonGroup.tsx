@@ -21,7 +21,7 @@ export default function MapWarningsGeojsonGroup(props: GeoJsonGroupTypes) {
             map.createPane(PANE);
             const mapPane: HTMLElement | undefined = map.getPane(PANE);
             if (mapPane) {
-                mapPane.style.zIndex = `${250 + index}`;
+                mapPane.style.zIndex = `${1 + index}`;
                 newPanes.push(PANE);
             } else {
                 console.log(`Pane ${PANE} not found.`);

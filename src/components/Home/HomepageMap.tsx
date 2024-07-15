@@ -138,7 +138,7 @@ export default function HomepageMap() {
                 <BaseModal
                     handleCloseModal={handleCloseModal}
                     isModalOpen={isStationModalOpen}
-                    dialogClass="max-w-xs lg:max-w-xl"
+                    dialogClass="max-w-sm mx-2 lg:max-w-xl"
                 >
                     <StationModalContent />
                 </BaseModal>
