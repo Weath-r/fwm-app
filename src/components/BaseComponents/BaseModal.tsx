@@ -3,24 +3,25 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, ReactNode } from "react";
 import CommonButton from "@/components/Common/CommonButton";
 import { XCircleIcon } from "@heroicons/react/24/solid";
-import { useAppStore } from "@/hooks/useAppStore";
 
 type BaseModalProps = {
     children: ReactNode;
+    handleCloseModal: () => void;
+    isModalOpen: boolean;
+    dialogClass?: string;
 };
 
-export default function BaseModal({ children }: Readonly<BaseModalProps>) {
-    const { isStationModalOpen, setIsStationModalOpen, setActiveStation } = useAppStore();
-    const closeModal = () => {
-        setIsStationModalOpen(false);
-        setActiveStation(0);
-    };
-
+export default function BaseModal({ 
+    children,
+    handleCloseModal,
+    isModalOpen,
+    dialogClass,
+}: Readonly<BaseModalProps>) {
     return (
-        <Transition appear show={isStationModalOpen} as={Fragment}>
+        <Transition appear show={isModalOpen} as={Fragment}>
             <Dialog
-                open={isStationModalOpen}
-                onClose={closeModal}
+                open={isModalOpen}
+                onClose={handleCloseModal}
                 as="div"
                 className="relative z-10"
             >
@@ -36,11 +37,11 @@ export default function BaseModal({ children }: Readonly<BaseModalProps>) {
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-xs transform overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all min-h-[430px]">
+                            <Dialog.Panel className={`w-full transform overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all min-h-[430px] ${dialogClass}`}>
                                 <Dialog.Description as="section">
                                     {children}
                                     <div className="absolute top-3 right-3">
-                                        <CommonButton handleClick={closeModal} color="danger">
+                                        <CommonButton handleClick={handleCloseModal} color="danger">
                                             <XCircleIcon className="h-8 w-8 p-1"></XCircleIcon>
                                         </CommonButton>
                                     </div>

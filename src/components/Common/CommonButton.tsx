@@ -21,7 +21,7 @@ export default function CommonButton(props: Readonly<CommonButtonProps>) {
     }
     return (
         <button
-            className={`bg-white ${textColor} ${extraClass} ${props.className}`}
+            className={`${textColor} ${extraClass} ${props.className}`}
             onClick={props.handleClick}
         >
             {props.children}
