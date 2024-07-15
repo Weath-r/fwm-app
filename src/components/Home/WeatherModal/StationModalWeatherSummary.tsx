@@ -8,9 +8,9 @@ export function StationModalWeatherSummary(elem: WeatherData) {
             <h4 className="font-bold text-xs opacity-70 uppercase">
                 Currently outside
             </h4>
-            <div className="mt-6 flex items-center">
-                <div className="w-1/2 flex flex-col">
-                    <div className="h-36 w-36 mx-auto">
+            <div className="mt-6 flex items-center gap-4 lg:gap-0">
+                <div className="w-2/5 lg:w-1/2 flex flex-col">
+                    <div className="h-28 w-28 lg:h-36 lg:w-36 mx-auto">
                         <BaseWeatherIcon
                             assetId={elem.assetId}
                             weatherDescriptionText={elem.weatherDescription}
@@ -20,7 +20,7 @@ export function StationModalWeatherSummary(elem: WeatherData) {
                         {elem.weatherDescription}
                     </p>
                 </div>
-                <div className="w-1/2">
+                <div className="w-2/3 lg:w-1/2">
                     <h3 className="text-5xl font-bold text-center text-primary">
                         {elem.temperature}
                         <sup className="font-normal text-2xl ml-1">
