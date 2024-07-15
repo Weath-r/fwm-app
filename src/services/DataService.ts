@@ -5,7 +5,8 @@ import {
     WarningHazard,
     WarningLevel,
     WarningsWithPages,
-    Configurations
+    Configurations,
+    WeatherForecastResponse
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance } from "axios";
@@ -188,6 +189,24 @@ export class DataService {
             return this.client
                 .get(`${CONFIG_PATH}`)
                 .then((response) => {
+                    resolve(response.data.data);
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchForecastByStation = (station_id: number): Promise<WeatherForecastResponse[]> => {
+        const WEATHER_FORECAST_FILTER_PREFIX = "items/weather_forecasts";
+        const WEATHER_FORECAST_FILTER = `?filter[_and][0][station_id][id][_eq]=${station_id}&sort=-date_created&limit=1`;
+        const WEATHER_FORECAST_PATH = `${WEATHER_FORECAST_FILTER_PREFIX}${WEATHER_FORECAST_FILTER}`;
+
+        return new Promise<WeatherForecastResponse[]>((resolve, reject) => {
+            return this.client
+                .get(`${WEATHER_FORECAST_PATH}`)
+                .then((response) => {
+                    // TO-DO check against the type with zod and return error
                     resolve(response.data.data);
                 })
                 .catch((error) => {

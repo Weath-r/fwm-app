@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import { useStationsProvider, useWarningsProvider } from "@/providers/StationsProvider";
 import L, { MarkerCluster } from "leaflet";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { assetUrl } from "@/helpers/assetsHandling";
 
@@ -20,6 +22,7 @@ const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"
 const MarkerClusterGroup = dynamic(() => import("react-leaflet-cluster"), {
     ssr: false,
 });
+
 
 type MarkerCustomAttrs = {
     weatherDescription: string;
@@ -59,20 +62,42 @@ const createClusterCustomIcon = function (cluster: MarkerCluster) {
 };
 
 export default function HomepageMap() {
-    const { setIsStationModalOpen, setActiveStation } = useAppStore();
+    const { setIsStationModalOpen, setActiveStation, isStationModalOpen } = useAppStore();
     const { stations } = useStationsProvider();
     const { warnings, shouldRenderWarnings } = useWarningsProvider();
+    const [searchStationParam, setSearchStationParam] = useState<string | null>(null);
+    const searchParams = useSearchParams();
 
-    const handleModal = (value: boolean, stationId: number) => {
-        setIsStationModalOpen(value);
-        setActiveStation(stationId);
+    const handleModal = (stationId: number) => {
+        window.history.pushState(null, "", `?station=${stationId}`);
+        setSearchStationParam(`${stationId}`);
     };
 
+    const handleCloseModal = () => {
+        window.history.pushState(null, "", "/");
+        return setSearchStationParam(null);
+    };
+
+    useEffect(() => {
+        const activeStationParams = searchParams.get("station");
+        setSearchStationParam(activeStationParams);
+    }, []);
+
+    useEffect(() => {
+        if(searchStationParam) {
+            setIsStationModalOpen(true);
+            setActiveStation(+searchStationParam);
+        } else {
+            setIsStationModalOpen(false);
+            setActiveStation(0);
+        }
+    }, [searchStationParam]);
+    
     const markers = stations.map((station) => {
         return (
             <BaseMarker
-                position={getReversedCoordinates(station.location.coordinates)}
                 key={station.id}
+                position={getReversedCoordinates(station.location.coordinates)}
                 stationId={station.id}
                 weatherDescription={station.currentWeatherDescription}
                 assetId={station.currentWeatherConditionIcon}
@@ -110,7 +135,11 @@ export default function HomepageMap() {
                 <MapControls />
             </div>
             <div className="absolute bottom-0">
-                <BaseModal>
+                <BaseModal
+                    handleCloseModal={handleCloseModal}
+                    isModalOpen={isStationModalOpen}
+                    dialogClass="max-w-xs lg:max-w-xl"
+                >
                     <StationModalContent />
                 </BaseModal>
             </div>

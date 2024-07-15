@@ -1,3 +1,5 @@
+import { ForecastData } from "./weatherForecast";
+
 type CommonWeatherData = {
     temperature: number;
     humidity: number;
@@ -21,6 +23,7 @@ export type WeatherData = CommonWeatherData & {
     station: WeatherStation;
     assetId: string;
     weatherDescription: string;
+    full_forecast: ForecastData[];
 };
 
 type StationPerfecture = {
