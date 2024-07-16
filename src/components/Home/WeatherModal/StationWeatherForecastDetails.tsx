@@ -29,19 +29,20 @@ const convertStringToDate = (date: string): string => {
 
 export function StationWeatherForecastDetails(elem: WeatherData) {
     const title = "Next 5 days";
-    const structuredForecast = elem.full_forecast.reduce((acc: GroupedWeatherData, currentItem) => {
-        const dateNow = new Date(currentItem.time);
-        const date = fullDateNoTime(dateNow);
-        if (!acc[date]) {
-            acc[date] = [];
-        }
-        
-        acc[date].push(currentItem);
-        return acc;
-    },{});
     const dateNow = new Date();
     const [activeBtn, setActiveBtn] = useState(0);
     const [forecastDate, setForecastDate] = useState(fullDateNoTime(dateNow));
+
+    const structuredForecast = elem.full_forecast.reduce((acc: GroupedWeatherData, currentItem) => {
+        const currentForecastTime = new Date(currentItem.time);
+        const date = fullDateNoTime(currentForecastTime);
+        if (!acc[date]) {
+            acc[date] = [];
+        }
+
+        acc[date].push(currentItem);
+        return acc;
+    },{});
 
     const handleDateSelectionBtn = ({ buttonIndex, date }:handleDateSelectionBtn ) => {
         setActiveBtn(buttonIndex);
@@ -61,7 +62,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
 
     return (
         <div className="p-1">
-            <h4 className="font-bold text-xs opacity-70 uppercase my-4">
+            <h4 className="font-bold text-xs uppercase my-4 text-primary">
                 {title}
             </h4>
             <div className="flex overflow-x-auto gap-2">
@@ -101,10 +102,12 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                 })}
             </div>
             <div className="mt-2 max-h-[280px] overflow-y-auto">
-                {structuredForecast[forecastDate].map((forecast,index) => {
+                {structuredForecast[forecastDate].map((forecast,index, forecastArray) => {
                     const forecastTime = new Date(forecast.time);
-                    const shouldRenderForecast = forecastTime.valueOf() > dateNow.valueOf();
-                    return ( shouldRenderForecast &&
+                    const shouldRenderForecast = index === forecastArray.length - 1 
+                        ? true 
+                        : forecastTime.valueOf() > dateNow.valueOf() ? true : false;
+                    return ( shouldRenderForecast && 
                         <div 
                             key={index}
                             className="flex items-center justify-between gap-2 p-2 my-4 rounded-lg shadow"

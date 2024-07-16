@@ -5,7 +5,7 @@ import { StationModalWeatherDetails } from "./StationModalWeatherDetails";
 export function StationModalWeatherSummary(elem: WeatherData) {
     return (
         <div className="flex flex-col">
-            <h4 className="font-bold text-xs opacity-70 uppercase">
+            <h4 className="font-bold text-xs uppercase text-primary">
                 Currently outside
             </h4>
             <div className="mt-6 flex items-center gap-4 lg:gap-0">
