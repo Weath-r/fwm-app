@@ -13,7 +13,7 @@ import { useConfigurationStore } from "@/stores/configurationStore";
 const MODAL_TIMEOUT: number = 600;
 
 const loadingBlock = (
-    <div className="absolute w-full h-full flex justify-center items-center bg-white z-[1]">
+    <div className="absolute z-[1] flex size-full items-center justify-center bg-white">
         <LoadingSpinner />
     </div>
 );
@@ -68,7 +68,7 @@ export default function StationModalContent() {
     return (
         weatherData.map((elem: WeatherData) => {
             return (
-                <div className="h-full flex flex-col text-black p-2" key={elem.station.id}>
+                <div className="flex h-full flex-col p-2 text-black" key={elem.station.id}>
                     {isLoading && loadingBlock}
                     <div className="w-full">
                         <StationModalHeading {...elem} />

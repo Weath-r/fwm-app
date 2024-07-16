@@ -11,7 +11,7 @@ const WarningsPage = dynamic(
 
 export default function Warnings() {
     return (
-        <main className="flex flex-col flex-1 relative">
+        <main className="relative flex flex-1 flex-col">
             <WarningsPage></WarningsPage>
         </main>
     );

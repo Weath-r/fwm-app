@@ -62,10 +62,10 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
 
     return (
         <div className="p-1">
-            <h4 className="font-bold text-xs uppercase my-4 text-primary">
+            <h4 className="my-4 text-xs font-bold uppercase text-primary">
                 {title}
             </h4>
-            <div className="flex overflow-x-auto gap-2">
+            <div className="flex gap-2 overflow-x-auto">
                 {Object.keys(structuredForecast).map((item,index) => {
                     const activeClass = activeBtn === index ? "!bg-info text-white" : "";
                     return (
@@ -75,19 +75,19 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                         >
                             <CommonButton
                                 color="primary"
-                                className={`w-full p-2 text-sm bg-light_white rounded-lg ${activeClass}`}
+                                className={`w-full rounded-lg bg-light_white p-2 text-sm ${activeClass}`}
                                 handleClick={() => handleDateSelectionBtn({
                                     buttonIndex: index,
                                     date: item,
                                 })}
                             >
-                                <div className="h-16 flex items-center gap-4">
+                                <div className="flex h-16 items-center gap-4">
                                     <div className="w-full">
                                         <p className="text-sm font-bold">
                                             {convertStringToDate(item)}
                                         </p>
                                     </div>
-                                    <div className="flex flex-col w-full">
+                                    <div className="flex w-full flex-col">
                                         <p>
                                             {getExtremeDayValues(item).max}
                                         </p>
@@ -110,12 +110,12 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                     return ( shouldRenderForecast && 
                         <div 
                             key={index}
-                            className="flex items-center justify-between gap-2 p-2 my-4 rounded-lg shadow"
+                            className="my-4 flex items-center justify-between gap-2 rounded-lg p-2 shadow"
                         >
                             <p className="text-primary opacity-60">
                                 { convertTimeStampToDate(forecast.time )}
                             </p>
-                            <div className="h-10 w-10">
+                            <div className="size-10">
                                 <BaseWeatherIcon
                                     assetId={forecast.forecastIcon}
                                     weatherDescriptionText={elem.station.name}
@@ -138,7 +138,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                                         }}
                                     />
                                 </div>
-                                <p className="text-primary ml-1">
+                                <p className="ml-1 text-primary">
                                     {forecast.windspd}
                                     <span className="ml-1 text-sm">
                                         {Measurements.SPEED}

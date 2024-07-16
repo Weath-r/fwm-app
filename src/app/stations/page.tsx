@@ -11,7 +11,7 @@ const StationsPage = dynamic(
 
 export default function Stations() {
     return (
-        <main className="flex flex-col flex-1 relative">
+        <main className="relative flex flex-1 flex-col">
             <StationsPage></StationsPage>
         </main>
     );
