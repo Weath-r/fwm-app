@@ -20,7 +20,7 @@ export default function WarningsPanel() {
                 className="flex flex-col"
                 key={elem.location}
             >
-                <h3 className="text-primary text-lg my-4">
+                <h3 className="my-4 text-lg text-primary">
                     {elem.location}
                 </h3>
                 {elem.warnings.map(warning => {
@@ -39,7 +39,7 @@ export default function WarningsPanel() {
                         };
                     return (
                         <div 
-                            className="rounded-r-lg bg-white text-primary p-4 my-1 border-l-4"
+                            className="my-1 rounded-r-lg border-l-4 bg-white p-4 text-primary"
                             key={warning.id}
                             style={{
                                 "borderColor": warning.level_id.color,
@@ -47,7 +47,7 @@ export default function WarningsPanel() {
                         >
                             <div className="flex items-center">
                                 <div 
-                                    className="mr-2 w-9 h-9 my-2 rounded-lg p-2"
+                                    className="my-2 mr-2 size-9 rounded-lg p-2"
                                     style={{
                                         "backgroundColor": warning.level_id.color,
                                     }}
@@ -58,7 +58,7 @@ export default function WarningsPanel() {
                                         className={theme.svgFillColor}
                                     ></HazardIcon>
                                 </div>
-                                <p className="text-primary opacity-60 text-sm ml-2">
+                                <p className="ml-2 text-sm text-primary opacity-60">
                                     {createdDate}
                                 </p>
                                 <div className="ml-auto">
@@ -67,11 +67,11 @@ export default function WarningsPanel() {
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex flex-col mt-2">
+                            <div className="mt-2 flex flex-col">
                                 <p className="text-sm">
                                     {warning.description_en}
                                 </p>
-                                <p className="text-xs pt-2 mt-3 opacity-60 border-t border-secondary">
+                                <p className="mt-3 border-t border-secondary pt-2 text-xs opacity-60">
                                     Valid for {startingDate} - {endingDate}
                                 </p>
                             </div>
@@ -83,18 +83,18 @@ export default function WarningsPanel() {
     });
 
     const panelLayout = (
-        <section className="flex flex-col bg-white/90 lg:bg-white/70 overflow-hidden w-full h-full lg:w-1/5 lg:absolute lg:top-0 lg:right-0 lg:z-[410]">
-            <div className="flex flex-col p-3 h-full">
+        <section className="flex size-full flex-col overflow-hidden bg-white/90 lg:absolute lg:right-0 lg:top-0 lg:z-[410] lg:w-1/5 lg:bg-white/70">
+            <div className="flex h-full flex-col p-3">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-primary font-bold text-lg">
+                    <h2 className="text-lg font-bold text-primary">
                         Active warnings
-                        <small className="block opacity-60 text-xs">
+                        <small className="block text-xs opacity-60">
                             {today}
                         </small>
                     </h2>
                     <BaseControlledModal
                         trigger={
-                            <SvgInline path="icons/circle-info.svg" className="fill-primary w-3 h-3"></SvgInline>
+                            <SvgInline path="icons/circle-info.svg" className="size-3 fill-primary"></SvgInline>
                         }
                     >
                         <section>
@@ -103,7 +103,7 @@ export default function WarningsPanel() {
                         </section>
                     </BaseControlledModal>
                 </div>
-                <div className="overflow-y-auto flex-1 pb-4">
+                <div className="flex-1 overflow-y-auto pb-4">
                     {panelContent}
                 </div>
             </div>

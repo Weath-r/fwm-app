@@ -25,11 +25,11 @@ const MobileWarnings = dynamic(
 export default function Home() {
     return (
         <StationsProvider>
-            <main className="flex flex-col flex-1 relative">
+            <main className="relative flex flex-1 flex-col">
                 <aside className="hidden lg:inline-block">
                     <WarningsPanel></WarningsPanel>
                 </aside>
-                <aside className="absolute z-[2] top-0 right-0 w-full lg:hidden">
+                <aside className="absolute right-0 top-0 z-[2] w-full lg:hidden">
                     <MobileWarnings></MobileWarnings>
                 </aside>
                 <HomepageMap></HomepageMap>

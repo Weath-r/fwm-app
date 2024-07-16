@@ -6,7 +6,8 @@
       "plugin:@typescript-eslint/recommended",
       "plugin:react/recommended",
       "plugin:react-hooks/recommended",
-      "eslint-config-prettier"
+      "eslint-config-prettier",
+      "plugin:tailwindcss/recommended"
     ],
     "env": {
       "browser": true,
@@ -30,7 +31,10 @@
         }],
         "@typescript-eslint/no-explicit-any": "off",
         "object-curly-spacing": ["error", "always"],
-        "react-hooks/exhaustive-deps": "off"
+        "react-hooks/exhaustive-deps": "off",
+        "tailwindcss/classnames-order": ["warn"],
+        "tailwindcss/no-custom-classname": "off",
+        "tailwindcss/no-unnecessary-arbitrary-value": ["warn"]
     },
     "settings": {
       "react": {

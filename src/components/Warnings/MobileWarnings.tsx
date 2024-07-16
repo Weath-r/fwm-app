@@ -13,11 +13,11 @@ export default function MobileWarnings() {
     return (
         warnings.length > 0 &&
         <Popover className="relative flex flex-col">
-            <Popover.Button className="ml-auto my-1 mr-1 bg-white rounded-lg outline-none p-2 text-danger text-sm flex items-center">
-                <ExclamationTriangleIcon className="h-6 w-6 mr-1"></ExclamationTriangleIcon>
+            <Popover.Button className="my-1 ml-auto mr-1 flex items-center rounded-lg bg-white p-2 text-sm text-danger outline-none">
+                <ExclamationTriangleIcon className="mr-1 size-6"></ExclamationTriangleIcon>
                 <p>{perRegionWarnings} warnings</p>
             </Popover.Button>
-            <Popover.Panel className="w-full h-screen">
+            <Popover.Panel className="h-screen w-full">
                 <WarningsPanel></WarningsPanel>
             </Popover.Panel>
         </Popover>

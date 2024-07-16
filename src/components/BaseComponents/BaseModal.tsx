@@ -37,12 +37,12 @@ export default function BaseModal({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className={`w-full transform overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all min-h-[430px] ${dialogClass}`}>
+                            <Dialog.Panel className={`min-h-[430px] w-full overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all ${dialogClass}`}>
                                 <Dialog.Description as="section">
                                     {children}
-                                    <div className="absolute top-3 right-3">
+                                    <div className="absolute right-3 top-3">
                                         <CommonButton handleClick={handleCloseModal} color="danger">
-                                            <XCircleIcon className="h-8 w-8 p-1"></XCircleIcon>
+                                            <XCircleIcon className="size-8 p-1"></XCircleIcon>
                                         </CommonButton>
                                     </div>
                                 </Dialog.Description>

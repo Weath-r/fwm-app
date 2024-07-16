@@ -41,7 +41,7 @@ export default function BaseMarker({
 
     return (
         <DivIconMarker leafletMarker={marker} container={container}>
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center justify-center">
                 <div className="w-[58px]">
                     <BaseWeatherIcon
                         weatherDescriptionText={weatherDescription}

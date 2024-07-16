@@ -13,16 +13,19 @@ export default function MapControls() {
         return map.setZoom(currentZoom - 1);
     };
     return (
-        <div className="flex shadow-md bg-white rounded">
+        <div className="flex rounded bg-white shadow-md">
             <CommonButton
                 color="primary"
                 className={"mr-1"}
                 handleClick={btnZoomIn}
             >
-                <PlusCircleIcon className="h-8 w-8 p-1"></PlusCircleIcon>
+                <PlusCircleIcon className="size-8 p-1"></PlusCircleIcon>
             </CommonButton>
-            <CommonButton color="primary" handleClick={btnZoomOut}>
-                <MinusCircleIcon className="h-8 w-8 p-1"></MinusCircleIcon>
+            <CommonButton 
+                color="primary" 
+                handleClick={btnZoomOut}
+            >
+                <MinusCircleIcon className="size-8 p-1"></MinusCircleIcon>
             </CommonButton>
         </div>
     );
