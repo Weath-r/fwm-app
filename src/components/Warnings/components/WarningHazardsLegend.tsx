@@ -8,13 +8,15 @@ type WarningHazardsLegendType = {
 export default function WarningHazardsLegend(props: Readonly<WarningHazardsLegendType>) {
     const { hazards } = props;
     return (
-        <div className="bg-white rounded flex flex-col p-4">
-            <h2 className="text-primary text-lg font-bold">Hazards</h2>
+        <div className="flex flex-col rounded bg-white p-4">
+            <h2 className="text-lg font-bold text-primary">
+                Hazards
+            </h2>
             <div className="mt-2">
                 {hazards.map(hazard => {
                     return (
                         <div 
-                            className="flex items-center justify-between text-primary my-2 border-b-1 border-light_white"
+                            className="border-b-1 my-2 flex items-center justify-between border-light_white text-primary"
                             key={hazard.label}
                         >
                             <p>
@@ -23,7 +25,7 @@ export default function WarningHazardsLegend(props: Readonly<WarningHazardsLegen
                             <HazardIcon
                                 asset={hazard.asset} 
                                 label={hazard.label} 
-                                className="w-6 h-6 fill-primary"
+                                className="size-6 fill-primary"
                             ></HazardIcon>
                         </div>
                     );

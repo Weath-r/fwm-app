@@ -3,6 +3,11 @@ import type { Metadata } from "next";
 import { Commissioner } from "next/font/google";
 import { ClientProvider } from "@/providers/clientProvider";
 import Header from "@/components/Header/Header";
+import dynamic from "next/dynamic";
+
+const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
+    ssr: false,
+});
 
 const fontFamily = Commissioner({
     subsets: ["latin"],
@@ -26,12 +31,13 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
             <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
             <link rel="manifest" href="/site.webmanifest" />
             <meta name="google-site-verification" content="ckL2sSissjkQt1lxgjAeaCPd8uAH9jR00l57zdcd8BU" />
-            <body className={fontFamily.className}>
-                <ClientProvider>
+            <ClientProvider>
+                <body className={fontFamily.className}>
+                    <PostHogPageView />
                     <Header></Header>
                     {children}
-                </ClientProvider>
-            </body>
+                </body>
+            </ClientProvider>
         </html>
     );
 }

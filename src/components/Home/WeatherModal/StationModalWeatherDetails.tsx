@@ -3,9 +3,9 @@ import SvgInline from "@/components/Common/SvgInline";
 
 export function StationModalWeatherDetails(elem: Readonly<WeatherData>) {
     return (
-        <div className="border-t-[2px] border-light_white">
-            <div className="flex items-center justify-center gap-4 my-4">
-                <div className="flex items-center w-[100px]">
+        <div className="border-t-2 border-light_white">
+            <div className="my-4 flex items-center justify-center gap-4">
+                <div className="flex w-[100px] items-center">
                     <div className="h-4 w-6">
                         <SvgInline
                             path="weather_icons/wind.svg"
@@ -16,24 +16,24 @@ export function StationModalWeatherDetails(elem: Readonly<WeatherData>) {
                             }}
                         />
                     </div>
-                    <p className="text-sm text-primary/70 leading-tight ml-2">
+                    <p className="ml-2 text-sm leading-tight text-primary/70">
                         {WeatherConditions.WIND}
-                        <span className="block font-bold text-xs text-primary">
+                        <span className="block text-xs font-bold text-primary">
                             {elem.windspd} {Measurements.SPEED}
                         </span>
                     </p>
                 </div>
-                <div className="flex items-center w-[100px]">
-                    <div className="h-6 w-6">
+                <div className="flex w-[100px] items-center">
+                    <div className="size-6">
                         <SvgInline
                             path="weather_icons/rain.svg"
                             title="Rain icon"
                             className="fill-primary"
                         />
                     </div>
-                    <p className="text-sm text-primary/70 leading-tight ml-2">
+                    <p className="ml-2 text-sm leading-tight text-primary/70">
                         {WeatherConditions.RAIN}
-                        <span className="block font-bold text-xs text-primary">
+                        <span className="block text-xs font-bold text-primary">
                             {elem.percipitation} {Measurements.MILLIMETER}
                         </span>
                     </p>
@@ -41,33 +41,33 @@ export function StationModalWeatherDetails(elem: Readonly<WeatherData>) {
             </div>
 
             <div className="flex items-center justify-center gap-4">
-                <div className="flex items-center w-[100px]">
-                    <div className="h-6 w-6">
+                <div className="flex w-[100px] items-center">
+                    <div className="size-6">
                         <SvgInline
                             path="weather_icons/humidity.svg"
                             title="Humidity icon"
                             className="fill-primary"
                         />
                     </div>
-                    <p className="text-sm text-primary/70 leading-tight ml-2">
+                    <p className="ml-2 text-sm leading-tight text-primary/70">
                         {WeatherConditions.HUMIDITY}
-                        <span className="block font-bold text-xs text-primary">
+                        <span className="block text-xs font-bold text-primary">
                             {elem.humidity}
                             {Measurements.PERCENTAGE}
                         </span>
                     </p>
                 </div>
-                <div className="flex items-center w-[100px]">
-                    <div className="h-6 w-6">
+                <div className="flex w-[100px] items-center">
+                    <div className="size-6">
                         <SvgInline
                             path="weather_icons/barometer.svg"
                             className="fill-primary"
                             title="Barometer icon"
                         />
                     </div>
-                    <p className="text-sm text-primary/70 leading-tight ml-2">
+                    <p className="ml-2 text-sm leading-tight text-primary/70">
                         {WeatherConditions.BAROMETER}
-                        <span className="block font-bold text-xs text-primary">
+                        <span className="block text-xs font-bold text-primary">
                             {elem.barometer} {Measurements.PRESSURE}
                         </span>
                     </p>

@@ -14,7 +14,7 @@ export default function BaseMap(props: Readonly<MapLeafletType>) {
             maxBoundsViscosity={1}
             minZoom={props.minZoom}
             zoomControl={false}
-            className="w-full h-screen map"
+            className="map h-screen w-full"
         >
             <TileLayer
                 attribution={`&copy; <a href="https://www.openstreetmap.org/copyright">Mapbox</a> contributors ${attribution}`}

@@ -34,7 +34,7 @@ const columns = [
         cell: info => {
             const label = info.getValue().split("--");
             return (
-                <p className="pr-6 font-bold text-primary whitespace-nowrap">{label[0]} <span className="block text-primary opacity-30 font-normal">{label[1]}</span></p>
+                <p className="whitespace-nowrap pr-6 font-bold text-primary">{label[0]} <span className="block font-normal text-primary opacity-30">{label[1]}</span></p>
             );
         },
         header: () => <span>Station name</span>,
@@ -69,23 +69,23 @@ const columns = [
                 </p>
             );
         },
-        header: () => <p>{WeatherConditions.TEMP}<span className="text-xs ml-1">({Measurements.CELCIUS})</span></p>,
+        header: () => <p>{WeatherConditions.TEMP}<span className="ml-1 text-xs">({Measurements.CELCIUS})</span></p>,
         sortingFn: sortTemperatureFn,
     }),
     columnHelper.accessor(row => row.humidity, {
         id: "stationHum",
         cell: info => <span>{info.getValue()}</span>,
-        header: () => <p>{WeatherConditions.HUMIDITY}<span className="text-xs ml-1">({Measurements.PERCENTAGE})</span></p>,
+        header: () => <p>{WeatherConditions.HUMIDITY}<span className="ml-1 text-xs">({Measurements.PERCENTAGE})</span></p>,
     }),
     columnHelper.accessor(row => row.percipitation, {
         id: "stationPerc",
         cell: info => <span>{info.getValue()}</span>,
-        header: () => <p>{WeatherConditions.RAIN}<span className="text-xs ml-1">({Measurements.MILLIMETER})</span></p>,
+        header: () => <p>{WeatherConditions.RAIN}<span className="ml-1 text-xs">({Measurements.MILLIMETER})</span></p>,
     }),
     columnHelper.accessor(row => row.windspd, {
         id: "stationWindSpd",
         cell: info => <span>{info.getValue()}</span>,
-        header: () => <p>{WeatherConditions.WIND}<span className="text-xs ml-1">({Measurements.SPEED})</span></p>,
+        header: () => <p>{WeatherConditions.WIND}<span className="ml-1 text-xs">({Measurements.SPEED})</span></p>,
     }),
     columnHelper.accessor(row => row.winddir, {
         id: "stationWindDir",
@@ -131,8 +131,8 @@ export default function StationsTableData(props: Readonly<TableDataProps>) {
         },
     });
     return (
-        <table className="w-full text-sm text-left text-primary">
-            <thead className="text-xs text-primary uppercase">
+        <table className="w-full text-left text-sm text-primary">
+            <thead className="text-xs uppercase text-primary">
                 {table.getHeaderGroups().map(headerGroup => (
                     <tr key={headerGroup.id}>
                         {headerGroup.headers.map(header => (
@@ -143,7 +143,7 @@ export default function StationsTableData(props: Readonly<TableDataProps>) {
                                         <div
                                             className={
                                                 header.column.getCanSort()
-                                                    ? "cursor-pointer select-none flex items-center gap-1"
+                                                    ? "flex cursor-pointer select-none items-center gap-1"
                                                     : ""
                                             }
                                             onClick={header.column.getToggleSortingHandler()}

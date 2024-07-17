@@ -9,7 +9,7 @@ export default function HeaderMenu() {
     return (<section>
         {menu.map(element => 
             <Link
-                className={`text-primary px-2 text-lg ${pathname === element.pathName ? "font-bold text-success" : ""}`}
+                className={`px-2 text-lg text-primary ${pathname === element.pathName ? "font-bold text-success" : ""}`}
                 href={element.pathName}
                 key={element.text}
             >

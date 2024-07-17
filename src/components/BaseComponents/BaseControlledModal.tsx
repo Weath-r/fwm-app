@@ -48,12 +48,12 @@ export default function BaseControlledModal(props: Readonly<BaseModalProps>) {
                                 leaveFrom="opacity-100 scale-100"
                                 leaveTo="opacity-0 scale-95"
                             >
-                                <Dialog.Panel className="w-full max-w-xs transform overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all min-h-[430px]">
+                                <Dialog.Panel className="min-h-[430px] w-full max-w-xs overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all">
                                     <Dialog.Description as="section">
                                         {props.children}
-                                        <div className="absolute top-3 right-3">
+                                        <div className="absolute right-3 top-3">
                                             <CommonButton handleClick={closeModal} color="danger">
-                                                <XCircleIcon className="h-8 w-8 p-1"></XCircleIcon>
+                                                <XCircleIcon className="size-8 p-1"></XCircleIcon>
                                             </CommonButton>
                                         </div>
                                     </Dialog.Description>

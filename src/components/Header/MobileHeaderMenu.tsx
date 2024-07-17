@@ -10,20 +10,20 @@ export default function MobileHeaderMenu() {
 
     return (
         <Menu>
-            <Menu.Button className="text-primary font-bold"> 
+            <Menu.Button className="font-bold text-primary"> 
                 <SvgInline 
                     path="icons/menu.svg"
                     className="w-6 fill-primary"
                 ></SvgInline>
             </Menu.Button>
-            <Menu.Items className="flex flex-col gap-1 bg-white shadow-lg px-4 rounded-b mt-6 mr-4 w-full pb-2 border-solid border-t-2 border-accent">
+            <Menu.Items className="mr-4 mt-6 flex w-full flex-col gap-1 rounded-b border-t-2 border-solid border-accent bg-white px-4 pb-2 shadow-lg">
                 <Menu.Item>
-                    <h3 className="text-sm text-primary opacity-50 uppercase my-2">Menu</h3>
+                    <h3 className="my-2 text-sm uppercase text-primary opacity-50">Menu</h3>
                 </Menu.Item>
                 {menu.map(elem =>
                     <Menu.Item key={elem.text}>
                         <Link
-                            className={`text-primary p-1 pl-0 text-md ${pathname === elem.pathName ? "font-bold text-success" : ""}`}
+                            className={`text-md p-1 pl-0 text-primary ${pathname === elem.pathName ? "font-bold text-success" : ""}`}
                             href={elem.pathName}
                         >
                             {elem.text}

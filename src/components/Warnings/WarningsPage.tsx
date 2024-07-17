@@ -34,32 +34,32 @@ export default function StationsPage() {
     };
 
     return (
-        <div className="mx-4 md:container md:mx-auto mt-4">
-            <h2 className="text-primary text-2xl mb-4">
+        <div className="mx-4 mt-4 md:container md:mx-auto">
+            <h2 className="mb-4 text-2xl text-primary">
                 Weather warnings
-                <small className="text-primary text-sm block opacity-60">
+                <small className="block text-sm text-primary opacity-60">
                     until today
                 </small>
             </h2>
-            <div className="rounded-xl bg-white drop-shadow-md p-4 w-full my-4 overflow-x-scroll md:overflow-x-auto">
+            <div className="my-4 w-full overflow-x-scroll rounded-xl bg-white p-4 drop-shadow-md md:overflow-x-auto">
                 <WarningsTableData data={weatherWarningsTabelData}></WarningsTableData>
                 <div className="my-4 flex items-center justify-center gap-3">
                     {activePage > 1 && 
                         <button 
-                            className="text-white rounded bg-primary p-1"
+                            className="rounded bg-primary p-1 text-white"
                             onClick={handlePrevPageBtn}
                         >
-                            <ArrowLeftIcon className="w-4 h-4"></ArrowLeftIcon>
+                            <ArrowLeftIcon className="size-4"></ArrowLeftIcon>
                         </button>}
                     { totalPages > 1 && <p className="text-primary">
                         Page {activePage}
                     </p>}
                     {activePage !== totalPages && 
                         <button 
-                            className="text-white rounded bg-primary p-1"
+                            className="rounded bg-primary p-1 text-white"
                             onClick={handleNextPageBtn}
                         >
-                            <ArrowRightIcon className="w-4 h-4"></ArrowRightIcon>
+                            <ArrowRightIcon className="size-4"></ArrowRightIcon>
                         </button>}
                 </div>
             </div>

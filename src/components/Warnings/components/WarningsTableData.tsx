@@ -42,7 +42,7 @@ const columns = [
     columnHelper.accessor(row => row.level_id, {
         id: "warningLevel",
         cell: info => <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-lg" style={{ backgroundColor: info.getValue().color }}></div>
+            <div className="size-4 rounded-lg" style={{ backgroundColor: info.getValue().color }}></div>
             <p>
                 {info.getValue().label}
             </p>
@@ -53,7 +53,7 @@ const columns = [
         id: "hazard",
         cell: info => {
             const { label, asset } = info.getValue();
-            return <HazardIcon label={label} asset={asset} className="w-6 h-6 fill-primary"></HazardIcon>;
+            return <HazardIcon label={label} asset={asset} className="size-6 fill-primary"></HazardIcon>;
         },
         header: () => <span>Hazard</span>,
         sortingFn: sortHazardFn,
@@ -106,8 +106,8 @@ export default function StationsTableData(props: Readonly<TableDataProps>) {
         },
     });
     return (
-        <table className="w-full text-sm text-left text-primary">
-            <thead className="text-xs text-primary uppercase">
+        <table className="w-full text-left text-sm text-primary">
+            <thead className="text-xs uppercase text-primary">
                 {table.getHeaderGroups().map(headerGroup => (
                     <tr key={headerGroup.id}>
                         {headerGroup.headers.map(header => (
@@ -118,7 +118,7 @@ export default function StationsTableData(props: Readonly<TableDataProps>) {
                                         <div
                                             className={
                                                 header.column.getCanSort()
-                                                    ? "cursor-pointer select-none flex items-center gap-1"
+                                                    ? "flex cursor-pointer select-none items-center gap-1"
                                                     : ""
                                             }
                                             onClick={header.column.getToggleSortingHandler()}
