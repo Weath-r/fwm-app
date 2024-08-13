@@ -29,7 +29,7 @@ export default function Home() {
                 <aside className="hidden lg:inline-block">
                     <WarningsPanel></WarningsPanel>
                 </aside>
-                <aside className="absolute right-0 top-0 z-[2] w-full lg:hidden">
+                <aside className="absolute right-0 top-1 z-[2] w-full lg:hidden">
                     <MobileWarnings></MobileWarnings>
                 </aside>
                 <HomepageMap></HomepageMap>

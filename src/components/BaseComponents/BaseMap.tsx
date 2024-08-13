@@ -5,14 +5,17 @@ import { MapLeafletType } from "@/types";
 export default function BaseMap(props: Readonly<MapLeafletType>) {
     const attribution =
         process.env.NODE_ENV === "development" ? `| App version: ${configuration.appVersion}` : "";
+    
     return (
         <MapContainer
             center={props.center}
             zoom={props.zoom}
-            scrollWheelZoom={false}
+            scrollWheelZoom={true}
             maxBounds={props.maxBounds}
             maxBoundsViscosity={1}
             minZoom={props.minZoom}
+            maxZoom={props.maxZoom}
+            wheelDebounceTime={100}
             zoomControl={false}
             className="map h-screen w-full"
         >
