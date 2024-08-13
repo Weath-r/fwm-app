@@ -2,6 +2,7 @@ type CommonMapSettings = {
     center: [number, number];
     maxBounds: [[number, number], [number, number]];
     minZoom: number;
+    maxZoom: number;
     zoom: number;
 };
 
@@ -22,6 +23,7 @@ export const MAP_CONFIG: MapConfig = {
         [40.105765, 25.448018]
     ],
     minZoom: 9,
+    maxZoom: 12,
 };
 
 export default MAP_CONFIG;
