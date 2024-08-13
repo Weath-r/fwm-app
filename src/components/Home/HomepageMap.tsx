@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { assetUrl } from "@/helpers/assetsHandling";
 
 import { useAppStore } from "@/hooks/useAppStore";
+import { useMapStore } from "@/stores/mapStore";
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
 import MapControls from "@/components/MapControls/MapControls";
@@ -68,6 +69,7 @@ export default function HomepageMap() {
     const { warnings, shouldRenderWarnings } = useWarningsProvider();
     const [searchStationParam, setSearchStationParam] = useState<string | null>(null);
     const searchParams = useSearchParams();
+    const map = useMapStore((state) => state.map);
 
     const handleModal = (stationId: number) => {
         window.history.pushState(null, "", `?station=${stationId}`);
@@ -93,6 +95,17 @@ export default function HomepageMap() {
             setActiveStation(0);
         }
     }, [searchStationParam]);
+
+    useEffect(() => {
+        if (map) {
+            console.log("Map instance:", map);
+            const stationsToCoordinates = stations.map(station => {
+                return { lat: station.location.coordinates[1], lng: station.location.coordinates[0] };
+            });
+            const bounds = L.latLngBounds(stationsToCoordinates);
+            map.fitBounds(bounds);
+        }
+    }, [map]);
     
     const markers = stations.map((station) => {
         return (
