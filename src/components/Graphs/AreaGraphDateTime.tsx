@@ -14,7 +14,9 @@ type AreaGraphDateTimeProps = {
     graphStyle: GraphStyle;
 };
 
-noDataToDisplay(Highcharts);
+if (typeof Highcharts === "object") {
+    noDataToDisplay(Highcharts);
+}
 
 export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
     const [xAxisLabels, setxAxisLabels] = useState<Array<string | number>>([]);
@@ -108,37 +110,42 @@ export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
     const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
 
     useEffect(() => {
-        setChartOptions(prevOptions => ({
-            ...prevOptions,
-            xAxis: {
-                ...prevOptions.xAxis,
-                plotLines: xAxisLabels
-                    .map(value => {
-                        const numericValue = typeof value === "string" ? parseFloat(value) : value;
-                        if (isNaN(numericValue)) {
-                            return null;
-                        }
-                        return {
-                            color: "rgba(61,83,97,0.1)",
-                            width: 2,
-                            dashStyle: "longdashdot" as Highcharts.DashStyleValue,
-                            value: numericValue,
-                            label: {
-                                rotation: 360,
-                                useHTML: true,
-                                text: `<p class="text-primary/70">${dateWithMsToDay(numericValue)}</p>`,
-                            },
-                        };
-                    })
-                    .filter(plotLine => plotLine !== null),
-            },
-            series: [{ 
-                type: "area",
-                name: props.variable,
-                data: props.graphData,
-            }],
-        }));
+        setChartOptions(prevOptions => {
+            const newPlotLines = xAxisLabels
+                .map(value => {
+                    const numericValue = typeof value === "string" ? parseFloat(value) : value;
+                    if (isNaN(numericValue)) {
+                        return null;
+                    }
+                    return {
+                        color: "rgba(61,83,97,0.1)",
+                        width: 2,
+                        dashStyle: "longdashdot" as Highcharts.DashStyleValue,
+                        value: numericValue,
+                        label: {
+                            rotation: 360,
+                            useHTML: true,
+                            text: `<p class="text-primary/70">${dateWithMsToDay(numericValue)}</p>`,
+                        },
+                    } as Highcharts.XAxisPlotLinesOptions;;
+                })
+                .filter((plotLine): plotLine is Highcharts.XAxisPlotLinesOptions => plotLine !== null);
+    
+            return {
+                ...prevOptions,
+                xAxis: {
+                    ...(prevOptions.xAxis as Highcharts.XAxisOptions),
+                    plotLines: newPlotLines,
+                },
+                series: [{ 
+                    type: "area",
+                    name: props.variable,
+                    data: props.graphData,
+                }],
+            };
+        });
     }, [props.graphData, xAxisLabels]);
+    
 
     return (
         <HighchartsReact

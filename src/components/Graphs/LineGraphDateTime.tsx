@@ -8,7 +8,10 @@ type LineGraphDateTimeProps = {
     graphData: number[][];
     variable: string;
 };
-noDataToDisplay(Highcharts);
+if (typeof Highcharts === "object") {
+    noDataToDisplay(Highcharts);
+}
+
 
 export default function LineGraphDateTime(props: LineGraphDateTimeProps) {
     const [chartOptions, setChartOptions] = useState<Highcharts.Options>({
