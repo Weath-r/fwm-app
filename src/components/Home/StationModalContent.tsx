@@ -9,6 +9,8 @@ import { StationModalWeatherSummary } from "./WeatherModal/StationModalWeatherSu
 import { StationWeatherForecastDetails } from "./WeatherModal/StationWeatherForecastDetails";
 import { StationModalHeading } from "./WeatherModal/StationModalHeading";
 import { useConfigurationStore } from "@/stores/configurationStore";
+import Link from "next/link";
+import { urlStationName } from "@/helpers/createStationName";
 
 const MODAL_TIMEOUT: number = 600;
 
@@ -25,6 +27,7 @@ export default function StationModalContent() {
     const { activeStation } = useAppStore();
     const { featureFlags } = useConfigurationStore();
     const isForecastEnabled = featureFlags?.forecasts.modalForecast;
+    const isFullStationPageEnabled = featureFlags?.standalone_station.moreDetailsModalUrl;
 
     const getWeatherData = async () => {
         await dataService
@@ -67,6 +70,7 @@ export default function StationModalContent() {
 
     return (
         weatherData.map((elem: WeatherData) => {
+            const decodedStationName = urlStationName(elem.station.name);
             return (
                 <div className="flex h-full flex-col p-2 text-black" key={elem.station.id}>
                     {isLoading && loadingBlock}
@@ -79,6 +83,14 @@ export default function StationModalContent() {
                     <div className="mt-2">
                         {isForecastEnabled && <StationWeatherForecastDetails {...elem} />}
                     </div>
+                    {isFullStationPageEnabled && (<div className="mx-auto">
+                        <Link 
+                            className="text-sm font-bold uppercase text-primary" 
+                            href={`/station/${activeStation}/${decodedStationName}`}
+                        >
+                            More details
+                        </Link>
+                    </div>)}
                 </div>
             );
         })

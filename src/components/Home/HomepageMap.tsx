@@ -98,12 +98,13 @@ export default function HomepageMap() {
 
     useEffect(() => {
         if (map) {
-            console.log("Map instance:", map);
             const stationsToCoordinates = stations.map(station => {
                 return { lat: station.location.coordinates[1], lng: station.location.coordinates[0] };
             });
-            const bounds = L.latLngBounds(stationsToCoordinates);
-            map.fitBounds(bounds);
+            if (stationsToCoordinates.length > 0) {
+                const bounds = L.latLngBounds(stationsToCoordinates);
+                map.fitBounds(bounds);
+            }
         }
     }, [map]);
     

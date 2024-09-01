@@ -35,6 +35,8 @@
         "axios": "1.5.1",
         "dayjs": "1.11.11",
         "eslint-config-next": "13.4.19",
+        "highcharts": "11.4.7",
+        "highcharts-react-official": "3.2.1",
         "leaflet": "1.9.4",
         "next": "13.4.19",
         "postcss": "8.4.29",

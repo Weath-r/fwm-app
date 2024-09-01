@@ -10,6 +10,7 @@ import {
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance } from "axios";
+import { FetchStationDataPaginated } from "@/types";
 
 export class DataServiceError extends Error {
     constructor(
@@ -30,6 +31,31 @@ export class DataService {
     fetchWeatherDataByStation = (station_id: number): Promise<WeatherDataResponse[]> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
         const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_condition_icon`;
+        const WEATHER_DATA_PATH = `${WEATHER_DATA_FILTER_PREFIX}${WEATHER_DATA_FILTER}`;
+
+        return new Promise<WeatherDataResponse[]>((resolve, reject) => {
+            return this.client
+                .get(`${WEATHER_DATA_PATH}`)
+                .then((response) => {
+                    // TO-DO check against the type with zod and return error
+                    resolve(response.data.data);
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchWeatherDataByStationPaginated = ({
+        station_id,
+        start_date,
+        end_date,
+        page = 1,
+        limit = 64,
+    }: FetchStationDataPaginated): Promise<WeatherDataResponse[]> => {
+        const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
+        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_condition_icon&filter[_and][0][_and][1][date_created][_lte]=${end_date}&filter[_and][0][_and][2][date_created][_gte]=${start_date}&page=${page}&limit=${limit}`;
+
         const WEATHER_DATA_PATH = `${WEATHER_DATA_FILTER_PREFIX}${WEATHER_DATA_FILTER}`;
 
         return new Promise<WeatherDataResponse[]>((resolve, reject) => {

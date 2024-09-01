@@ -7,7 +7,6 @@ dayjs.extend(customParseFormat);
 
 export const timeFromNowUtil = (inputDate: Date, suffix: boolean = false): string => {
     return dayjs(inputDate).fromNow(suffix);
-
 };
 
 export const timeOnlyUtil = (inputDate: Date): string => {
@@ -32,4 +31,8 @@ export const fullDateNoTime = (inputDate: Date): string => {
 
 export const dateWithNameTime = (inputDate: Date): string => {
     return dayjs(inputDate).format("ddd, MMM DD, HH:mm");
+};
+
+export const dateWithMsToDay = (inputDate: number|string):string => {
+    return dayjs(inputDate).format("DD/MM");
 };

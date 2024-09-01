@@ -14,3 +14,12 @@ export enum Measurements {
   MILLIMETER = "mm",
   CELCIUS = "°C",
 }
+
+export enum GraphVariables {
+    temperature = "temperature",
+    humidity = "humidity",
+    barometer = "barometer",
+    percipitation = "percipitation",
+    rainrate = "rainrate",
+    windspd = "windspd",
+}
