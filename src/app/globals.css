@@ -27,6 +27,10 @@ body {
 header {
     height: var(--header-height);
 }
+input::placeholder, textarea::placeholder {
+    color: initial;
+}
+
 .map {
     height: calc(100vh - var(--header-height));
 }
@@ -49,4 +53,7 @@ header {
 }
 .leaflet-marker-pane {
     z-index: 600!important;
+}
+.react-dropdown-select-input {
+    font-size: inherit !important;
 }

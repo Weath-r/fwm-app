@@ -7,9 +7,11 @@ import { useEffect, useState } from "react";
 import { assetUrl } from "@/helpers/assetsHandling";
 
 import { useAppStore } from "@/hooks/useAppStore";
+import { useMapStore } from "@/stores/mapStore";
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
 import MapControls from "@/components/MapControls/MapControls";
+import MapSearchForm from "@/components/Home/SearchForm/MapSearchForm";
 import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
 import { MAP_CONFIG } from "@/types";
@@ -67,6 +69,7 @@ export default function HomepageMap() {
     const { warnings, shouldRenderWarnings } = useWarningsProvider();
     const [searchStationParam, setSearchStationParam] = useState<string | null>(null);
     const searchParams = useSearchParams();
+    const map = useMapStore((state) => state.map);
 
     const handleModal = (stationId: number) => {
         window.history.pushState(null, "", `?station=${stationId}`);
@@ -92,6 +95,18 @@ export default function HomepageMap() {
             setActiveStation(0);
         }
     }, [searchStationParam]);
+
+    useEffect(() => {
+        if (map) {
+            const stationsToCoordinates = stations.map(station => {
+                return { lat: station.location.coordinates[1], lng: station.location.coordinates[0] };
+            });
+            if (stationsToCoordinates.length > 0) {
+                const bounds = L.latLngBounds(stationsToCoordinates);
+                map.fitBounds(bounds);
+            }
+        }
+    }, [map]);
     
     const markers = stations.map((station) => {
         return (
@@ -112,6 +127,7 @@ export default function HomepageMap() {
             center={MAP_CONFIG.center}
             maxBounds={MAP_CONFIG.maxBounds}
             minZoom={MAP_CONFIG.minZoom}
+            maxZoom={MAP_CONFIG.maxZoom}
         >
             <MarkerClusterGroup
                 chunkedLoading
@@ -131,8 +147,16 @@ export default function HomepageMap() {
                 groupedWarnings={warnings}
                 shouldRender={shouldRenderWarnings}
             ></MapWarningsGeojsonGroup>
-            <div className="absolute bottom-2 left-2 z-[401]">
+            <div className="absolute bottom-2 left-2 z-[2]">
                 <MapControls />
+            </div>
+            <div 
+                id="selectComponentMap" 
+                className="absolute left-2 top-2 z-[2] h-[40px] w-[240px]"
+            >
+                <MapSearchForm 
+                    handleSearchResult={handleModal}
+                ></MapSearchForm>
             </div>
             <div className="absolute bottom-0">
                 <BaseModal

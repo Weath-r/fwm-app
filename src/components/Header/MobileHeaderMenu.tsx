@@ -12,7 +12,7 @@ export default function MobileHeaderMenu() {
         <Menu>
             <Menu.Button className="font-bold text-primary"> 
                 <SvgInline 
-                    path="icons/menu.svg"
+                    path="/icons/menu.svg"
                     className="w-6 fill-primary"
                 ></SvgInline>
             </Menu.Button>
