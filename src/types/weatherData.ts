@@ -19,7 +19,7 @@ type WeatherStation = {
 };
 
 export type WeatherData = CommonWeatherData & {
-    dateCreated: Date;
+    dateCreated: string;
     station: WeatherStation;
     assetId: string;
     weatherDescription: string;
@@ -27,12 +27,12 @@ export type WeatherData = CommonWeatherData & {
 };
 
 type StationPerfecture = {
-    id: number;
+    id?: number;
     label: string;
 };
 
 export type WeatherDataResponse = CommonWeatherData & {
-    date_created: Date;
+    date_created: string;
     weather_station_id: WeatherStation;
     weather_condition: string;
     weather_condition_icon: string;
