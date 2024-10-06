@@ -35,7 +35,7 @@ export default function Home() {
                     <MobileWarnings></MobileWarnings>
                 </aside>
                 <HomepageMap></HomepageMap>
-                <section className="z-2 absolute bottom-0 w-full">
+                <section className="z-2 absolute bottom-[66px] w-full lg:bottom-0">
                     <MapControls />
                     <ForecastLayer></ForecastLayer>
                 </section>

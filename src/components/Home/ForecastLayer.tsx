@@ -143,7 +143,7 @@ export default function ForecastLayer() {
             }
             {
                 map && 
-            <div className="mx-auto w-3/5 rounded bg-white/75">
+            <div className="ml-auto mr-2 w-3/4 rounded bg-white/75 lg:mx-auto lg:mr-0 lg:w-3/5">
                 <div className="p-4">
                     <CommonSlider
                         marks={sliderMarks}
