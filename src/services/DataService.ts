@@ -7,7 +7,8 @@ import {
     WarningsWithPages,
     Configurations,
     WeatherForecastResponse,
-    FetchStationDataPaginated
+    FetchStationDataPaginated,
+    Assets
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance, AxiosResponse } from "axios";
@@ -19,7 +20,8 @@ import {
     HazardLevelsResponsesSchema,
     WarningLevelsResponsesSchema,
     ConfigurationSchema,
-    WeatherForecastDataResponsesSchema
+    WeatherForecastDataResponsesSchema,
+    AssetsSchema
 } from "@/schemas";
 
 type HandleResponseParams<T> = {
@@ -332,6 +334,46 @@ export class DataService {
                     if ( res && !error ) {
                         resolve(res);
                     }
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchAssetsFromFolder = (folderId: string): Promise<Assets[]> => {
+        const ASSETS_PREFIX = "files";
+        const ASSETS_FILTER = `?filter[_and][0][type][_nnull]=true&filter[_and][1][folder][_eq]=${folderId}&sort[]=-uploaded_on&fields=id,title,filename_download`;
+        const FULL_ASSETS_PATH = `${ASSETS_PREFIX}${ASSETS_FILTER}`;
+
+        return new Promise<Assets[]>((resolve, reject) => {
+            return this.client
+                .get(`${FULL_ASSETS_PATH}`)
+                .then((response) => {
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: AssetsSchema,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchAsset = (assetId: string): Promise<any> => {
+        const ASSETS_PREFIX = "assets/";
+        const FULL_ASSETS_PATH = `${ASSETS_PREFIX}${assetId}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${FULL_ASSETS_PATH}`)
+                .then((response) => {
+                    resolve(response);
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));

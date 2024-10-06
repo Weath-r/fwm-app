@@ -10,11 +10,11 @@ import { useAppStore } from "@/hooks/useAppStore";
 import { useMapStore } from "@/stores/mapStore";
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
-import MapControls from "@/components/MapControls/MapControls";
 import MapSearchForm from "@/components/Home/SearchForm/MapSearchForm";
 import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
 import { MAP_CONFIG } from "@/types";
+
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
     ssr: false,
 });
@@ -147,9 +147,6 @@ export default function HomepageMap() {
                 groupedWarnings={warnings}
                 shouldRender={shouldRenderWarnings}
             ></MapWarningsGeojsonGroup>
-            <div className="absolute bottom-2 left-2 z-[2]">
-                <MapControls />
-            </div>
             <div 
                 id="selectComponentMap" 
                 className="absolute left-2 top-2 z-[2] h-[40px] w-[240px]"
