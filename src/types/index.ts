@@ -6,3 +6,4 @@ export * from "./warnings";
 export * from "./general";
 export * from "./weatherForecast";
 export * from "./stationPage";
+export * from "./assets";

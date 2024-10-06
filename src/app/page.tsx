@@ -21,6 +21,8 @@ const MobileWarnings = dynamic(
         ssr: false,
     }
 );
+import ForecastLayer from "@/components/Home/ForecastLayer";
+import MapControls from "@/components/MapControls/MapControls";
 
 export default function Home() {
     return (
@@ -33,6 +35,10 @@ export default function Home() {
                     <MobileWarnings></MobileWarnings>
                 </aside>
                 <HomepageMap></HomepageMap>
+                <section className="z-2 absolute bottom-0 w-full">
+                    <MapControls />
+                    <ForecastLayer></ForecastLayer>
+                </section>
             </main>
         </StationsProvider>
     );

@@ -6,11 +6,29 @@ import {
     WarningLevel,
     WarningsWithPages,
     Configurations,
-    WeatherForecastResponse
+    WeatherForecastResponse,
+    FetchStationDataPaginated,
+    Assets
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
-import { AxiosInstance } from "axios";
-import { FetchStationDataPaginated } from "@/types";
+import { AxiosInstance, AxiosResponse } from "axios";
+import { z } from "zod";
+import { 
+    StationResponsesSchema,
+    // WeatherDataResponsesSchema,
+    WarningsResponsesSchema,
+    HazardLevelsResponsesSchema,
+    WarningLevelsResponsesSchema,
+    ConfigurationSchema,
+    WeatherForecastDataResponsesSchema,
+    AssetsSchema
+} from "@/schemas";
+
+type HandleResponseParams<T> = {
+    response: AxiosResponse;
+    schema: z.ZodSchema<T>;
+    reject: (reason?: any) => void;
+};
 
 export class DataServiceError extends Error {
     constructor(
@@ -28,6 +46,33 @@ export class DataService {
         this.client = createAxiosInstance();
     }
 
+    fetchWeatherStations = (): Promise<StationResponse[]> => {
+        const STATIONS_FILTER_PREFIX = "items/weather_stations";
+        const STATIONS_FILTER = "?fields=id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.weather_condition_icon.asset&filter[_and][0][_and][0][status][_eq]=published";
+        const STATIONS_PATH = `${STATIONS_FILTER_PREFIX}${STATIONS_FILTER}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${STATIONS_PATH}`)
+                .then((response) => {
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: StationResponsesSchema,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    // WindDir returns null values for Mavrolithari.
+    // We need to handle it in the BE.
+    // ZOD IS DISABLED
     fetchWeatherDataByStation = (station_id: number): Promise<WeatherDataResponse[]> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
         const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_condition_icon`;
@@ -37,7 +82,14 @@ export class DataService {
             return this.client
                 .get(`${WEATHER_DATA_PATH}`)
                 .then((response) => {
-                    // TO-DO check against the type with zod and return error
+                    // const { res, error } = this.handleResponse({ 
+                    //     response, 
+                    //     schema: WeatherDataResponsesSchema,
+                    //     reject,
+                    // });
+                    // if ( res && !error ) {
+                    //     resolve(res);
+                    // }
                     resolve(response.data.data);
                 })
                 .catch((error) => {
@@ -46,6 +98,9 @@ export class DataService {
         });
     };
 
+    // WindDir returns null values for Mavrolithari.
+    // We need to handle it in the BE.
+    // ZOD IS DISABLED
     fetchWeatherDataByStationPaginated = ({
         station_id,
         start_date,
@@ -62,7 +117,14 @@ export class DataService {
             return this.client
                 .get(`${WEATHER_DATA_PATH}`)
                 .then((response) => {
-                    // TO-DO check against the type with zod and return error
+                    // const { res, error } = this.handleResponse({ 
+                    //     response, 
+                    //     schema: WeatherDataResponsesSchema,
+                    //     reject,
+                    // });
+                    // if ( res && !error ) {
+                    //     resolve(res);
+                    // }
                     resolve(response.data.data);
                 })
                 .catch((error) => {
@@ -71,25 +133,7 @@ export class DataService {
         });
     };
 
-    fetchWeatherStations = (): Promise<StationResponse[]> => {
-        const STATIONS_FILTER_PREFIX = "items/weather_stations";
-        const STATIONS_FILTER =
-            "?fields=id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.weather_condition_icon.asset&filter[_and][0][_and][0][status][_eq]=published";
-        const STATIONS_PATH = `${STATIONS_FILTER_PREFIX}${STATIONS_FILTER}`;
-
-        return new Promise<any>((resolve, reject) => {
-            return this.client
-                .get(`${STATIONS_PATH}`)
-                .then((response) => {
-                    // TO-DO check against the type with zod and return error
-                    resolve(response.data.data);
-                })
-                .catch((error) => {
-                    reject(this.generateDataServiceError(error));
-                });
-        });
-    };
-
+    
     fetchWeatherStationsWithData = (): Promise<WeatherDataResponse[]> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
         const DATE_FILTERS = {
@@ -136,8 +180,14 @@ export class DataService {
             return this.client
                 .get(`${WARNINGS_PATH}`)
                 .then((response) => {
-                    // TO-DO check against the type with zod and return error
-                    resolve(response.data.data);
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: WarningsResponsesSchema,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));
@@ -154,8 +204,14 @@ export class DataService {
             return this.client
                 .get(`${HAZARD_PATH}`)
                 .then((response) => {
-                    // TO-DO check against the type with zod and return error
-                    resolve(response.data.data);
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: HazardLevelsResponsesSchema,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));
@@ -172,8 +228,14 @@ export class DataService {
             return this.client
                 .get(`${WARNING_LEVELS_PATH}`)
                 .then((response) => {
-                    // TO-DO check against the type with zod and return error
-                    resolve(response.data.data);
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: WarningLevelsResponsesSchema,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));
@@ -181,6 +243,10 @@ export class DataService {
         });
     };
 
+    /**
+    * @todo Zod has failed here, for some reason it doesn't identify label and color of level_id
+    */
+    
     fetchAllWeatherWarnings = (page:number): Promise<WarningsWithPages> => {
         const limitPerPage = 50;
         const WARNINGS_PREFIX = "items/weather_warnings";
@@ -194,6 +260,27 @@ export class DataService {
             const countPromise = this.client.get(COUNT_PATH);
             Promise.all([warningsPromise, countPromise])
                 .then(([warningsResponse, countResponse]) => {
+                    // const { res: resWarnings, error: errorWarnings } = this.handleResponse({ 
+                    //     response: warningsResponse, 
+                    //     schema: WarningLevelsResponsesSchema,
+                    //     reject,
+                    // });
+                    // const { res: resPages, error: errorPages } = this.handleResponse({ 
+                    //     response: countResponse, 
+                    //     schema: WeatherWarningsCounterSchema,
+                    //     reject,
+                    // });
+
+                    // if (errorWarnings || errorPages || !resWarnings || !resPages) {
+                    //     reject(new DataServiceError("Failed to fetch warnings"));
+                    //     return;
+                    // }
+                      
+                    // const totalPages = Math.ceil(+resPages[0].countDistinct.id / limitPerPage);
+                    // resolve({
+                    //     warnings: resWarnings,
+                    //     totalPages,
+                    // });
                     const totalPages = Math.ceil(+countResponse.data.data[0].countDistinct.id / limitPerPage);
                     resolve({
                         warnings: warningsResponse.data.data,
@@ -215,7 +302,14 @@ export class DataService {
             return this.client
                 .get(`${CONFIG_PATH}`)
                 .then((response) => {
-                    resolve(response.data.data);
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: ConfigurationSchema,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));
@@ -232,8 +326,54 @@ export class DataService {
             return this.client
                 .get(`${WEATHER_FORECAST_PATH}`)
                 .then((response) => {
-                    // TO-DO check against the type with zod and return error
-                    resolve(response.data.data);
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: WeatherForecastDataResponsesSchema,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchAssetsFromFolder = (folderId: string): Promise<Assets[]> => {
+        const ASSETS_PREFIX = "files";
+        const ASSETS_FILTER = `?filter[_and][0][type][_nnull]=true&filter[_and][1][folder][_eq]=${folderId}&sort[]=-uploaded_on&fields=id,title,filename_download`;
+        const FULL_ASSETS_PATH = `${ASSETS_PREFIX}${ASSETS_FILTER}`;
+
+        return new Promise<Assets[]>((resolve, reject) => {
+            return this.client
+                .get(`${FULL_ASSETS_PATH}`)
+                .then((response) => {
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: AssetsSchema,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchAsset = (assetId: string): Promise<any> => {
+        const ASSETS_PREFIX = "assets/";
+        const FULL_ASSETS_PATH = `${ASSETS_PREFIX}${assetId}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${FULL_ASSETS_PATH}`)
+                .then((response) => {
+                    resolve(response);
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));
@@ -246,5 +386,29 @@ export class DataService {
             return new DataServiceError(error.message);
         }
         return new DataServiceError(error.message, error.response.status);
+    };
+
+    private handleResponse = <T>({
+        response,
+        schema,
+        reject,
+    }: HandleResponseParams<T>): { res: T | null; error: boolean } => {
+        try {
+            const parsedResponse = schema.parse(response.data.data);
+            return {
+                res: parsedResponse,
+                error: false,
+            };
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                console.error("Validation error! API message does not comply!", error.errors);
+            } else {
+                reject(this.generateDataServiceError(error));
+            }
+            return {
+                res: null,
+                error: true,
+            };
+        }  
     };
 }

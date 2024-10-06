@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 type CommonButtonProps = {
     className?: string;
     rounded?: boolean;
-    color: string;
+    color?: string;
     handleClick?: () => void;
     children: ReactElement;
 };
