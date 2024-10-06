@@ -28,6 +28,8 @@ ARG NEXT_PUBLIC_POSTHOG_KEY
 ENV NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
 ARG NEXT_PUBLIC_POSTHOG_HOST
 ENV NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
+ARG NEXT_PUBLIC_FORECAST_JSON_FOLDER
+ENV NEXT_PUBLIC_FORECAST_JSON_FOLDER=${NEXT_PUBLIC_FORECAST_JSON_FOLDER}
 
 # Next.js collects completely anonymous telemetry data about general usage. Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line to disable telemetry at build time

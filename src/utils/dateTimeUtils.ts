@@ -1,9 +1,15 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
 dayjs.extend(relativeTime);
 dayjs.extend(customParseFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+export default dayjs;
 
 export const timeFromNowUtil = (inputDate: Date | string, suffix: boolean = false): string => {
     return dayjs(inputDate).fromNow(suffix);
@@ -15,6 +21,10 @@ export const timeOnlyUtil = (inputDate: Date | string): string => {
 
 export const dayWithNameUtil = (inputDate: Date | string): string => {
     return dayjs(inputDate).format("dddd, DD MMM");
+};
+
+export const dayWithNameNoMonthUtil = (inputDate: Date | string): string => {
+    return dayjs(inputDate).format("dddd, DD");
 };
 
 export const dayWithNameUtilWithCustom = (inputDate: Date|string): string => {
