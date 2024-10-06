@@ -65,6 +65,7 @@ input::placeholder, textarea::placeholder {
 .rc-slider {
     padding: 0 !important;
 }
+
 .rc-slider-mark {
     display: flex;
     align-items: center;
@@ -72,6 +73,11 @@ input::placeholder, textarea::placeholder {
     top: 12px !important;
 }
 
+@media screen and (max-width: 1024px) {
+    .rc-slider-mark {
+        display: none;
+    }
+}
 .rc-slider-mark-text {
     text-align: inherit !important;
     height: 100%;
