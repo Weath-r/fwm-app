@@ -3,7 +3,7 @@ import { useStationsProvider } from "@/providers/StationsProvider";
 import { useState, useEffect } from "react";
 import CommonButton from "@/components/Common/CommonButton";
 import { XCircleIcon } from "@heroicons/react/24/solid";
-import L from "leaflet";
+import { Station } from "@/types";
 
 type SearchValue = {
     name: string;
@@ -16,7 +16,7 @@ type SearchFormProps = {
 export default function MapSearchForm(props: SearchFormProps) {
     const { stations } = useStationsProvider();
     const [selectedValue, setSelectedValue] = useState<SearchValue[]>([]);
-    const sortedStations = stations.toSorted((a, b) => a.name.localeCompare(b.name));
+    const [sortedStations, setSortedStations] = useState<Station[]>([]);
     
     const handleOnChange = (value: SearchValue[]) => {
         return setSelectedValue(value);
@@ -29,11 +29,9 @@ export default function MapSearchForm(props: SearchFormProps) {
     }, [selectedValue]);
 
     useEffect(() => {
-        const element = L.DomUtil.get("selectComponentMap");
-        if (element !== null) {
-            L.DomEvent.disableScrollPropagation(element);
-        }
-    }, []);
+        const getSortedStations = stations.toSorted((a, b) => a.name.localeCompare(b.name));
+        setSortedStations(getSortedStations);
+    }, [stations]);
 
     return (
         <Select

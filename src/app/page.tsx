@@ -1,6 +1,7 @@
 "use client";
 import "leaflet/dist/leaflet.css";
 import { StationsProvider } from "@/providers/StationsProvider";
+import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
 import dynamic from "next/dynamic";
 
 const HomepageMap = dynamic(
@@ -21,10 +22,17 @@ const MobileWarnings = dynamic(
         ssr: false,
     }
 );
+const MapSearchForm = dynamic(
+    () => import("@/components/Home/SearchForm/MapSearchForm"),
+    {
+        ssr: false,
+    }
+);
 import ForecastLayer from "@/components/Home/ForecastLayer";
-import MapControls from "@/components/MapControls/MapControls";
 
 export default function Home() {
+    const { handleModal } = useMarkerStationsClick();
+
     return (
         <StationsProvider>
             <main className="relative flex flex-1 flex-col">
@@ -34,9 +42,13 @@ export default function Home() {
                 <aside className="absolute right-0 top-1 z-[2] w-full lg:hidden">
                     <MobileWarnings></MobileWarnings>
                 </aside>
+                <div className="absolute left-2 top-2 z-[2] h-[40px] w-[240px]">
+                    <MapSearchForm 
+                        handleSearchResult={handleModal}
+                    ></MapSearchForm>
+                </div>
                 <HomepageMap></HomepageMap>
-                <section className="z-2 absolute bottom-[66px] w-full lg:bottom-0">
-                    <MapControls />
+                <section className="fixed bottom-0 z-[2] w-full lg:bottom-0">
                     <ForecastLayer></ForecastLayer>
                 </section>
             </main>

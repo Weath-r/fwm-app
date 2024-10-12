@@ -1,86 +1,66 @@
-import Slider from "rc-slider";
-import "rc-slider/assets/index.css";
-import { Popover } from "@headlessui/react";
-import { useState } from "react";
+import * as Slider from "@radix-ui/react-slider";
+import { useState, useEffect } from "react";
 
 type SliderProps = {
     step: number;
-    min?: number;
     max?: number;
     marks: {
         [key:string]: any;
     },
     onChange: (value: number | number[]) => void;
-    defaultValue?: number;
+    defaultValue: number;
     createTooltipLabel: (value: number) => string;
 };
-
+  
 export default function CommonSlider(props: SliderProps) {
-    const handleOnChange = (value:number | number[]) => {
-        props.onChange(value);
-    };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [openPopover, setOpenPopover] = useState(true);
+    const [sliderValue, setSliderValue] = useState<number>(props.defaultValue);
 
-    const handleRender = (node: any, handleProps: any): React.ReactElement => {
-        return (
-            <>
-                {openPopover && (
-                    <Popover>
-                        {() => (
-                            <>      
-                                <div className="animation pointer-events-none absolute top-[-34px] w-fit rounded bg-primary px-2 py-1"
-                                    style={{
-                                        left: node.props.style.left,
-                                        boxShadow: "0 0 4px 0 #000",
-                                        transform: "translateX(-16px)",
-                                    }}
-                                >
-                                    <Popover.Panel static>
-                                        <div className="text-sm font-medium text-white"> 
-                                            {props.createTooltipLabel(handleProps.value)}
-                                            <div className="tooltip-arrow absolute bottom-[-5px] left-2 size-0 border-x-8 border-t-8 border-x-transparent border-t-primary"></div>
-                                        </div>
-                                    </Popover.Panel>
-                                </div>
-                            </>
-                        )}
-                    </Popover>
-                )}
-            </>
-        );
+    const handleOnChange = (value:number[]) => {
+        props.onChange(value[0]);
     };
 
-    const dotStyle = {
-        backgroundColor: "#3D5361",
-        borderColor: "#3D5361",
-        bottom: 0,
-        width: "0px",
-        height: "0px",
-    };
-
-    const trackStyle = {
-        backgroundColor: "#3D5361",
-    };
-
-    const handleStyle = [{
-        borderColor: "#3D5361",
-    }];
+    useEffect(() => {
+        setSliderValue(props.defaultValue);
+    },[props.defaultValue]);
     
     return (
-        <Slider
-            marks={props.marks} 
-            step={props.step}
-            max={props.max}
-            onChangeComplete={(nextValue) => {
-                handleOnChange(nextValue);
-            }}
-            defaultValue={props.defaultValue ?? 0}
-            dotStyle={dotStyle}
-            trackStyle={trackStyle}
-            activeDotStyle={dotStyle}
-            handleStyle={handleStyle}
-            handleRender={handleRender}
-        />
+        <form className="relative">
+            <div className="text-center">
+                <p className="text-sm font-bold text-primary">
+                    {props.createTooltipLabel(sliderValue)}
+                </p>
+            </div>
+            <Slider.Root
+                className="relative flex h-5 touch-none select-none items-center"
+                defaultValue={[props.defaultValue ?? 0]}
+                max={props.max}
+                step={props.step}
+                value={[sliderValue]}
+                onValueChange={value => setSliderValue(value[0])}
+                onValueCommit={handleOnChange}
+            >
+                <Slider.Track className="relative h-[3px] grow rounded-full bg-primary/10">
+                    <Slider.Range className="absolute h-full rounded-full bg-primary" />
+                </Slider.Track>
+                <Slider.Thumb
+                    className="block size-4 rounded-[10px] bg-primary hover:bg-primary focus:outline-none"
+                    aria-label="Volume"
+                />
+            </Slider.Root>
+            <div className="flex h-fit flex-row items-center justify-between text-primary">
+                {Object.values(props.marks).map((elm, index) => {
+                    const styling = elm && index > 0 ? "border-l border-primary/10 pl-2" : "";
+                    return (
+                        <span
+                            key={`column-${index}`}
+                            className={`${styling} py-2 text-xs font-light`}
+                            role="presentation"
+                        >
+                            {elm}
+                        </span>
+                    );
+                })}
+            </div>
+        </form>
     );
 };

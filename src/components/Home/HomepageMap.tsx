@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 import { useStationsProvider, useWarningsProvider } from "@/providers/StationsProvider";
 import L, { MarkerCluster } from "leaflet";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
 
 import { assetUrl } from "@/helpers/assetsHandling";
 
@@ -10,7 +10,6 @@ import { useAppStore } from "@/hooks/useAppStore";
 import { useMapStore } from "@/stores/mapStore";
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
-import MapSearchForm from "@/components/Home/SearchForm/MapSearchForm";
 import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
 import { MAP_CONFIG } from "@/types";
@@ -64,37 +63,11 @@ const createClusterCustomIcon = function (cluster: MarkerCluster) {
 };
 
 export default function HomepageMap() {
-    const { setIsStationModalOpen, setActiveStation, isStationModalOpen } = useAppStore();
+    const map = useMapStore((state) => state.map);
+    const { isStationModalOpen } = useAppStore();
     const { stations } = useStationsProvider();
     const { warnings, shouldRenderWarnings } = useWarningsProvider();
-    const [searchStationParam, setSearchStationParam] = useState<string | null>(null);
-    const searchParams = useSearchParams();
-    const map = useMapStore((state) => state.map);
-
-    const handleModal = (stationId: number) => {
-        window.history.pushState(null, "", `?station=${stationId}`);
-        setSearchStationParam(`${stationId}`);
-    };
-
-    const handleCloseModal = () => {
-        window.history.pushState(null, "", "/");
-        return setSearchStationParam(null);
-    };
-
-    useEffect(() => {
-        const activeStationParams = searchParams.get("station");
-        setSearchStationParam(activeStationParams);
-    }, []);
-
-    useEffect(() => {
-        if(searchStationParam) {
-            setIsStationModalOpen(true);
-            setActiveStation(+searchStationParam);
-        } else {
-            setIsStationModalOpen(false);
-            setActiveStation(0);
-        }
-    }, [searchStationParam]);
+    const { handleCloseModal, handleModal } = useMarkerStationsClick();
 
     useEffect(() => {
         if (map) {
@@ -147,14 +120,6 @@ export default function HomepageMap() {
                 groupedWarnings={warnings}
                 shouldRender={shouldRenderWarnings}
             ></MapWarningsGeojsonGroup>
-            <div 
-                id="selectComponentMap" 
-                className="absolute left-2 top-2 z-[2] h-[40px] w-[240px]"
-            >
-                <MapSearchForm 
-                    handleSearchResult={handleModal}
-                ></MapSearchForm>
-            </div>
             <div className="absolute bottom-0">
                 <BaseModal
                     handleCloseModal={handleCloseModal}
