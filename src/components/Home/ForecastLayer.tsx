@@ -73,20 +73,16 @@ export default function ForecastLayer() {
                     };
                 });
 
-                const sliderMarks = hours.reduce((acc, currentValue) => {
+                const sliderMarks = hours.reduce((acc, currentValue, currentIndex) => {
                     return {
                         ...acc,
-                        [currentValue.hour]: createMarkLabels(currentValue),
+                        [currentValue.hour]: createMarkLabels(currentValue, currentIndex),
                     };
                 },{});
 
-                function createMarkLabels(label: ForecastHours) {
-                    if (label.labelHour === "00:00") {
-                        return <div className="flex items-center border-r border-gray pr-1">
-                            <p className="!text-xs text-primary">
-                                {label.labelDay}
-                            </p>
-                        </div>;
+                function createMarkLabels(label: ForecastHours, currentIndex: number) {
+                    if (label.labelHour === "00:00" || currentIndex === 0) {
+                        return label.labelDay;
                     } else {
                         return "";
                     }
@@ -124,7 +120,7 @@ export default function ForecastLayer() {
             inputDate: forecastDate,
             hoursAdd: tooltipValue,
         });
-        return `${dayWithNameNoMonthUtil(date)} - ${timeOnlyUtil(date)}`;
+        return forecastDate && `${timeOnlyUtil(date)}`;
     };
     
     useEffect(() => {
@@ -134,7 +130,7 @@ export default function ForecastLayer() {
     },[assetsFolder]);
 
     return (
-        <div className="absolute bottom-0 z-[2] w-full">
+        <div className="w-full">
             {activeForecastHour && map && 
                 <WindLayer 
                     map={map}
@@ -143,8 +139,8 @@ export default function ForecastLayer() {
             }
             {
                 map && 
-            <div className="ml-auto mr-2 w-3/4 rounded bg-white/75 lg:mx-auto lg:mr-0 lg:w-3/5">
-                <div className="p-4">
+            <div className="mx-auto w-11/12 rounded bg-white/75 lg:w-3/5">
+                <div className="p-2 pb-0">
                     <CommonSlider
                         marks={sliderMarks}
                         max={48}

@@ -54,46 +54,7 @@ input::placeholder, textarea::placeholder {
 .leaflet-marker-pane {
     z-index: 600!important;
 }
-.react-dropdown-select-input {
-    font-size: inherit !important;
-}
+
 .leaflet-heatmap-layer {
     opacity: .5;
-}
-
-/** */
-.rc-slider {
-    padding: 0 !important;
-}
-
-.rc-slider-mark {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    top: 12px !important;
-}
-
-@media screen and (max-width: 1024px) {
-    .rc-slider-mark {
-        display: none;
-    }
-}
-.rc-slider-mark-text {
-    text-align: inherit !important;
-    height: 100%;
-}
-
-.rc-slider-dot {
-    border: 0 !important;
-}
-
-.animation {
-    animation-name: hide-and-appear;
-    animation-duration: 0.5s;
-    animation-timing-function: ease;
-    animation-delay: 0s;
-    animation-iteration-count: 1;
-    animation-direction: normal;
-    animation-fill-mode: none;
-    animation-play-state: running;
 }
