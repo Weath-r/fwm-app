@@ -1,6 +1,6 @@
 {
     "name": "fwm-app",
-    "version": "1.7.0",
+    "version": "1.7.1",
     "private": true,
     "scripts": {
         "dev": "next dev",
@@ -26,6 +26,7 @@
     "dependencies": {
         "@headlessui/react": "1.7.17",
         "@heroicons/react": "2.0.18",
+        "@radix-ui/react-slider": "1.2.1",
         "@tanstack/react-table": "8.16.0",
         "@types/leaflet.markercluster": "1.5.4",
         "@types/node": "20.6.2",
@@ -42,7 +43,6 @@
         "next": "13.4.19",
         "postcss": "8.4.29",
         "posthog-js": "1.148.0",
-        "rc-slider": "11.1.6",
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-dropdown-select": "4.11.3",
