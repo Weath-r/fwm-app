@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import configuration from "@/app/appConfig";
 import { useAssetsFromFolder } from "@/hooks/useFetchAssetsFromFolder";
 import { timeOnlyUtil, dayWithNameNoMonthUtil } from "@/utils/dateTimeUtils";
@@ -6,11 +5,7 @@ import { addTimeToDate } from "@/utils/dateManipulation";
 import { DataService } from "@/services/DataService";
 import { useState, useEffect } from "react";
 import CommonSlider from "@/components/Common/CommonSlider";
-import { useMapStore } from "@/stores/mapStore";
-
-const WindLayer = dynamic(() => import("@/components/Home/Layers/WindLayer"), {
-    ssr: false,
-});
+import { useForecastLayerStore } from "@/stores/forecastLayerStore";
 
 type ForecastHours = {
     labelDay: string;
@@ -19,31 +14,20 @@ type ForecastHours = {
     hour: number;
 };
 
-type Forecast = {
-    [k:string]: {
-        data: number[],
-        header: {
-            category: string;
-        }
-    }
-};
-
 type CreateProperTimestampLabel = {
     inputDate: string | Date;
     hoursAdd: number;
 };
+
 export default function ForecastLayer() {
-    const [activeForecastHour, setActiveForecastHour] = useState<string>("");
+    const { setForecastData, setActiveForecastHour } = useForecastLayerStore();
     const [forecastHours, setForecastHours] = useState<ForecastHours[]>([]);
-    const [forecast, setForecast] = useState<Forecast>({});
     const [forecastDate, setForecastDate] = useState<string>("");
     const [sliderMarks, setSliderMarks] = useState({});
     const [sliderDefaultValue, setSliderDefaultValue] = useState<number>(0);
 
     const folderId = configuration.forecastJsonFolder;
     const assetsFolder = useAssetsFromFolder(folderId);
-
-    const map = useMapStore((state) => state.map);
     const dataService = new DataService();
 
     const createProperTimestampLabel = ({ inputDate, hoursAdd }: CreateProperTimestampLabel): string => {
@@ -98,13 +82,13 @@ export default function ForecastLayer() {
                 };
 
                 setSliderMarks(sliderMarks);
-                setActiveForecastHour(setInitialActiveForecastHour(hours));
-                setForecast(response.data);
                 setForecastHours(hours);
+                setActiveForecastHour(setInitialActiveForecastHour(hours));
+                setForecastData(response.data);
             })
             .catch((error) => {
                 console.log(error);
-                setForecast({});
+                setForecastData({});
             });
     };
 
@@ -131,14 +115,6 @@ export default function ForecastLayer() {
 
     return (
         <div className="w-full">
-            {activeForecastHour && map && 
-                <WindLayer 
-                    map={map}
-                    forecastData={forecast[activeForecastHour]}
-                ></WindLayer>
-            }
-            {
-                map && 
             <div className="mx-auto w-11/12 rounded bg-white/75 lg:w-3/5">
                 <div className="p-2 pb-0">
                     <CommonSlider
@@ -151,7 +127,6 @@ export default function ForecastLayer() {
                     />
                 </div>
             </div>
-            }
         </div>
     );
 }
