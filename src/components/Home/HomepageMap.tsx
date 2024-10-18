@@ -23,7 +23,12 @@ const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"
 const MarkerClusterGroup = dynamic(() => import("react-leaflet-cluster"), {
     ssr: false,
 });
-
+const TemperatureLayer = dynamic(() => import("@/components/Home/Layers/TemperatureLayer"), {
+    ssr: false,
+});
+const WindLayer = dynamic(() => import("@/components/Home/Layers/WindLayer"), {
+    ssr: false,
+});
 
 type MarkerCustomAttrs = {
     weatherDescription: string;
@@ -120,6 +125,8 @@ export default function HomepageMap() {
                 groupedWarnings={warnings}
                 shouldRender={shouldRenderWarnings}
             ></MapWarningsGeojsonGroup>
+            <TemperatureLayer></TemperatureLayer>
+            <WindLayer></WindLayer>
             <div className="absolute bottom-0">
                 <BaseModal
                     handleCloseModal={handleCloseModal}

@@ -1,28 +1,21 @@
 import { useEffect } from "react";
-import L, { Map } from "leaflet";
+import L from "leaflet";
 import "leaflet-velocity/dist/leaflet-velocity.min.css";
 import "leaflet-velocity";
-
-type WindLayerProps = {
-    map: Map;
-    forecastData: {
-        data: number[],
-        header: {
-            category: string;
-        };
-    };
-};
+import { useForecastLayerStore } from "@/stores/forecastLayerStore";
+import { useMap } from "react-leaflet/hooks";
 
 const colorScale = [
     "#005246",
-    "#00aa8e",
-    "#fc8c78",
-    "#b01e64",
-    "#ad14f5"
+    "#c5fcef",
+    "#e9c4c3",
+    "#ffe3f3",
+    "#fe85ab",
+    "#ff9aff"
 ];
 
 const FORECAST_PANE = "windForecastGfs";
-
+const myFeaturesMap = new L.FeatureGroup();
 const velocityLayer = L.velocityLayer({
     displayValues: false,
     displayOptions: {
@@ -37,25 +30,32 @@ const velocityLayer = L.velocityLayer({
     maxVelocity: 15,
     minVelocity: 0,
     velocityScale: 0.005,
-    opacity: 0.67,
+    opacity: 0.87,
     colorScale,
     lineWidth: 1.4,
     paneName: FORECAST_PANE,
 });
 
-export default function WindLayer(props: WindLayerProps) {
+export default function WindLayer() {
+    const { forecastData, activeForecastHour } = useForecastLayerStore();
+    const map = useMap();
 
     useEffect(() => {
-        if (props.forecastData) {
-            const mapPanes = props.map.getPanes();
-            if (!mapPanes[FORECAST_PANE]) {
-                velocityLayer.setData(props.forecastData);
-                velocityLayer.addTo(props.map);
+        if (forecastData) {
+            const mapPanes = map.getPanes();
+            if (myFeaturesMap.getLayers().length > 0 ) {
+                velocityLayer.setData(forecastData[activeForecastHour]);
             } else {
-                velocityLayer.setData(props.forecastData);
+                velocityLayer.setData(forecastData[activeForecastHour]);
+                myFeaturesMap.addLayer(velocityLayer);
+            }
+            if (map && !map.hasLayer(myFeaturesMap)) {
+                map.addLayer(myFeaturesMap);
+                mapPanes[FORECAST_PANE].style.pointerEvents = "none";
+                myFeaturesMap.bringToBack();
             }
         }
-    }, [props.forecastData]);
+    }, [forecastData, activeForecastHour]);
 
-    return (<span></span>);
+    return null;
 }
