@@ -13,6 +13,24 @@ export type ForecastData = {
     forecastIcon: string;
 };
 
+type GfsForecastObject = {
+    data: number[],
+    header: {
+        category: string;
+    }
+};
+
+export type ForecastGFSData = {
+    [k:string]: GfsForecastObject[]
+};
+
+export type ForecastLayerData = {
+    lat: number;
+    lng: number;
+    temp: number;
+    elevation: number;
+};
+
 export type WeatherForecastResponse = {
     station_id: number;
     full_forecast: ForecastData[];
