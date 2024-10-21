@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.8.1 (2024-10-21)
+
+
+### Features
+
+* **forecast:** Add forecast to station modal. FWM-59 ([1d59d50](https://github.com/Virtuosofriend/fwm-app/commit/1d59d508505258c9b096ad09e62f2086af7d4fa3))
+* **homepageMap:** Add Temperature forecast layer. FWM-78 ([a9b93dd](https://github.com/Virtuosofriend/fwm-app/commit/a9b93ddaf28ba39d2415085e1b6c9f169c4467f5))
+* **markersClustering:** Add clustering for markers on the map. FMW-18 ([2bee7d0](https://github.com/Virtuosofriend/fwm-app/commit/2bee7d08bb5474999a20e1a07a4555cff46cb09b))
+* **Search:** Create Search stations component for Homepage map. FWM-65 ([f03d18f](https://github.com/Virtuosofriend/fwm-app/commit/f03d18fe1c739108e1940bab4a855ac897a0d283))
+* **standAloneStationPage:** Create individual station page with more details. FWM-68 ([f63d562](https://github.com/Virtuosofriend/fwm-app/commit/f63d562eabb6b8c2dcd8c120fd6ae2650e8c4205))
+* **stationModal:** Add loading state. Create loading common spinner. FWM-40 ([942160f](https://github.com/Virtuosofriend/fwm-app/commit/942160f3608a3ec02d796c91a94d337cc5237935))
+* **stationsTable:** Create stations table with sorting capabilities. FWM-44 ([#37](https://github.com/Weath-r/fwm-app/issues/37)) ([08b5125](https://github.com/Virtuosofriend/fwm-app/commit/08b51250b66f5623f10354adfbdb54b4a95bf368))
+* **warnings:** Add warnings in the application. FWM-55 ([e94c5df](https://github.com/Virtuosofriend/fwm-app/commit/e94c5df0f7cad808035e7a33befae02ef112ea52))
+* **warningsPage:** Create dedicated warnings page. Move all the time&date functions to a new utils file for clarity. Update all the previous instances. FWM-58 ([0cf0db3](https://github.com/Virtuosofriend/fwm-app/commit/0cf0db3a6338bbc711663807aa1757f743538d95))
+* **windForecastLayer:** Wind forecast layer using velocity added on the homepage map. FWM-74 ([3c7ff36](https://github.com/Virtuosofriend/fwm-app/commit/3c7ff360ff723e96c32b6b56826e92285151ca22))
+
+
+### Bug Fixes
+
+* **baseModal:** Fix modal's behavior on closing. FWM-10 ([c8530ca](https://github.com/Virtuosofriend/fwm-app/commit/c8530cad6618a56756d8336b84171146343a4a8d))
+* **baseModal:** Fix modal's behavior on closing. FWM-10 ([342e87b](https://github.com/Virtuosofriend/fwm-app/commit/342e87b197f2529c315c763ff7d62f90ed871bd9))
+* **forecast:** Handle last forecast entry for today tab. FWM-61 ([ec818ee](https://github.com/Virtuosofriend/fwm-app/commit/ec818eeb7dfe6be7c23b1621dd7f48581907d3d1))
+* **forecast:** Modal fixes for mobile use. ([466f432](https://github.com/Virtuosofriend/fwm-app/commit/466f43205601ff652421c0a3c3c4d08e332c98c7))
+* **homepageMap:** Wind forecast controls where hiding in mobile view. FWM-55 ([549b9ca](https://github.com/Virtuosofriend/fwm-app/commit/549b9ca88e62618eb1312a66fb6ba47bec640ec6))
+* **housekeeping:** Cleared some logic from baseMap component to be more generic ([e42e5ba](https://github.com/Virtuosofriend/fwm-app/commit/e42e5bad7b8bf8ddd25233afc4d3d78329b29994))
+
+
+### Tasks
+
+* **addingTypes:** Introduce new types and clean up existing ones. FWM-22 ([ac0dfc8](https://github.com/Virtuosofriend/fwm-app/commit/ac0dfc80d19587f2f142a58570d142cab33be125))
+* **analytics:** Integrate PostHog in the project. FWM-62 ([7808c98](https://github.com/Virtuosofriend/fwm-app/commit/7808c98734a2244670ae954e556ce56652e318b0))
+* **changelog:** Add changelog module. FWM-20 ([a745516](https://github.com/Virtuosofriend/fwm-app/commit/a7455168f52d939f2d816a8204ef338459bcdec5))
+* **dx:** Add Zod for endpoint responses validation. FWM-71 ([1dfe039](https://github.com/Virtuosofriend/fwm-app/commit/1dfe03907d5ecc3dc74d92dc425c2f676447245a))
+* **EsLint:** Linter, Prettier and husky added to the project. ([6b8ad1f](https://github.com/Virtuosofriend/fwm-app/commit/6b8ad1ffe4e7258e526b7eef31a77abcfcc0701a))
+* **homepageMap:** Add legend for temperature layer. Adjust colors for the layer. FWM-79 ([e852ece](https://github.com/Virtuosofriend/fwm-app/commit/e852ece7b9b7e1c9b3c6d388540cab88f84451e4))
+* **homepage:** Moved map controls to page to resolve event propagation. Slider component replaced with radix-ui slider. FWM-77 ([35fd8e6](https://github.com/Virtuosofriend/fwm-app/commit/35fd8e62c6e900551119e9dbbf6192b46344d493))
+* **livemap:** Create store for map instance. Add fitbounds functionality for Homepage map. FWM-66 ([01019bf](https://github.com/Virtuosofriend/fwm-app/commit/01019bf27f7f528961a6502b5703de15c681c228))
+* **modal:** Removed reactjs popup library and introduced headlessUI modal. Add tailwind configuration. Changes to Btn component. FWM-17 ([307911e](https://github.com/Virtuosofriend/fwm-app/commit/307911ec8412d7ac970d21f6bbe64e9937d151b8))
+* **project:** Replace tailwind default colors with theme colors. Create Btn component for all custom buttons. FWM-16 ([3bab0bc](https://github.com/Virtuosofriend/fwm-app/commit/3bab0bc9ff7eabbcc30b8e1f4f96351f7e84114f))
+* **refactor:** create component props types. FWM-21 ([c47ee97](https://github.com/Virtuosofriend/fwm-app/commit/c47ee9764aab9581ae308e4baab99cfeb8def542))
+* **refactor:** swap axios client to a DataService, move + rename types, providers, props, fix map rendering issue. FWM-19 ([d025d73](https://github.com/Virtuosofriend/fwm-app/commit/d025d739523bfbf09ce4c2e8da235a28166a98da))
+* **seo:** Create dynamic sitemap. FWM-70 ([d57cbd2](https://github.com/Virtuosofriend/fwm-app/commit/d57cbd23ecd37069787a3c2008711b4772555c79))
+* **stationModal:** Removed the literals for old weather description. Openweather API provides better literals. FWM-48 ([#35](https://github.com/Weath-r/fwm-app/issues/35)) ([f61cb85](https://github.com/Virtuosofriend/fwm-app/commit/f61cb85829529f8cd91e72911b5b36147b4dfca1))
+* **stationModal:** Removed the literals for old weather description. Openweather API provides better literals. FWM-48 ([#35](https://github.com/Weath-r/fwm-app/issues/35)) ([#36](https://github.com/Weath-r/fwm-app/issues/36)) ([0e0ea58](https://github.com/Virtuosofriend/fwm-app/commit/0e0ea584a9d3df40fa111b99b54c5de7350ff64f))
+* **stationModal:** Station modal design updated. FWM-33 ([3ae4d9b](https://github.com/Virtuosofriend/fwm-app/commit/3ae4d9b64140acd192093b6e53d5e3d15610948d))
+* **warnings:** Add GeoJSON background for warning areas. FWM-54 ([0536cbf](https://github.com/Virtuosofriend/fwm-app/commit/0536cbf1d020a9a024c1f15136b4503c901ef120))
+* **warnings:** Redesign warnings panel. Support for mobile view. Global settings provider added. FWM-57 ([ad31bf0](https://github.com/Virtuosofriend/fwm-app/commit/ad31bf07cab74c38e91402adb3fc71145b97a6dc))
+
 ## 1.8.0 (2024-10-18)
 
 
