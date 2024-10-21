@@ -1,9 +1,16 @@
+import L from "leaflet";
+
 type CommonMapSettings = {
     center: [number, number];
     maxBounds: [[number, number], [number, number]];
     minZoom: number;
     maxZoom: number;
     zoom: number;
+};
+
+export type MapMarker = {
+    coordinates: L.LatLng;
+    value: number;
 };
 
 export type MapLeafletType = CommonMapSettings & {
