@@ -6,6 +6,8 @@ import { DataService } from "@/services/DataService";
 import { useState, useEffect } from "react";
 import CommonSlider from "@/components/Common/CommonSlider";
 import { useForecastLayerStore } from "@/stores/forecastLayerStore";
+import { TemperatureColorList } from "@/constants/Colors";
+import { hexToRgba } from "@/utils/colorManipulation";
 
 type ForecastHours = {
     labelDay: string;
@@ -113,9 +115,16 @@ export default function ForecastLayer() {
         }
     },[assetsFolder]);
 
+    const createGradient = () => {
+        const colors: string[] = [];
+        TemperatureColorList.forEach(color => colors.push(hexToRgba(color, .6)));
+        console.log(`linear-gradient(to right, ${colors.join(", ")})`);
+        return `linear-gradient(to right, ${colors.join(", ")})`;
+    };
+
     return (
-        <div className="w-full">
-            <div className="mx-auto w-11/12 rounded bg-white/75 lg:w-3/5">
+        <div className="flex flex-col justify-center lg:flex-row lg:justify-evenly">
+            <div className="mx-auto mb-2 w-11/12 rounded bg-white/75 lg:mb-0 lg:w-3/5">
                 <div className="p-2 pb-0">
                     <CommonSlider
                         marks={sliderMarks}
@@ -125,6 +134,24 @@ export default function ForecastLayer() {
                         onChange={ value => handleSliderEvent(value) }
                         createTooltipLabel={createSliderTooltipLabel}
                     />
+                </div>
+            </div>
+            <div className="mr-4 w-full rounded lg:w-2/12 lg:translate-y-1/2">
+                <div 
+                    style={{ background: createGradient() }} 
+                    className="pointer-events-none flex w-full justify-between rounded-lg p-1 text-xs text-white"
+                >
+                    <span style={{ width:"12.5%" }}>
+                     °C
+                    </span>
+                    {[-20, -10, 0, 10, 20, 30, 40].map((temp) => {
+                        return (
+                            <span style={{ width:"12.5%" }}
+                                key={temp}>
+                                {temp}
+                            </span>
+                        );
+                    })}
                 </div>
             </div>
         </div>
