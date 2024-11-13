@@ -44,7 +44,7 @@ export default function Home() {
                 </aside>
                 <div className="absolute left-2 top-2 z-[2] h-[40px] w-[240px]">
                     <MapSearchForm 
-                        handleSearchResult={handleModal}
+                        showStationModal={handleModal}
                     ></MapSearchForm>
                 </div>
                 <HomepageMap></HomepageMap>

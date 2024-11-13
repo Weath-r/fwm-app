@@ -118,7 +118,6 @@ export default function ForecastLayer() {
     const createGradient = () => {
         const colors: string[] = [];
         TemperatureColorList.forEach(color => colors.push(hexToRgba(color, .6)));
-        console.log(`linear-gradient(to right, ${colors.join(", ")})`);
         return `linear-gradient(to right, ${colors.join(", ")})`;
     };
 
