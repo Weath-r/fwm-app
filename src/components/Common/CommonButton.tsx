@@ -18,6 +18,8 @@ export default function CommonButton(props: Readonly<CommonButtonProps>) {
         textColor = "text-primary";
     } else if (props.color === "danger") {
         textColor = "text-danger";
+    } else if (props.color === "secondary") {
+        textColor = "text-secondary";
     }
     return (
         <button

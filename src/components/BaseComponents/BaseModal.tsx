@@ -1,22 +1,26 @@
 "use client";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, ReactNode } from "react";
 import CommonButton from "@/components/Common/CommonButton";
-import { XCircleIcon } from "@heroicons/react/24/solid";
+import { useAppStore } from "@/hooks/useAppStore";
+import { Dialog, Transition } from "@headlessui/react";
+import { HeartIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import { Fragment, ReactNode } from "react";
 
 type BaseModalProps = {
     children: ReactNode;
     handleCloseModal: () => void;
+    handleFavouriteButton: (stationId: number) => void;
     isModalOpen: boolean;
     dialogClass?: string;
 };
 
-export default function BaseModal({ 
+export default function BaseModal({
     children,
     handleCloseModal,
+    handleFavouriteButton,
     isModalOpen,
     dialogClass,
 }: Readonly<BaseModalProps>) {
+    const { activeStation, isStationFavourite } = useAppStore();
     return (
         <Transition appear show={isModalOpen} as={Fragment}>
             <Dialog
@@ -37,12 +41,24 @@ export default function BaseModal({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className={`min-h-[430px] w-full overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all ${dialogClass}`}>
+                            <Dialog.Panel
+                                className={`min-h-[430px] w-full overflow-hidden rounded-2xl bg-white p-2 text-left shadow-xl transition-all ${dialogClass}`}
+                            >
                                 <Dialog.Description as="section">
                                     {children}
-                                    <div className="absolute right-3 top-3">
+                                    <div className="absolute right-3 top-3 flex gap-2 items-center">
+                                        <CommonButton
+                                            handleClick={() => handleFavouriteButton(activeStation)}
+                                            color={
+                                                isStationFavourite(activeStation)
+                                                    ? "primary"
+                                                    : "secondary"
+                                            }
+                                        >
+                                            <HeartIcon className="size-8 p-1" />
+                                        </CommonButton>
                                         <CommonButton handleClick={handleCloseModal} color="danger">
-                                            <XCircleIcon className="size-8 p-1"></XCircleIcon>
+                                            <XCircleIcon className="size-8 p-1" />
                                         </CommonButton>
                                     </div>
                                 </Dialog.Description>

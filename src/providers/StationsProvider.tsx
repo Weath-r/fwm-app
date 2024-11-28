@@ -1,16 +1,10 @@
 "use client";
-import { 
-    ReactElement, 
-    useContext, 
-    createContext, 
-    useMemo, 
-    useState, 
-    useEffect 
-} from "react";
+import { useAppStore } from "@/hooks/useAppStore";
 import { DataService } from "@/services/DataService";
-import { Station, StationResponse, GroupedWarnings } from "@/types";
-import { buildStation } from "@/utils/weatherDataFormatUtils";
 import { useConfigurationStore } from "@/stores/configurationStore";
+import { GroupedWarnings, Station, StationResponse } from "@/types";
+import { buildStation } from "@/utils/weatherDataFormatUtils";
+import { createContext, ReactElement, useContext, useEffect, useMemo, useState } from "react";
 
 interface CurrentStationContextType {
     stations: Station[];
@@ -34,7 +28,7 @@ type StationsProviderProps = {
     children: ReactElement;
 };
 
-function getTodayAtMidnight():string {
+function getTodayAtMidnight(): string {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return today.toISOString();
@@ -47,6 +41,7 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
     const [shouldRenderWarnings, setShouldRenderWarnings] = useState<boolean>(false);
     const { featureFlags } = useConfigurationStore();
     const areWarningsEnabled = featureFlags.warnings?.showWarningsPanel;
+    const { favouriteStations, showFavouriteStations } = useAppStore();
 
     const fetchStationsData = async () => {
         await dataService
@@ -74,7 +69,7 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
                     const geojson = warning.warning_location_id.geojson;
                     const order = warning.warning_location_id.order;
                     const warningLevel = warning.level_id;
-                    const indexOfAcc = acc.findIndex(elem => elem.assetName === location);
+                    const indexOfAcc = acc.findIndex((elem) => elem.assetName === location);
                     if (indexOfAcc < 0) {
                         acc.push({
                             assetName: location,
@@ -86,19 +81,19 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
                         });
                     } else {
                         acc[indexOfAcc].warnings.push(warning);
-                        (acc[indexOfAcc].warningLevel.id < warning.level_id.id) 
-                            ? acc[indexOfAcc].warningLevel = warning.level_id 
+                        acc[indexOfAcc].warningLevel.id < warning.level_id.id
+                            ? (acc[indexOfAcc].warningLevel = warning.level_id)
                             : "";
                     }
                     return acc;
-                },[] as GroupedWarnings[]);
+                }, [] as GroupedWarnings[]);
                 setWarnings(warnings);
 
-                const perRegionWarnings = Object.values(warnings).reduce((acc, current):number => {
+                const perRegionWarnings = Object.values(warnings).reduce((acc, current): number => {
                     const warningsLegth = current.warnings.length;
                     acc += warningsLegth;
                     return acc;
-                },0);
+                }, 0);
                 setShouldRenderWarnings(!!perRegionWarnings);
             })
             .catch((error) => {
@@ -116,11 +111,14 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
         areWarningsEnabled && fetchWarnings();
     }, [areWarningsEnabled]);
 
+    const favStations = stations.filter((station) =>
+        favouriteStations.some((st) => station.id === st)
+    );
     const stationValue = useMemo(
         () => ({
-            stations,
+            stations: showFavouriteStations ? favStations : stations,
         }),
-        [stations]
+        [stations, showFavouriteStations]
     );
 
     const warningsValue = useMemo(
@@ -133,9 +131,7 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
 
     return (
         <StationsContext.Provider value={stationValue}>
-            <WarningsContext.Provider value={warningsValue}>
-                {children}
-            </WarningsContext.Provider>
+            <WarningsContext.Provider value={warningsValue}>{children}</WarningsContext.Provider>
         </StationsContext.Provider>
     );
 };

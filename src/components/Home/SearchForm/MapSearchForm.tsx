@@ -12,10 +12,10 @@ export default function MapSearchForm(props: Readonly<SearchFormProps>) {
     const { stations } = useStationsProvider();
 
     const sortedStations = stations.toSorted((a, b) => a.name.localeCompare(b.name));
-    
+
     const getStationById = (id: number) => {
-        return stations.filter( station =>  station.id == id)[0];
-    }
+        return stations.filter((station) => station.id == id)[0];
+    };
 
     const handleOnChange = (selectedStations: Station[]) => {
         if (selectedStations.length > 0) {
