@@ -6,7 +6,7 @@ import {
     getCoreRowModel,
     getSortedRowModel,
     SortingState,
-    useReactTable,
+    useReactTable
 } from "@tanstack/react-table";
 
 import { useState } from "react";
@@ -59,8 +59,8 @@ export default function StationsTableData(props: Readonly<TableDataProps>) {
                                                 ? header.column.getNextSortingOrder() === "asc"
                                                     ? "Sort ascending"
                                                     : header.column.getNextSortingOrder() === "desc"
-                                                    ? "Sort descending"
-                                                    : "Clear sort"
+                                                        ? "Sort descending"
+                                                        : "Clear sort"
                                                 : undefined
                                         }
                                     >

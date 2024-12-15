@@ -35,7 +35,7 @@ export default function BaseGeoJSON(props: Readonly<BaseGeoJsonProps>) {
             style={{
                 color: props.fillColor,
                 fillColor: props.fillColor,
-                fill: true,
+                fill: false,
                 fillOpacity: 0.4,
                 weight: 2,
             }} />
