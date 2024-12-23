@@ -102,7 +102,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                 })}
             </div>
             <div className="mt-2 max-h-[280px] overflow-y-auto">
-                {structuredForecast[forecastDate].map((forecast,index, forecastArray) => {
+                {structuredForecast[forecastDate] && structuredForecast[forecastDate].map((forecast,index, forecastArray) => {
                     const forecastTime = new Date(forecast.time);
                     const shouldRenderForecast = index === forecastArray.length - 1 
                         ? true 

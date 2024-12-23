@@ -1,18 +1,18 @@
-import dynamic from "next/dynamic";
+import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
 import { useStationsProvider, useWarningsProvider } from "@/providers/StationsProvider";
 import L, { MarkerCluster } from "leaflet";
+import dynamic from "next/dynamic";
 import { useEffect } from "react";
-import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
 
 import { assetUrl } from "@/helpers/assetsHandling";
 
-import { useAppStore } from "@/hooks/useAppStore";
-import { useMapStore } from "@/stores/mapStore";
 import BaseModal from "@/components/BaseComponents/BaseModal";
 import StationModalContent from "@/components/Home/StationModalContent";
-import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
+import { useAppStore } from "@/hooks/useAppStore";
+import { useMapStore } from "@/stores/mapStore";
+import { MAP_CONFIG, Station } from "@/types";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
-import { MAP_CONFIG } from "@/types";
+import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
 
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
     ssr: false,
@@ -67,26 +67,11 @@ const createClusterCustomIcon = function (cluster: MarkerCluster) {
     });
 };
 
-export default function HomepageMap() {
-    const map = useMapStore((state) => state.map);
-    const { isStationModalOpen } = useAppStore();
-    const { stations } = useStationsProvider();
-    const { warnings, shouldRenderWarnings } = useWarningsProvider();
-    const { handleCloseModal, handleModal } = useMarkerStationsClick();
-
-    useEffect(() => {
-        if (map) {
-            const stationsToCoordinates = stations.map(station => {
-                return { lat: station.location.coordinates[1], lng: station.location.coordinates[0] };
-            });
-            if (stationsToCoordinates.length > 0) {
-                const bounds = L.latLngBounds(stationsToCoordinates);
-                map.fitBounds(bounds);
-            }
-        }
-    }, [map]);
-    
-    const markers = stations.map((station) => {
+const getStationsMarkers = function (
+    stations: Station[],
+    handleModal: (stationId: number) => void
+) {
+    return stations.map((station) => {
         return (
             <BaseMarker
                 key={station.id}
@@ -98,6 +83,31 @@ export default function HomepageMap() {
             />
         );
     });
+};
+
+export default function HomepageMap() {
+    const map = useMapStore((state) => state.map);
+    const { isStationModalOpen, handleFavouriteStationButton } = useAppStore();
+    const { stations } = useStationsProvider();
+    const { warnings, shouldRenderWarnings } = useWarningsProvider();
+    const { handleCloseModal, handleModal } = useMarkerStationsClick();
+
+    useEffect(() => {
+        if (map) {
+            const stationsToCoordinates = stations.map((station) => {
+                return {
+                    lat: station.location.coordinates[1],
+                    lng: station.location.coordinates[0],
+                };
+            });
+            if (stationsToCoordinates.length > 0) {
+                const bounds = L.latLngBounds(stationsToCoordinates);
+                map.fitBounds(bounds);
+            }
+        }
+    }, [map]);
+
+    const markers = getStationsMarkers(stations, handleModal);
 
     return (
         <BaseMap
@@ -130,6 +140,7 @@ export default function HomepageMap() {
             <div className="absolute bottom-0">
                 <BaseModal
                     handleCloseModal={handleCloseModal}
+                    handleFavouriteButton={handleFavouriteStationButton}
                     isModalOpen={isStationModalOpen}
                     dialogClass="max-w-sm mx-2 lg:max-w-xl"
                 >

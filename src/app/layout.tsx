@@ -44,6 +44,7 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
                     <PostHogPageView />
                     <Header></Header>
                     {children}
+                    <div id="portal" className="absolute z-20"></div>
                 </body>
             </ClientProvider>
         </html>
