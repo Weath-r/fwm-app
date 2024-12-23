@@ -46,3 +46,7 @@ export const dateWithNameTime = (inputDate: Date | string): string => {
 export const dateWithMsToDay = (inputDate: number|string):string => {
     return dayjs(inputDate).format("DD/MM");
 };
+
+export const dateWithTime = (inputDate: Date | string): string => {
+    return dayjs(inputDate).format("DD.MM.YY, HH:mm");
+};

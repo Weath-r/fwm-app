@@ -46,7 +46,7 @@ export default function BaseModal({
                             >
                                 <Dialog.Description as="section">
                                     {children}
-                                    <div className="absolute right-3 top-3 flex gap-2 items-center">
+                                    <div className="absolute right-3 top-3 flex items-center gap-2">
                                         <CommonButton
                                             handleClick={() => handleFavouriteButton(activeStation)}
                                             color={
