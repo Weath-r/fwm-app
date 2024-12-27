@@ -170,10 +170,11 @@ export class DataService {
         });
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchWeatherWarningsByCreatedDate = (date:string): Promise<WeatherWarnings[]> => {
         const WARNINGS_PREFIX = "items/weather_warnings";
         const WARNING_FILTER =
-            `?fields=id,date_created,meteoalarm_warning_id,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,warning_location_id.geojson,warning_location_id.order,level_id.id,level_id.label,level_id.color,hazard_id.label,hazard_id.asset&filter[_and][0][_and][0][date_created][_gt]=${date}&filter[_and][0][_and][1][end_date][_gt]=$NOW`;
+            "?fields=id,date_created,meteoalarm_warning_id,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,warning_location_id.geojson,warning_location_id.order,level_id.id,level_id.label,level_id.color,hazard_id.label,hazard_id.asset&filter[_and][0][_and][1][end_date][_gt]=$NOW";
         const WARNINGS_PATH = `${WARNINGS_PREFIX}${WARNING_FILTER}`;
 
         return new Promise<any>((resolve, reject) => {
