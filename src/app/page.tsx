@@ -36,7 +36,7 @@ export default function Home() {
         <StationsProvider>
             <main className="relative flex flex-1 flex-col">
                 <aside 
-                    className="absolute right-2 top-1 z-[2]"
+                    className="absolute right-2 top-1 z-[3]"
                     id="layersMenu"
                 >
                     <div className="flex items-center gap-2">
