@@ -14,7 +14,6 @@ type GroupedWeatherData = {
 };
 
 type handleDateSelectionBtn = {
-    buttonIndex: number;
     date: string;
 };
 
@@ -28,10 +27,11 @@ const convertStringToDate = (date: string): string => {
 };
 
 export function StationWeatherForecastDetails(elem: WeatherData) {
-    const title = "Next 5 days";
+    const title = "Next days";
     const dateNow = new Date();
-    const [activeBtn, setActiveBtn] = useState(0);
-    const [forecastDate, setForecastDate] = useState(fullDateNoTime(dateNow));
+    const activeDate = fullDateNoTime(dateNow);
+    const [activeBtn, setActiveBtn] = useState(activeDate);
+    const [forecastDate, setForecastDate] = useState(activeDate);
 
     const structuredForecast = elem.full_forecast.reduce((acc: GroupedWeatherData, currentItem) => {
         const currentForecastTime = new Date(currentItem.time);
@@ -43,9 +43,9 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
         acc[date].push(currentItem);
         return acc;
     },{});
-
-    const handleDateSelectionBtn = ({ buttonIndex, date }:handleDateSelectionBtn ) => {
-        setActiveBtn(buttonIndex);
+    console.log(structuredForecast);
+    const handleDateSelectionBtn = ({ date }:handleDateSelectionBtn ) => {
+        setActiveBtn(date);
         setForecastDate(date);
     };
 
@@ -66,8 +66,8 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                 {title}
             </h4>
             <div className="flex gap-2 overflow-x-auto">
-                {Object.keys(structuredForecast).map((item,index) => {
-                    const activeClass = activeBtn === index ? "!bg-info text-white" : "";
+                {Object.keys(structuredForecast).map((item) => {
+                    const activeClass = activeBtn === item ? "!bg-info text-white" : "";
                     return (
                         <div 
                             key={item}
@@ -77,7 +77,6 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                                 color="primary"
                                 className={`w-full rounded-lg bg-light_white p-2 text-sm ${activeClass}`}
                                 handleClick={() => handleDateSelectionBtn({
-                                    buttonIndex: index,
                                     date: item,
                                 })}
                             >
