@@ -1,10 +1,10 @@
 export type ForecastData = {
     temperature: number;
-    dewpoint: number;
+    dewpoint?: number;
     windspd: number;
     winddir: number;
-    windgust: number;
-    barometer: number;
+    windgust?: number;
+    barometer?: number;
     percipitation: number;
     accumulated_rain: number;
     snow: number;

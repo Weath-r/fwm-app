@@ -28,15 +28,12 @@ export const WeatherForecastData = z.object({
     full_forecast: z.array(z.object({
         time: z.number(),
         temperature: z.number(),
-        barometer: z.number().min(1),
         accumulated_rain: z.number().gte(0, { message: "Number is not positive" }),
         windspd: z.number().gte(0, { message: "Number is not positive" }),
         winddir: z.number().gte(0, { message: "Number is not positive" }),
-        dewpoint: z.number(),
-        windgust: z.number().gte(0, { message: "Number is not positive" }),
         snow: z.number().gte(0, { message: "Number is not positive" }),
         cloudcover: z.number().gte(0, { message: "Number is not positive" }),
-        percipitation: z.number().gte(0, { message: "Number is not positive" }),
+        percipitation: z.number(),
         forecastIcon: z.string().min(1),
     })),
 });
