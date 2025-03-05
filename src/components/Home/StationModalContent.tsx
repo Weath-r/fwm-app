@@ -42,7 +42,7 @@ export default function StationModalContent() {
                         const newResponse = weatherData.map(elem => {
                             return {
                                 ...elem,
-                                full_forecast: response[0].full_forecast,
+                                full_forecast: response[0]?.full_forecast || [],
 
                             };
                         });
@@ -72,17 +72,15 @@ export default function StationModalContent() {
         weatherData.map((elem: WeatherData) => {
             const decodedStationName = urlStationName(elem.station.name);
             return (
-                <div className="flex h-full flex-col p-2 text-black" key={elem.station.id}>
+                <div className="flex h-full flex-col gap-2 p-2 text-black" key={elem.station.id}>
                     {isLoading && loadingBlock}
                     <div className="w-full">
                         <StationModalHeading {...elem} />
                     </div>
-                    <div className="mt-2">
-                        <StationModalWeatherSummary {...elem} />
-                    </div>
-                    <div className="mt-2">
-                        {isForecastEnabled && <StationWeatherForecastDetails {...elem} />}
-                    </div>
+                    <StationModalWeatherSummary {...elem} />
+                    {isForecastEnabled &&
+                        <StationWeatherForecastDetails {...elem} />
+                    }
                     {isFullStationPageEnabled && (<div className="mx-auto">
                         <Link 
                             className="text-sm font-bold uppercase text-primary" 
