@@ -43,7 +43,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
         acc[date].push(currentItem);
         return acc;
     },{});
-    console.log(structuredForecast);
+
     const handleDateSelectionBtn = ({ date }:handleDateSelectionBtn ) => {
         setActiveBtn(date);
         setForecastDate(date);
@@ -65,48 +65,49 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
             <h4 className="my-4 text-xs font-bold uppercase text-primary">
                 {title}
             </h4>
-            <div className="flex gap-2 overflow-x-auto">
-                {Object.keys(structuredForecast).map((item) => {
-                    const activeClass = activeBtn === item ? "!bg-info text-white" : "";
-                    return (
-                        <div 
-                            key={item}
-                            className="w-full"
-                        >
-                            <CommonButton
-                                color="primary"
-                                className={`w-full rounded-lg bg-light_white p-2 text-sm ${activeClass}`}
-                                handleClick={() => handleDateSelectionBtn({
-                                    date: item,
-                                })}
+            {elem.full_forecast.length > 0 && <section>
+                <div className="flex gap-2 overflow-x-auto">
+                    {Object.keys(structuredForecast).map((item) => {
+                        const activeClass = activeBtn === item ? "!bg-info text-white" : "";
+                        return (
+                            <div 
+                                key={item}
+                                className="w-full"
                             >
-                                <div className="flex h-16 items-center gap-4">
-                                    <div className="w-full">
-                                        <p className="text-sm font-bold">
-                                            {convertStringToDate(item)}
-                                        </p>
+                                <CommonButton
+                                    color="primary"
+                                    className={`w-full rounded-lg bg-light_white p-2 text-sm ${activeClass}`}
+                                    handleClick={() => handleDateSelectionBtn({
+                                        date: item,
+                                    })}
+                                >
+                                    <div className="flex h-16 items-center gap-4">
+                                        <div className="w-full">
+                                            <p className="text-sm font-bold">
+                                                {convertStringToDate(item)}
+                                            </p>
+                                        </div>
+                                        <div className="flex w-full flex-col">
+                                            <p>
+                                                {getExtremeDayValues(item).max}
+                                            </p>
+                                            <p>
+                                                {getExtremeDayValues(item).min}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="flex w-full flex-col">
-                                        <p>
-                                            {getExtremeDayValues(item).max}
-                                        </p>
-                                        <p>
-                                            {getExtremeDayValues(item).min}
-                                        </p>
-                                    </div>
-                                </div>
-                            </CommonButton>
-                        </div>
-                    );
-                })}
-            </div>
-            <div className="mt-2 max-h-[280px] overflow-y-auto">
-                {structuredForecast[forecastDate] && structuredForecast[forecastDate].map((forecast,index, forecastArray) => {
-                    const forecastTime = new Date(forecast.time);
-                    const shouldRenderForecast = index === forecastArray.length - 1 
-                        ? true 
-                        : forecastTime.valueOf() > dateNow.valueOf() ? true : false;
-                    return ( shouldRenderForecast && 
+                                </CommonButton>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div className="mt-2 max-h-[280px] overflow-y-auto">
+                    {structuredForecast[forecastDate] && structuredForecast[forecastDate].map((forecast,index, forecastArray) => {
+                        const forecastTime = new Date(forecast.time);
+                        const shouldRenderForecast = index === forecastArray.length - 1 
+                            ? true 
+                            : forecastTime.valueOf() > dateNow.valueOf() ? true : false;
+                        return ( shouldRenderForecast && 
                         <div 
                             key={index}
                             className="my-4 flex items-center justify-between gap-2 rounded-lg p-2 shadow"
@@ -151,9 +152,13 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                                 </span>
                             </p>
                         </div>
-                    );
-                })}
-            </div>
+                        );
+                    })}
+                </div>
+            </section>}
+            {elem.full_forecast.length === 0 && <p className="text-sm text-primary">
+                Unfortunately, forecast is not available!
+            </p>}
         </div>
     );
 }
