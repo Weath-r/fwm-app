@@ -1,5 +1,5 @@
 import SvgInline from "@/components/Common/SvgInline";
-import { WeatherDataResponse } from "@/types";
+import { WeatherDataResponse, WeatherStation } from "@/types";
 import {
     AccessorFnColumnDef,
     flexRender,
@@ -17,6 +17,7 @@ type TableDataProps = {
     columns: (
         | AccessorFnColumnDef<WeatherDataResponse, string>
         | AccessorFnColumnDef<WeatherDataResponse, number>
+        | AccessorFnColumnDef<WeatherDataResponse, WeatherStation>
     )[];
 };
 
