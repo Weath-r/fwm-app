@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 import { DataService } from "@/services/DataService";
 import { WeatherData, WeatherDataResponse } from "@/types";
 import LoadingSpinner from "@/components/Common/LoadingSpinner";
+import StationLink from "@/components/Common/StationLink";
+
 import { useAppStore } from "@/hooks/useAppStore";
 import { buildWeatherData } from "@/utils/weatherDataFormatUtils";
 import { StationModalWeatherSummary } from "./WeatherModal/StationModalWeatherSummary";
 import { StationWeatherForecastDetails } from "./WeatherModal/StationWeatherForecastDetails";
 import { StationModalHeading } from "./WeatherModal/StationModalHeading";
 import { useConfigurationStore } from "@/stores/configurationStore";
-import Link from "next/link";
-import { urlStationName } from "@/helpers/createStationName";
 
 const MODAL_TIMEOUT: number = 600;
 
@@ -70,7 +70,6 @@ export default function StationModalContent() {
 
     return (
         weatherData.map((elem: WeatherData) => {
-            const decodedStationName = urlStationName(elem.station.name);
             return (
                 <div className="flex h-full flex-col gap-2 p-2 text-black" key={elem.station.id}>
                     {isLoading && loadingBlock}
@@ -82,12 +81,13 @@ export default function StationModalContent() {
                         <StationWeatherForecastDetails {...elem} />
                     }
                     {isFullStationPageEnabled && (<div className="mx-auto">
-                        <Link 
-                            className="text-sm font-bold uppercase text-primary" 
-                            href={`/station/${activeStation}/${decodedStationName}`}
+                        <StationLink
+                            stationId={activeStation}
+                            stationName={elem.station.name}
+                            className="text-sm font-bold uppercase text-primary"
                         >
                             More details
-                        </Link>
+                        </StationLink>
                     </div>)}
                 </div>
             );

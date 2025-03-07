@@ -5,6 +5,7 @@ import { Measurements, WeatherConditions, WeatherDataResponse } from "@/types";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { createColumnHelper, SortingFn } from "@tanstack/react-table";
 import { fullDateWithTime } from "../../../utils/dateTimeUtils";
+import StationLink from "@/components/Common/StationLink";
 
 // Sorting Fns
 const sortStatusFn: SortingFn<WeatherDataResponse> = (rowA, rowB) => {
@@ -25,19 +26,25 @@ export const getColumns = (
 ) => {
     return [
         columnHelper.accessor(
-            (row) =>
-                `${row.weather_station_id.name}--${row.weather_station_id.prefecture_id.label}`,
+            (row) => row.weather_station_id,
+            // `${row.weather_station_id.name}--${row.weather_station_id.prefecture_id.label}`,
             {
                 id: "stationName",
                 cell: (info) => {
-                    const label = info.getValue().split("--");
+                    const stationName = info.getValue().name;
+                    const stationPerfecture = info.getValue().prefecture_id.label;
+                    const stationId = info.getValue().id;
                     return (
-                        <p className="whitespace-nowrap pr-6 font-bold text-primary">
-                            {label[0]}{" "}
+                        <StationLink 
+                            stationId={stationId} 
+                            stationName={stationName}
+                            className="whitespace-nowrap pr-6 font-bold text-primary"
+                        >
+                            {stationName}
                             <span className="block font-normal text-primary opacity-30">
-                                {label[1]}
+                                {stationPerfecture}
                             </span>
-                        </p>
+                        </StationLink>
                     );
                 },
                 header: () => <span>Station name</span>,
