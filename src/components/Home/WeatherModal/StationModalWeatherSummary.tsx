@@ -16,7 +16,7 @@ export function StationModalWeatherSummary(elem: WeatherData) {
                             weatherDescriptionText={elem.weatherDescription}
                         />
                     </div>
-                    <p className="mx-auto mt-4 text-base font-bold capitalize text-primary">
+                    <p className="mx-auto mb-4 text-base font-bold capitalize text-primary">
                         {elem.weatherDescription}
                     </p>
                 </div>

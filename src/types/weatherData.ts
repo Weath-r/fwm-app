@@ -11,7 +11,7 @@ type CommonWeatherData = {
     temp_difference?: number;
 };
 
-type WeatherStation = {
+export type WeatherStation = {
     id: number;
     name: string;
     prefecture_id: StationPerfecture;

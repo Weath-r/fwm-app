@@ -9,6 +9,8 @@ import useRedirectToHomeOnBack from "@/hooks/useRedirectToHomeOnBack";
 import StationStandaloneCurrentWeather from "@/components/StationPage/StationStandaloneCurrentWeather";
 import LastDayGraph from "@/components/StationPage/LastDayGraph";
 import MonthGraph from "@/components/StationPage/MonthGraph";
+import { BackButton } from "@/components/StationPage/components/BackButton";
+import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 
 type StationPageProps = {
     params: {
@@ -56,12 +58,17 @@ export default function StationPage({ params }: StationPageProps) {
     return (
         <main className="flex flex-col">
             <div className="mx-4 mt-4 md:container md:mx-auto">
-                <h2 className="mb-4 text-2xl text-primary">
-                    {properStationName(stationName)}
-                    <small className="block text-sm text-primary opacity-60">
+                <div className="flex items-center gap-2">
+                    <BackButton>
+                        <ChevronLeftIcon className="size-6 text-primary" />
+                    </BackButton>
+                    <h2 className="mb-4 text-2xl text-primary">
+                        {properStationName(stationName)}
+                        <small className="block text-sm text-primary opacity-60">
                         Last update {timeFromNowUtil(currentWeather[0]?.date_created)}
-                    </small>
-                </h2>
+                        </small>
+                    </h2>
+                </div>
                 <div className="flex flex-wrap gap-2 lg:flex-nowrap">
                     <div className="my-2 w-full rounded-xl bg-white p-2 drop-shadow-md lg:w-1/3 lg:p-4">
                         <StationStandaloneCurrentWeather currentWeather={currentWeather}></StationStandaloneCurrentWeather>

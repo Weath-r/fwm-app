@@ -14,7 +14,9 @@ export default function MapSearchForm(props: Readonly<SearchFormProps>) {
     const sortedStations = stations.toSorted((a, b) => a.name.localeCompare(b.name));
 
     const getStationById = (id: number) => {
-        return stations.filter((station) => station.id == id)[0];
+        if (stations.length === 0) return [];
+        const station = stations.find((station) => station.id === id);
+        return station ? [station] : [];
     };
 
     const handleOnChange = (selectedStations: Station[]) => {
@@ -37,7 +39,7 @@ export default function MapSearchForm(props: Readonly<SearchFormProps>) {
             clearRenderer={() => <></>}
             dropdownGap={0}
             options={sortedStations}
-            values={activeStation != 0 ? [getStationById(activeStation)] : []}
+            values={activeStation !== 0 ? getStationById(activeStation) : []}
             onChange={(values) => handleOnChange(values)}
         />
     );

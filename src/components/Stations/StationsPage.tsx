@@ -1,6 +1,6 @@
 import { useAppStore } from "@/hooks/useAppStore";
 import { DataService } from "@/services/DataService";
-import { WeatherDataResponse } from "@/types";
+import { WeatherDataResponse, WeatherStation } from "@/types";
 import { AccessorFnColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import StationsTableData from "./components/StationsTableData";
@@ -12,6 +12,7 @@ const getStationsTable = (
     columns: (
         | AccessorFnColumnDef<WeatherDataResponse, string>
         | AccessorFnColumnDef<WeatherDataResponse, number>
+        | AccessorFnColumnDef<WeatherDataResponse, WeatherStation>
     )[]
 ) => {
     return (
@@ -61,7 +62,6 @@ export default function StationsPage() {
 
     weatherTableData.forEach((station) => {
         if (favSet.has(station.weather_station_id.id)) {
-            console.log(station.weather_station_id.id);
             favStations.push(station);
         } else {
             remainingStations.push(station);
