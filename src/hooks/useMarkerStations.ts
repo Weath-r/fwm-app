@@ -20,7 +20,9 @@ export const useMarkerStationsClick = () => {
 
     useEffect(() => {
         const activeStationParams = searchParams.get("station");
-        setSearchStationParam(activeStationParams);
+        if (activeStationParams || activeStationParams === null) { // null is for when the param station is not there but it is not NaN
+            setSearchStationParam(activeStationParams);
+        }
     }, [searchParams]);
 
     useEffect(() => {
@@ -29,7 +31,7 @@ export const useMarkerStationsClick = () => {
             setActiveStation(+searchStationParam);
         } else {
             setIsStationModalOpen(false);
-            setActiveStation(0);
+            setActiveStation(-1);
         }
     }, [searchStationParam]);
 
