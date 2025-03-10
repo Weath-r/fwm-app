@@ -62,7 +62,6 @@ export default function StationsPage() {
 
     weatherTableData.forEach((station) => {
         if (favSet.has(station.weather_station_id.id)) {
-            console.log(station.weather_station_id.id);
             favStations.push(station);
         } else {
             remainingStations.push(station);
