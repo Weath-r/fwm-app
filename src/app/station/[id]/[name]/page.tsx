@@ -1,16 +1,6 @@
-"use client";
-import { properStationName } from "@/helpers/createStationName";
-import { useState, useEffect } from "react";
+import StationPage from "@/components/StationPage/StationPage";
 import { DataService } from "@/services/DataService";
-import { WeatherDataResponse } from "@/types";
-import { timeFromNowUtil } from "@/utils/dateTimeUtils";
-import useRedirectToHomeOnBack from "@/hooks/useRedirectToHomeOnBack";
-
-import StationStandaloneCurrentWeather from "@/components/StationPage/StationStandaloneCurrentWeather";
-import LastDayGraph from "@/components/StationPage/LastDayGraph";
-import MonthGraph from "@/components/StationPage/MonthGraph";
-import { BackButton } from "@/components/StationPage/components/BackButton";
-import { ChevronLeftIcon } from "@heroicons/react/24/solid";
+import { properStationName } from "@/helpers/createStationName";
 
 type StationPageProps = {
     params: {
@@ -19,68 +9,31 @@ type StationPageProps = {
     }
 };
 
-export default function StationPage({ params }: StationPageProps) {
-    useRedirectToHomeOnBack();
-    const { id: stationId, name: stationName } = params;
-    const dataService = new DataService();
-    const [weatherData, setWeatherData] = useState<WeatherDataResponse[]>([]);
-    const [currentWeather, setCurrentWeather] = useState<WeatherDataResponse[]>([]);
+export async function generateMetadata({ params }: StationPageProps) {
+    const stationName = properStationName(params.name);
+    
+    return {
+        title: `myWEATHR.com - ${stationName} Weather Station - Live Updates`,
+        description: `Current weather at ${stationName}. Live weather updates for ${stationName}.`,
+        keywords: `${stationName} weather, ${stationName} weather station, live weather ${stationName}, real-time weather ${stationName}, personal weather station, weather station, weather data, weather forecast, rainfall`,
+    };
+}
 
+export default async function StationPageView({ params }: StationPageProps) {
+    const dataService = new DataService();
     const end_date = "$NOW";
     const start_date = "$NOW(-1 month)";
-
-    const getWeatherData = async () => {
-        await dataService
-            .fetchWeatherDataByStationPaginated({
-                station_id: +stationId,
-                start_date,
-                end_date,
-                page: 1,
-                limit: -1,
-            })
-            .then((response) => {
-                if (currentWeather.length === 0) {
-                    setCurrentWeather([response[0]]);
-                }
-                return setWeatherData(response);
-            })
-            .catch((error) => {
-                // TO-DO handle error properly
-                console.log(error);
-                return setWeatherData([]);
-            });
-    };
-
-    useEffect(() => {
-        getWeatherData();
-    }, []);
+    const currentWeather = await dataService.fetchWeatherDataByStationPaginated({
+        station_id: +params.id,
+        start_date,
+        end_date,
+        page: 1,
+        limit: -1,
+    });
 
     return (
-        <main className="flex flex-col">
-            <div className="mx-4 mt-4 md:container md:mx-auto">
-                <div className="flex items-center gap-2">
-                    <BackButton>
-                        <ChevronLeftIcon className="size-6 text-primary" />
-                    </BackButton>
-                    <h2 className="mb-4 text-2xl text-primary">
-                        {properStationName(stationName)}
-                        <small className="block text-sm text-primary opacity-60">
-                        Last update {timeFromNowUtil(currentWeather[0]?.date_created)}
-                        </small>
-                    </h2>
-                </div>
-                <div className="flex flex-wrap gap-2 lg:flex-nowrap">
-                    <div className="my-2 w-full rounded-xl bg-white p-2 drop-shadow-md lg:w-1/3 lg:p-4">
-                        <StationStandaloneCurrentWeather currentWeather={currentWeather}></StationStandaloneCurrentWeather>
-                    </div>
-                    <div className="my-2 w-full rounded-xl bg-white p-2 drop-shadow-md lg:w-2/3 lg:p-4">
-                        <LastDayGraph weatherData={weatherData}></LastDayGraph>
-                    </div>
-                </div>
-                <div className="my-2 w-full rounded-xl bg-white p-2 drop-shadow-md lg:p-4">
-                    <MonthGraph weatherData={weatherData}></MonthGraph>
-                </div>
-            </div>
-        </main>
+        <>
+            <StationPage params={params} weatherData={currentWeather} />
+        </>
     );
 }

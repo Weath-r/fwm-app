@@ -2,7 +2,7 @@ import { useAppStore } from "@/hooks/useAppStore";
 import { DataService } from "@/services/DataService";
 import { WeatherDataResponse, WeatherStation } from "@/types";
 import { AccessorFnColumnDef } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import StationsTableData from "./components/StationsTableData";
 import { getColumns } from "./components/StationTableColumns";
 
@@ -52,7 +52,7 @@ export default function StationsPage() {
             });
     };
 
-    useMemo(() => {
+    useEffect(() => {
         getWeatherData();
     }, []);
 

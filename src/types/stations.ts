@@ -17,6 +17,7 @@ export type StationResponse = {
     location: Location;
     website_url: string;
     accuweather_location: AccuWeatherLocation;
+    elevation: number;
 };
 
 export type Station = {
@@ -25,4 +26,5 @@ export type Station = {
     location: Location;
     currentWeatherDescription: string;
     currentWeatherConditionIcon: string;
+    elevation: number;
 };

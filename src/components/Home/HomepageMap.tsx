@@ -135,7 +135,7 @@ export default function HomepageMap() {
                 groupedWarnings={warnings}
                 shouldRender={shouldRenderWarnings}
             ></MapWarningsGeojsonGroup>
-            <TemperatureLayer></TemperatureLayer>
+            <TemperatureLayer stationsList={stations}></TemperatureLayer>
             <WindLayer></WindLayer>
             <div className="absolute bottom-0">
                 <BaseModal
