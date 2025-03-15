@@ -35,3 +35,16 @@ export type WeatherForecastResponse = {
     station_id: number;
     full_forecast: ForecastData[];
 };
+
+export type TemperatureLayerData = {
+    lat: number;
+    lng: number;
+    temp: number;
+    elevation: number;
+};
+
+export type ElevationKnownPoints = {
+    lng: number;
+    lat: number;
+    elevation: number;
+};

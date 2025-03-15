@@ -48,7 +48,7 @@ export class DataService {
 
     fetchWeatherStations = (): Promise<StationResponse[]> => {
         const STATIONS_FILTER_PREFIX = "items/weather_stations";
-        const STATIONS_FILTER = "?fields=id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.weather_condition_icon.asset&filter[_and][0][_and][0][status][_eq]=published";
+        const STATIONS_FILTER = "?fields=id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.weather_condition_icon.asset,elevation&filter[_and][0][_and][0][status][_eq]=published";
         const STATIONS_PATH = `${STATIONS_FILTER_PREFIX}${STATIONS_FILTER}`;
 
         return new Promise<any>((resolve, reject) => {

@@ -18,6 +18,7 @@ export const WeatherStationSchema = z.object({
     website_url: z.string().min(1),
     location: WeatherLocationSchema,
     accuweather_location: AccuweatherLocation,
+    elevation: z.number(),
 });
 
 export const StationResponsesSchema = z.array(WeatherStationSchema);
