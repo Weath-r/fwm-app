@@ -1,8 +1,5 @@
-type ElevationKnownPoints = {
-    lng: number;
-    lat: number;
-    elevation: number;
-};
+import { ElevationKnownPoints, Variogram } from "@/types";
+import kriging from "@sakitam-gis/kriging";
 
 export const haversineDistance = (lat1:number, lon1:number, lat2:number, lon2:number): number => {
     const R = 6371e3; // Earth's radius in meters
@@ -35,4 +32,29 @@ export const interpolateElevation = (lat:number, lon:number, knownPoints: Elevat
 export const applyAltitudeCorrection = (temp: number, elevation:number, baseElevation = 0):number => {
     const lapseRate = 0.0065; // Temperature lapse rate in °C/m
     return temp - lapseRate * (elevation - baseElevation);
+};
+
+export const createElevationVariogram = (locations: ElevationKnownPoints[]): Variogram => {
+    return kriging.train(
+        locations.map(point => point.elevation),
+        locations.map(point => point.lng),
+        locations.map(point => point.lat),
+        "exponential", 0, 25
+    );
+};
+
+export const predictKriging = ({ x, y, variogram }: { 
+    x: number; 
+    y: number;
+    variogram: Variogram;
+}): number => {
+    return kriging.predict(x, y, variogram);
+};
+
+export const trainKriging = ({ values, lons, lats }: {
+    values: number[];
+    lons: number[];
+    lats: number[];
+}): Variogram => {
+    return kriging.train(values, lons, lats, "exponential", 0, 25);
 };

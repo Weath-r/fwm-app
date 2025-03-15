@@ -7,3 +7,4 @@ export * from "./general";
 export * from "./weatherForecast";
 export * from "./stationPage";
 export * from "./assets";
+export * from "./gisTypes";
