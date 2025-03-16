@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         {
             url: BASE_URL,
             lastModified: new Date(),
-            changeFrequency: "yearly",
+            changeFrequency: "hourly",
             priority: 1,
         },
         {
@@ -21,6 +21,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             url: `${BASE_URL}/warnings`,
             lastModified: new Date(),
             changeFrequency: "daily",
+            priority: 0.5,
+        },
+        {
+            url: `${BASE_URL}/about-us`,
+            lastModified: new Date(),
+            changeFrequency: "yearly",
             priority: 0.5,
         }
     ];
