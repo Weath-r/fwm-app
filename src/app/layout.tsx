@@ -4,6 +4,7 @@ import { Commissioner } from "next/font/google";
 import { ClientProvider } from "@/providers/clientProvider";
 import Header from "@/components/Header/Header";
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
 const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
     ssr: false,
@@ -41,9 +42,11 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
             <meta name="twitter:image" content="/assets/myweathr.png" />
             <ClientProvider>
                 <body className={fontFamily.className}>
-                    <PostHogPageView />
-                    <Header></Header>
-                    {children}
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <PostHogPageView />
+                        <Header></Header>
+                        {children}
+                    </Suspense>
                     <div id="portal" className="absolute z-20"></div>
                 </body>
             </ClientProvider>
