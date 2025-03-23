@@ -1,7 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: "standalone",
-    optimizeCss: false,
+    images: {
+        dangerouslyAllowSVG: true,
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "backend.myweathr.com",
+                port: "",
+                pathname: "/assets/*",
+                search: "",
+            }
+        ],
+    },
 };
 
 module.exports = nextConfig;
