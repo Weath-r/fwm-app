@@ -10,6 +10,12 @@ const nextConfig = {
                 port: "",
                 pathname: "/assets/*",
                 search: "",
+            },{
+                protocol: "http",
+                hostname: "localhost",
+                port: "8055",
+                pathname: "/assets/*",
+                search: "",
             }
         ],
     },

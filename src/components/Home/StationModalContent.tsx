@@ -36,22 +36,26 @@ export default function StationModalContent() {
                 const weatherData: WeatherData[] = response.map((elem: WeatherDataResponse) => {
                     return buildWeatherData(elem);
                 });
-                await dataService
-                    .fetchForecastByStation(activeStation)
-                    .then((response) => {
-                        const newResponse = weatherData.map(elem => {
-                            return {
-                                ...elem,
-                                full_forecast: response[0]?.full_forecast || [],
-
-                            };
+                if (isForecastEnabled) {
+                    await dataService
+                        .fetchForecastByStation(activeStation)
+                        .then((response) => {
+                            const newResponse = weatherData.map(elem => {
+                                return {
+                                    ...elem,
+                                    full_forecast: response[0]?.full_forecast || [],
+    
+                                };
+                            });
+                            return setWeatherData(newResponse);
+    
+                        })
+                        .catch((error) => {
+                            console.log(error);
                         });
-                        return setWeatherData(newResponse);
-
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                } else {
+                    return setWeatherData(weatherData);
+                }
             })
             .catch((error) => {
                 console.log(error);

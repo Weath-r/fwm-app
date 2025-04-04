@@ -52,7 +52,8 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
     const getExtremeDayValues = (date:string) => {
         const valuesArr = [];
         for(const value of structuredForecast[date]) {
-            valuesArr.push(value.temperature);
+            // there is a scenario that the temperature is undefined
+            value.temperature && valuesArr.push(value.temperature);
         }
         return {
             max: Math.max(...valuesArr),
