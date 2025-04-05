@@ -11,6 +11,12 @@ const nextConfig = {
                 pathname: "/assets/*",
                 search: "",
             },{
+                protocol: "https",
+                hostname: "myweathr.com",
+                port: "",
+                pathname: "/*",
+                search: "",
+            },{
                 protocol: "http",
                 hostname: "localhost",
                 port: "8055",
