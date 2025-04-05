@@ -3,6 +3,7 @@ import { DataService } from "@/services/DataService";
 import { WeatherWarnings } from "@/types";
 import WarningsTableData from "./components/WarningsTableData";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/solid";
+
 export default function StationsPage() {
     const dataService = new DataService();
     const [weatherWarningsTabelData, setWeatherWarningsTabelData] = useState<WeatherWarnings[]>([]);

@@ -1,11 +1,11 @@
-import { ReactElement } from "react";
+import { ReactNode } from "react";
 
 type CommonButtonProps = {
     className?: string;
     rounded?: boolean;
     color?: string;
     handleClick?: () => void;
-    children: ReactElement;
+    children: ReactNode;
 };
 
 export default function CommonButton(props: Readonly<CommonButtonProps>) {
