@@ -4,16 +4,20 @@ import { MapPinIcon } from "@heroicons/react/24/solid";
 import { ClockIcon } from "@heroicons/react/24/solid";
 
 export function StationModalHeading(elem: Readonly<WeatherData>) {
+    const headerElemement = elem.station.website_url.includes("http") ?
+        <a
+            href={elem.station.website_url}
+            target="_blank"
+            rel="noreferrer"
+        >
+            {elem.station.name}
+        </a> : 
+        <span>{elem.station.name}</span>;
+
     return (
         <div className="flex flex-col border-b-2 border-light_white">
             <h2 className="flex items-center text-2xl font-bold text-primary">
-                <a
-                    href={elem.station.website_url}
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    {elem.station.name}
-                </a>
+                {headerElemement}
             </h2>
             <div className="my-2 flex items-center gap-3">
                 <div className="flex items-center gap-1">
