@@ -1,4 +1,5 @@
 import L from "leaflet";
+import { ReactNode } from "react";
 
 type CommonMapSettings = {
     center: [number, number];
@@ -14,7 +15,7 @@ export type MapMarker = {
 };
 
 export type MapLeafletType = CommonMapSettings & {
-    children: JSX.Element | JSX.Element[];
+    children: JSX.Element | JSX.Element[] | ReactNode;
 };
 
 export type MapConfig = CommonMapSettings & {

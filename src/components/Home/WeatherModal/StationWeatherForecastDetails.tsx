@@ -8,6 +8,8 @@ import {
 import BaseWeatherIcon from "../../BaseComponents/BaseWeatherIcon";
 import SvgInline from "../../Common/SvgInline";
 import CommonButton from "@/components/Common/CommonButton";
+import StationLink from "@/components/Common/StationLink";
+import { useConfigurationStore } from "@/stores/configurationStore";
 
 type GroupedWeatherData = {
     [key: string]: ForecastData[];
@@ -61,12 +63,16 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
         };
     };
 
+    const { featureFlags } = useConfigurationStore();
+    const isFullStationPageEnabled = featureFlags?.standalone_station.moreDetailsModalUrl;    
+
     return (
         <div className="p-1">
             <h4 className="my-4 text-xs font-bold uppercase text-primary">
                 {title}
             </h4>
-            {elem.full_forecast.length > 0 && <section>
+            {elem.full_forecast.length > 0 && 
+            <section>
                 <div className="flex gap-2 overflow-x-auto">
                     {Object.keys(structuredForecast).map((item) => {
                         const activeClass = activeBtn === item ? "!bg-info text-white" : "";
@@ -82,7 +88,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                                         date: item,
                                     })}
                                 >
-                                    <div className="flex h-16 items-center gap-4">
+                                    <div className="flex h-12 items-center gap-4 md:h-16">
                                         <div className="w-full">
                                             <p className="text-sm font-bold">
                                                 {convertStringToDate(item)}
@@ -102,7 +108,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                         );
                     })}
                 </div>
-                <div className="mt-2 max-h-[280px] overflow-y-auto">
+                <div className="my-2 h-fit max-h-[190px] overflow-y-auto md:max-h-[240px]">
                     {structuredForecast[forecastDate] && structuredForecast[forecastDate].map((forecast,index, forecastArray) => {
                         const forecastTime = new Date(forecast.time);
                         const shouldRenderForecast = index === forecastArray.length - 1 
@@ -156,7 +162,19 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                         );
                     })}
                 </div>
-            </section>}
+                {isFullStationPageEnabled && (
+                    <div className="flex justify-center">
+                        <StationLink
+                            stationId={elem.station.id}
+                            stationName={elem.station.name}
+                            className="text-sm font-bold uppercase text-primary"
+                        >
+                            More details
+                        </StationLink>
+                    </div>
+                )}
+            </section>
+            }
             {elem.full_forecast.length === 0 && <p className="text-sm text-primary">
                 Unfortunately, forecast is not available!
             </p>}

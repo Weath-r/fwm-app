@@ -21,7 +21,6 @@ const LayersMenu = dynamic(() => import("@/components/Home/LayersMenu"), {
 
 export default function Home() {
     const { handleModal } = useMarkerStationsClick();
-
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
