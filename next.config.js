@@ -14,12 +14,18 @@ const nextConfig = {
                 protocol: "https",
                 hostname: "myweathr.com",
                 port: "",
-                pathname: "/*",
+                pathname: "/assets/*",
                 search: "",
             },{
                 protocol: "http",
                 hostname: "localhost",
                 port: "8055",
+                pathname: "/assets/*",
+                search: "",
+            },{
+                protocol: "http",
+                hostname: "localhost",
+                port: "3000",
                 pathname: "/assets/*",
                 search: "",
             }
