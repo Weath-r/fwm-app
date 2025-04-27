@@ -5,9 +5,6 @@ import { StationModalWeatherDetails } from "./StationModalWeatherDetails";
 export function StationModalWeatherSummary(elem: WeatherData) {
     return (
         <div className="flex flex-col">
-            <h4 className="text-xs font-bold uppercase text-primary">
-                Currently outside
-            </h4>
             <div className="mt-6 flex items-center gap-4 lg:gap-0">
                 <div className="flex w-2/5 flex-col lg:w-1/2">
                     <div className="mx-auto size-28 lg:size-36">

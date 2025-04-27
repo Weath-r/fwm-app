@@ -2,6 +2,7 @@ import { CogIcon } from "@heroicons/react/24/solid";
 import DropdownListMenu from "@/components/Common/DropdownListMenu";
 import BaseToggle from "@/components/BaseComponents/BaseToggle";
 import { useAppStore } from "@/hooks/useAppStore";
+import configuration from "../../app/appConfig";
 
 export default function LayersMenu() {
     const { setShowFavouriteStations, showFavouriteStations } = useAppStore();
@@ -23,6 +24,10 @@ export default function LayersMenu() {
                 >
                     <span className="mr-2">Favorite stations</span>
                 </BaseToggle>
+                <div className="my-2 border-b border-primary/20"></div>
+                <small className="block text-right text-primary">
+                    v{configuration.appVersion}
+                </small>
             </div>,
     }];
     return (

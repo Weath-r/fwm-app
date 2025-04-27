@@ -15,6 +15,7 @@ type BaseMarkerProps = {
     stationId: number;
     weatherDescription: string;
     assetId: string;
+    stationName?: string;
 };
 
 export default function BaseMarker({
@@ -23,17 +24,21 @@ export default function BaseMarker({
     stationId,
     weatherDescription,
     assetId,
+    stationName,
 }: Readonly<BaseMarkerProps>) {
     const marker: DivIconLeafletMarker = {
         position,
         weatherDescription,
         assetId,
+        stationName,
+        stationId,
         eventHandlers: {
             click: () => {
                 return handleClick(stationId);
             },
         },
     };
+
     const container: DivIconContainer = {
         tagName: "div",
         className: "",

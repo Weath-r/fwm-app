@@ -2,7 +2,7 @@ import { useWarningsProvider } from "@/providers/StationsProvider";
 import { dateWithTime, dayWithNameUtil } from "@/utils/dateTimeUtils";
 import { useGeneralStore } from "@/stores/settingsStore";
 import SvgInline from "@/components/Common/SvgInline";
-import BaseControlledModal from "@/components/BaseComponents/BaseControlledModal";
+import BaseDialog from "@/components/BaseComponents/BaseDialog";
 import WarningHazardsLegend from "./components/WarningHazardsLegend";
 import WarningLevelsLegend from "./components/WarningLevelsLegend";
 import HazardIcon from "./components/HazardIcon";
@@ -126,7 +126,7 @@ export default function WarningsPanel() {
                 </section>
             );
         });
-    
+        
     const panelLayout = (
         <section className="flex size-full flex-col">
             <div className="flex w-full flex-col p-3">
@@ -137,7 +137,8 @@ export default function WarningsPanel() {
                             {today}
                         </small>
                     </h2>
-                    <BaseControlledModal
+                    <BaseDialog 
+                        dialogTitle={<div className="text-sm font-bold uppercase text-primary">Information</div> }
                         trigger={
                             <SvgInline path="icons/circle-info.svg" className="size-3 fill-primary"></SvgInline>
                         }
@@ -146,7 +147,7 @@ export default function WarningsPanel() {
                             <WarningHazardsLegend hazards={hazards}></WarningHazardsLegend>
                             <WarningLevelsLegend levels={warningLevels}></WarningLevelsLegend>
                         </section>
-                    </BaseControlledModal>
+                    </BaseDialog>
                 </div>
                 <div className="max-h-[66vh] w-full">
                     {panelContent}

@@ -1,7 +1,7 @@
 import { WeatherData } from "@/types";
 import { timeFromNowUtil } from "@/utils/dateTimeUtils";
-import { MapPinIcon } from "@heroicons/react/24/solid";
-import { ClockIcon } from "@heroicons/react/24/solid";
+import { MapPinIcon, ClockIcon } from "@heroicons/react/24/solid";
+import { FavoriteStationButton } from "@/components/Common/Favorite/favoriteStationButton";
 
 export function StationModalHeading(elem: Readonly<WeatherData>) {
     const headerElemement = elem.station.website_url.includes("http") ?
@@ -31,6 +31,9 @@ export function StationModalHeading(elem: Readonly<WeatherData>) {
                     <p className="text-sm text-primary/70">
                         {elem.station.prefecture_id.label}
                     </p>
+                </div>
+                <div className="flex items-center gap-1">
+                    <FavoriteStationButton></FavoriteStationButton>
                 </div>
             </div>
         </div>
