@@ -1,6 +1,6 @@
 "use client";
+
 import Image from "next/image";
-import appLogo from "@/assets/logos/myweathr.png";
 import HeaderMenu from "./HeaderMenu";
 import MobileHeaderMenu from "./MobileHeaderMenu";
 import Link from "next/link";
@@ -10,8 +10,10 @@ export default function Header() {
         <div className="container mx-auto flex h-full">
             <Link href={"/"} className="my-auto px-4">
                 <Image
-                    src={appLogo}
+                    src="/assets/myweathr.png"
                     className="m:w-60 h-full w-48 object-contain"
+                    width={200}
+                    height={200}
                     alt="FWM - Your weather application for Central Greece"
                 />
                 <p className="mt-2 text-sm text-primary">
