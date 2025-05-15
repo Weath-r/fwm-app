@@ -23,7 +23,7 @@ export default function Header() {
             <div className="my-auto ml-auto hidden justify-between md:flex">
                 <HeaderMenu></HeaderMenu>
             </div>
-            <div className="z-10 mt-10 flex w-2/3 flex-col items-center md:hidden">
+            <div className="z-10 mt-10 w-full md:hidden">
                 <MobileHeaderMenu></MobileHeaderMenu>
             </div>
         </div>
