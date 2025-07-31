@@ -1,6 +1,6 @@
 import { WeatherDataResponse, GraphVariables } from "@/types";
 import { useEffect, useState } from "react";
-import { dateTimeOfPastTwoDays, dateValueOf } from "@/utils/dateManipulation";
+import { isWithinPastNDays, dateValueOf } from "@/utils/dateManipulation";
 
 import AreaGraphDateTime from "@/components/Graphs/AreaGraphDateTime";
 import DropdownMenu from "@/components/Common/DropdownMenu";
@@ -17,7 +17,7 @@ export default function LastDayGraph({ weatherData }: { weatherData: WeatherData
 
     useEffect(() => {
         const pastTwoDaysArray = weatherData
-            .filter(data => dateTimeOfPastTwoDays(data.date_created) && data[selectedFilter] !== undefined)
+            .filter(data => isWithinPastNDays({ inputDate: data.date_created, numberOfDays: 2 }) && data[selectedFilter] !== undefined)
             .map(data => [dateValueOf(data.date_created), data[selectedFilter] as number])
             .reverse();
         setGraphData(pastTwoDaysArray);

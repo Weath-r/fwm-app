@@ -22,7 +22,11 @@ const initialMenu: MenuLink[] = [
         pathName: "/warnings",
         text: "Warnings",
         value: "warnings",
-    }, {
+    },{
+        pathName: "/fthiotida-forecast",
+        text: "Fthiotida Forecast",
+        value: "fthiotidaforecast",
+    },{
         pathName: "/about-us",
         text: "About Us",
         value: "aboutus",
