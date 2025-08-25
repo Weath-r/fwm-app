@@ -10,8 +10,7 @@ export default function MobileHeaderMenu() {
 
     return (
         <NavigationMenu.Root className="relative z-10 flex w-full justify-end pr-4">
-            	<NavigationMenu.List className="center 
-                 m-0 flex list-none">
+            	<NavigationMenu.List className="center m-0 flex list-none">
                 <NavigationMenu.Item>
                     <NavigationMenu.Trigger 
                         className="flex items-center font-bold text-primary">
@@ -20,7 +19,7 @@ export default function MobileHeaderMenu() {
                     <NavigationMenu.Content 
                         className="absolute left-[-4px] top-10 w-full rounded-md bg-white p-4 shadow-2xl sm:w-auto"
                     >
-                        <ul className="one m-0 grid list-none gap-x-2.5 sm:w-[500px] sm:grid-cols-[0.75fr_1fr]">
+                        <ul className="m-0 flex list-none flex-col sm:w-[500px]">
                             {menu.map((elem) => (
                                 <li 
                                     className="grid"
@@ -35,11 +34,9 @@ export default function MobileHeaderMenu() {
                                         >
                                             {elem.text}
                                         </Link>
-    
                                     </NavigationMenu.Link>
                                 </li>
                             ))}
-
                         </ul>
                     </NavigationMenu.Content>
                 </NavigationMenu.Item>
