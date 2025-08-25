@@ -8,7 +8,8 @@ import {
     Configurations,
     WeatherForecastResponse,
     FetchStationDataPaginated,
-    Assets
+    Assets,
+    FthiotidaForecast
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance, AxiosResponse } from "axios";
@@ -375,6 +376,21 @@ export class DataService {
                 .get(`${FULL_ASSETS_PATH}`)
                 .then((response) => {
                     resolve(response);
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchFthiotidaForecasts = (): Promise<FthiotidaForecast[]> => {
+        const PREFIX = "items/fthiotida_forecasts?fields=forecast&sort=-id&limit=10";
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${PREFIX}`)
+                .then((response) => {
+                    resolve(response.data.data);
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));

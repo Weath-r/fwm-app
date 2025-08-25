@@ -5,6 +5,7 @@ type SvgInlineProps = {
     path: string;
     className?: string;
     style?: React.CSSProperties;
+    ref?: React.Ref<SVGSVGElement>;
 };
 
 export default function SvgInline(props: Readonly<SvgInlineProps>) {
