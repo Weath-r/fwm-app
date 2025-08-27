@@ -34,7 +34,7 @@ export default function FthiotidaForecastsIndividualCard(props: Readonly<Forecas
                     }}
                 >
                     <SvgInline 
-                        path="/icons/arrow-up.svg"
+                        path="/icons/arrow-down.svg"
                         className={"size-full"}
                     ></SvgInline> 
                 </section>
