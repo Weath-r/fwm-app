@@ -71,20 +71,37 @@ export default function FthiotidaForecastPage() {
                     until today
                 </small>
             </h2>
-            <div className="my-4 w-full rounded-xl bg-white p-4 drop-shadow-md">
-                <CalendarSection
-                    handleClickfn={handleDateClick}
-                    selectedDate={selectedDate}
-                    forecastDates={forecastDates}
-                ></CalendarSection>
-                {forecasts[selectedForecastIndex] && !showLoading && (
-                    <FthiotidaForecastsSection
-                        key={selectedForecastIndex}
-                        forecasts={forecasts[selectedForecastIndex].forecast.data}
-                    />
-                )}
-                {!forecasts[selectedForecastIndex] && !showLoading && <NoForecastSection></NoForecastSection>}
-                {showLoading && <LoadingForecastData></LoadingForecastData>}
+            <div className="relative my-4 w-full rounded-xl bg-white drop-shadow-md">
+                <div className="rounded-t-lg bg-primary p-4 text-sm font-bold text-white">
+                    <p>
+                        Provided by <a href="https://fthiotida-meteogroup.gr/" target="_blank" className="decoration-dashed" title="Fthiotida Meteogroup - Local forecasts for Fthiotida" rel="noreferrer">Fthiotida-Meteogroup</a>
+                    </p>
+                </div>
+                <section className="flex flex-col px-4 pb-2">
+                    <CalendarSection
+                        handleClickfn={handleDateClick}
+                        selectedDate={selectedDate}
+                        forecastDates={forecastDates}
+                    ></CalendarSection>
+                    
+                    {forecasts[selectedForecastIndex] && !showLoading && (
+                        <FthiotidaForecastsSection
+                            key={selectedForecastIndex}
+                            forecasts={forecasts[selectedForecastIndex].forecast.data}
+                        />
+                    )}
+                    {!forecasts[selectedForecastIndex] && !showLoading && <NoForecastSection></NoForecastSection>}
+                    {showLoading && <LoadingForecastData></LoadingForecastData>}
+
+                    <div className="my-4 w-full border-t-2 border-primary/10 pt-2">
+                        <p className="text-sm text-primary">
+                            Fthiotida forecasts are provided by the legendary local amateur meteorologist group <a href="https://fthiotida-meteogroup.gr/" target="_blank" className="font-bold" rel="noreferrer">Fthiotida-Meteogroup</a>. As always, we thank them for their kind support and help. <br />Visit their site for more detailed local forecasts.
+                        </p>
+                        <p className="mt-2 text-xs text-primary">
+                            <span className="font-bold">Disclaimer:</span> Please always check the official weather services before making any life decisions based on these forecasts.
+                        </p>
+                    </div>
+                </section>
             </div>
         </div>
     );

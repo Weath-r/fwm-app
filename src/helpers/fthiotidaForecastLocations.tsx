@@ -78,7 +78,7 @@ export const locationsObject: LocationObjectAttributes = {
     },
     "makrakomi": {
         assetCode: null,
-        label: "E. Fthiotida",
+        label: "W. Fthiotida",
         type: "wind",
         style: { top: "20%", left: "30%" },
     },

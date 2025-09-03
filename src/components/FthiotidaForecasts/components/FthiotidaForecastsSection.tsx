@@ -38,9 +38,9 @@ export default function FthioridaForecastsSection(props: Readonly<ForecastsSecti
     }, [props.forecasts]);
 
     return (
-        <section className="my-4">
+        <section>
             <h3 className="my-2 text-lg font-semibold text-primary">
-                Forecasts
+                Weather conditions
             </h3>
             <div className="flex flex-wrap items-center justify-center gap-2">
                 {structuredForecast["forecast"].map((elem,index) => {
@@ -51,7 +51,7 @@ export default function FthioridaForecastsSection(props: Readonly<ForecastsSecti
                     ></FthiotidaForecastsIndividualForecastCard>;
                 })}
             </div>
-            <h3 className="my-2 text-lg font-semibold text-primary">
+            <h3 className="my-4 text-lg font-semibold text-primary">
                 Winds
             </h3>
             <div className="flex gap-1 overflow-hidden overflow-x-auto overscroll-contain py-3">
