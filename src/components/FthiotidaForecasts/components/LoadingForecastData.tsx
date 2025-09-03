@@ -12,7 +12,7 @@ export default function LoadingForecastData() {
     ];
     const randomIndex = Math.floor(Math.random() * weatherMessages.length);
     return (
-        <div className="my-4 flex w-full justify-center">
+        <div className="my-4 flex h-[260px] w-full items-center justify-center">
             <h3 className="my-2 font-semibold text-primary">
                 {weatherMessages[randomIndex]}
             </h3>

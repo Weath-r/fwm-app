@@ -24,7 +24,7 @@ export default function FthiotidaForecastsIndividualCard(props: Readonly<Forecas
     return (
         <section>
             <div className="w-100 rounded-lg bg-white p-4 shadow-lg">
-                <h3 className="text-sm font-semibold text-primary">
+                <h3 className="border-b-2 border-primary/10 pb-2 text-sm font-semibold text-primary">
                     {`${props.metadata.label}`}
                 </h3>
                 <div className="size-64">

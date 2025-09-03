@@ -100,13 +100,13 @@ export default function CalendarSection(props: Readonly<CalendarSectionProps>) {
                         onClick={() => props.handleClickfn(date.value)}
                     >
                         <div className="flex flex-col items-center gap-2">
-                            <p className="text-center text-xl font-bold">
+                            <p className="text-center font-bold">
                                 {date.label.slice(0,2)}
                                 <span className="block text-sm">
                                     {date.label.slice(6,10)}
                                 </span>
                             </p>
-                            <p className="text-center">
+                            <p className="text-center text-xs">
                                 {date.label.slice(3, 6)}
                             </p>
                             {date.hasForecast && <div className="size-2 rounded-full bg-primary"></div>}
