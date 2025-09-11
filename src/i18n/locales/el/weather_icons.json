@@ -1,0 +1,21 @@
+{
+    "sunny": "Ηλιοφάνεια",
+    "partly_sunny": "Μερική ηλιοφάνεια",
+    "intermittent_clouds": "Κατά διαστήματα νεφώσεις",
+    "rain": "Βροχή",
+    "snow": "Χιόνι",
+    "sleet": "Χαλάζι",
+    "fog": "Ομίχλη",
+    "cloudy": "Συννεφιά",
+    "hazy_sunshine": "Ομιχλώδες πρωινό",
+    "mostly_cloudy": "Κυρίως συννεφιά",
+    "showers": "Βροχή κατά διαστήματα",
+    "partly_sunny_w_showers": "Μερική ηλιοφάνεια με βροχή",
+    "t-storms": "Καταιγίδες",
+    "freezing_rain": "Παγωμένη βροχή",
+    "flurries": "Χιονόνερο",
+    "rain_and_snow": "Βροχή και χιόνι",
+    "clear": "Ξαστεριά",
+    "partly_cloudy": "Μερικώς νεφελώδης νύχτα",
+    "mostly_cloudy_w_showers": "Κυρίως συννεφιά με βροχή"
+}

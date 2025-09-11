@@ -3,6 +3,7 @@ import { useStationsProvider, useWarningsProvider } from "@/providers/StationsPr
 import L from "leaflet";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
+import { useT } from "@/i18n/client";
 
 import { useMapStore } from "@/stores/mapStore";
 import { MAP_CONFIG, Station } from "@/types";
@@ -32,10 +33,12 @@ const BaseDialog = dynamic(() => import("@/components/BaseComponents/BaseDialog"
 const getStationsMarkers = function (
     stations: Station[],
     handleModal: (stationId: number) => void,
-    handleCloseModal: () => void
+    handleCloseModal: () => void,
+    i18n: any,
+    selectedLanguage: string
 ) {
     const dialogTitle = (<div className="text-sm font-bold uppercase text-primary">
-        Currently outside
+        {i18n.getFixedT(selectedLanguage, "stationModal")("currentlyOutside")}
     </div>);
 
     return stations.map((station) => {
@@ -66,6 +69,9 @@ export default function HomepageMap() {
     const { warnings, shouldRenderWarnings } = useWarningsProvider();
     const { handleModal, handleCloseModal } = useMarkerStationsClick();
 
+    const { i18n } = useT("stationModal");
+    const selectedLanguage = i18n.language;
+
     useEffect(() => {
         if (map) {
             const stationsToCoordinates = stations.map((station) => {
@@ -81,7 +87,7 @@ export default function HomepageMap() {
         }
     }, [map]);
 
-    const markers = getStationsMarkers(stations, handleModal, handleCloseModal);
+    const markers = getStationsMarkers(stations, handleModal, handleCloseModal, i18n, selectedLanguage);
 
     return (
         <BaseMap

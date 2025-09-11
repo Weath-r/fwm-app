@@ -3,6 +3,10 @@ type WarningLocation = {
     value: string;
     geojson: string;
     order: number;
+    translations: {
+        languages_code: string;
+        name: string;
+    }[];
 };
 
 export type WarningLevel = {
@@ -11,12 +15,20 @@ export type WarningLevel = {
     color: string;
     value?: string;
     foreign_id?: number;
+    translations: {
+        languages_code: string;
+        name: string;
+    }[];
 };
 
 export type WarningHazard = {
     id: number;
     label: string;
     asset: string;
+    translations: {
+        languages_code: string;
+        name: string;
+    }[];
 };
 
 export type WeatherWarnings = {
@@ -32,6 +44,7 @@ export type WeatherWarnings = {
     warning_location_id: WarningLocation;
     level_id: WarningLevel;
     hazard_id: WarningHazard;
+    [key: string]: any;
 };
 
 export type GroupedWarnings = {

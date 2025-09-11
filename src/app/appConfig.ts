@@ -5,6 +5,8 @@ type AppConfig = {
     env: NODE_MODE;
     appVersion: string;
     forecastJsonFolder: string;
+    languages: { id: string; name: string }[];
+    defaultLocale: string;
 };
 
 const configuration: AppConfig = {
@@ -12,6 +14,18 @@ const configuration: AppConfig = {
     env: process.env.NODE_ENV,
     appVersion: process.env.NEXT_PUBLIC_APP_VERSION ?? "0.0.1",
     forecastJsonFolder: process.env.NEXT_PUBLIC_FORECAST_JSON_FOLDER ?? "",
+    languages: [
+        { 
+            id: "el", 
+            name: "ΕΛ", 
+        },
+        {
+            id: "en",
+            name: "ΕΝ",
+        }
+    ],
+    defaultLocale: "en",
 };
 
+export const AppLanguages = configuration.languages.map(lang => lang.id);
 export default configuration;

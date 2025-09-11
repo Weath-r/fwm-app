@@ -27,7 +27,6 @@ export default function ForecastLayer() {
     const [forecastDate, setForecastDate] = useState<string>("");
     const [sliderMarks, setSliderMarks] = useState({});
     const [sliderDefaultValue, setSliderDefaultValue] = useState<number>(0);
-
     const folderId = configuration.forecastJsonFolder;
     const assetsFolder = useAssetsFromFolder(folderId);
     const dataService = new DataService();

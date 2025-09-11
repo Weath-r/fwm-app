@@ -1,0 +1,21 @@
+{
+    "sunny": "Sunny",
+    "partly_sunny": "Partly Sunny",
+    "intermittent_clouds": "Intermittent Clouds",
+    "rain": "Rain",
+    "snow": "Snow",
+    "sleet": "Sleet",
+    "fog": "Fog",
+    "cloudy": "Cloudy",
+    "hazy_sunshine": "Hazy Sunshine",
+    "mostly_cloudy": "Mostly Cloudy",
+    "showers": "Showers",
+    "partly_sunny_w_showers": "Partly Sunny w/ Showers",
+    "t-storms": "Thunderstorms",
+    "freezing_rain": "Freezing Rain",
+    "flurries": "Flurries",
+    "rain_and_snow": "Rain and Snow",
+    "clear": "Clear night",
+    "partly_cloudy": "Partly Cloudy night",
+    "mostly_cloudy_w_showers": "Mostly Cloudy w/ Showers night"
+}

@@ -10,6 +10,7 @@ import SvgInline from "../../Common/SvgInline";
 import CommonButton from "@/components/Common/CommonButton";
 import StationLink from "@/components/Common/StationLink";
 import { useConfigurationStore } from "@/stores/configurationStore";
+import { useT } from "@/i18n/client";
 
 type GroupedWeatherData = {
     [key: string]: ForecastData[];
@@ -29,7 +30,9 @@ const convertStringToDate = (date: string): string => {
 };
 
 export function StationWeatherForecastDetails(elem: WeatherData) {
-    const title = "Next days";
+    const { i18n } = useT("stationModal");
+    const selectedLanguage = i18n.language;
+    const title = i18n.getFixedT(selectedLanguage, "stationModal")("nextDays");
     const dateNow = new Date();
     const activeDate = fullDateNoTime(dateNow);
     const [activeBtn, setActiveBtn] = useState(activeDate);
@@ -167,16 +170,17 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                         <StationLink
                             stationId={elem.station.id}
                             stationName={elem.station.name}
+                            lang={selectedLanguage}
                             className="text-sm font-bold uppercase text-primary"
                         >
-                            More details
+                            {i18n.getFixedT(selectedLanguage, "stationModal")("moreDetails")}
                         </StationLink>
                     </div>
                 )}
             </section>
             }
             {elem.full_forecast.length === 0 && <p className="text-sm text-primary">
-                Unfortunately, forecast is not available!
+                {i18n.getFixedT(selectedLanguage, "stationModal")("forecastNotAvailable")}
             </p>}
         </div>
     );

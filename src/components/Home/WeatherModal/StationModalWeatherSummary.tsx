@@ -1,8 +1,12 @@
 import { WeatherData, Measurements } from "@/types";
 import BaseWeatherIcon from "../../BaseComponents/BaseWeatherIcon";
 import { StationModalWeatherDetails } from "./StationModalWeatherDetails";
+import { useT } from "@/i18n/client";
 
 export function StationModalWeatherSummary(elem: WeatherData) {
+    const { i18n } = useT("weather_icons");
+    const selectedLanguage = i18n.language;
+
     return (
         <div className="flex flex-col">
             <div className="mt-6 flex items-center gap-4 lg:gap-0">
@@ -14,7 +18,7 @@ export function StationModalWeatherSummary(elem: WeatherData) {
                         />
                     </div>
                     <p className="mx-auto mb-4 text-base font-bold capitalize text-primary">
-                        {elem.weatherDescription}
+                        {i18n.getFixedT(selectedLanguage, "weather_icons")(elem.weatherDescription)}
                     </p>
                 </div>
                 <div className="w-2/3 lg:w-1/2">

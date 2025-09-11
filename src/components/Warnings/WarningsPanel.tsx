@@ -11,6 +11,7 @@ import { ChevronDownIcon, ClockIcon } from "@heroicons/react/20/solid";
 
 import { printIssuedByUser } from "./utils/warningsHelpers";
 import { useState } from "react";
+import { useT } from "@/i18n/client";
   
 type ClampState = boolean[][];
 
@@ -19,6 +20,9 @@ export default function WarningsPanel() {
     const { warnings } = useWarningsProvider();
     const today = dayWithNameUtil(new Date());
     
+    const { i18n } = useT("warnings");
+    const selectedLanguage = i18n.language;
+
     const [clampStates, setClampStates] = useState<ClampState>(
         warnings.map(group => group.warnings.map(() => false))
     );
@@ -90,7 +94,7 @@ export default function WarningsPanel() {
                                                     <p className="ml-1 text-left text-sm font-bold text-primary">
                                                         {warning.hazard_id.label}
                                                         <span className="block text-xs font-medium opacity-60">
-                                                            Issued by {printIssuedByUser(warning.meteoalarm_warning_id)}
+                                                            {i18n.getFixedT(selectedLanguage, "warnings")("tableData.issuedBy")} {printIssuedByUser(warning.meteoalarm_warning_id)}
                                                         </span>
                                                     </p>
                                                 </div>
@@ -112,7 +116,7 @@ export default function WarningsPanel() {
                                                         : "Click to see more"
                                                 }
                                             >
-                                                {warning.description_en}
+                                                {warning[`description_${selectedLanguage}`]}
                                             </p>
                                             <p className="mt-3 flex items-center border-t border-secondary pt-2 text-xs opacity-60">
                                                 <ClockIcon className="mr-1 size-3"></ClockIcon>{startingDate} - {endingDate}
@@ -132,20 +136,20 @@ export default function WarningsPanel() {
             <div className="flex w-full flex-col p-3">
                 <div className="flex items-center justify-between">
                     <h2 className="text-lg font-bold text-primary">
-                        Active warnings
+                        {i18n.getFixedT(selectedLanguage, "warnings")("activeWarnings")}
                         <small className="block text-xs opacity-60">
                             {today}
                         </small>
                     </h2>
                     <BaseDialog 
-                        dialogTitle={<div className="text-sm font-bold uppercase text-primary">Information</div> }
+                        dialogTitle={<div className="text-sm font-bold uppercase text-primary">{i18n.getFixedT(selectedLanguage, "warnings")("information")}</div> }
                         trigger={
                             <SvgInline path="icons/circle-info.svg" className="size-3 fill-primary"></SvgInline>
                         }
                     >
                         <section>
-                            <WarningHazardsLegend hazards={hazards}></WarningHazardsLegend>
-                            <WarningLevelsLegend levels={warningLevels}></WarningLevelsLegend>
+                            <WarningHazardsLegend hazards={hazards} i18n={i18n}></WarningHazardsLegend>
+                            <WarningLevelsLegend levels={warningLevels} i18n={i18n}></WarningLevelsLegend>
                         </section>
                     </BaseDialog>
                 </div>

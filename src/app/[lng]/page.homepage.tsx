@@ -19,7 +19,7 @@ const LayersMenu = dynamic(() => import("@/components/Home/LayersMenu"), {
     ssr: false,
 });
 
-export default function Home() {
+export default function Homepage() {
     const { handleModal } = useMarkerStationsClick();
     const [isMounted, setIsMounted] = useState(false);
 

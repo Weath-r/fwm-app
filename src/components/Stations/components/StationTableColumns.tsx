@@ -22,7 +22,10 @@ const columnHelper = createColumnHelper<WeatherDataResponse>();
 export const getColumns = (
     title: string,
     handleFavouriteButton: (stationId: number) => void,
-    isStationFavourite: (stationId: number) => boolean
+    isStationFavourite: (stationId: number) => boolean,
+    i18n: any,
+    i18nConditions: any,
+    selectedLanguage: string
 ) => {
     return [
         columnHelper.accessor(
@@ -39,6 +42,7 @@ export const getColumns = (
                             stationId={stationId} 
                             stationName={stationName}
                             className="whitespace-nowrap pr-6 font-bold text-primary"
+                            lang={selectedLanguage}
                         >
                             {stationName}
                             <span className="block font-normal text-primary opacity-30">
@@ -47,7 +51,9 @@ export const getColumns = (
                         </StationLink>
                     );
                 },
-                header: () => <span>Station name</span>,
+                header: () => <span>
+                    {i18n.getFixedT(selectedLanguage, "common")("StationsTable.stationName")}
+                </span>,
                 sortingFn: sortStatusFn,
             }
         ),
@@ -63,7 +69,9 @@ export const getColumns = (
                     </div>
                 );
             },
-            header: () => <span>Current conditions</span>,
+            header: () => <span>
+                {i18n.getFixedT(selectedLanguage, "common")("StationsTable.stationWeatherIcon")}
+            </span>,
         }),
         columnHelper.accessor((row) => `${row.temperature}--${row.temp_difference}`, {
             id: "stationTemp",
@@ -71,7 +79,7 @@ export const getColumns = (
                 const tempLabel = info.getValue().split("--");
                 const trendArrowStyle = +tempLabel[1] > 0 ? "fill-success" : "fill-danger";
                 const trendArrowIcon =
-                    +tempLabel[1] > 0 ? "icons/arrow-up.svg" : "icons/arrow-down.svg";
+                    +tempLabel[1] > 0 ? "/icons/arrow-up.svg" : "/icons/arrow-down.svg";
                 const trendArrow = +tempLabel[1] !== 0 && (
                     <SvgInline
                         path={trendArrowIcon}
@@ -88,7 +96,7 @@ export const getColumns = (
             },
             header: () => (
                 <p>
-                    {WeatherConditions.TEMP}
+                    {i18nConditions.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.TEMP.toLowerCase())}
                     <span className="ml-1 text-xs">({Measurements.CELCIUS})</span>
                 </p>
             ),
@@ -99,7 +107,7 @@ export const getColumns = (
             cell: (info) => <span>{info.getValue()}</span>,
             header: () => (
                 <p>
-                    {WeatherConditions.HUMIDITY}
+                    {i18nConditions.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.HUMIDITY.toLowerCase())}
                     <span className="ml-1 text-xs">({Measurements.PERCENTAGE})</span>
                 </p>
             ),
@@ -109,7 +117,7 @@ export const getColumns = (
             cell: (info) => <span>{info.getValue()}</span>,
             header: () => (
                 <p>
-                    {WeatherConditions.RAIN}
+                    {i18nConditions.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.RAIN.toLowerCase())}
                     <span className="ml-1 text-xs">({Measurements.MILLIMETER})</span>
                 </p>
             ),
@@ -119,7 +127,7 @@ export const getColumns = (
             cell: (info) => <span>{info.getValue()}</span>,
             header: () => (
                 <p>
-                    {WeatherConditions.WIND}
+                    {i18nConditions.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.WIND.toLowerCase())}
                     <span className="ml-1 text-xs">({Measurements.SPEED})</span>
                 </p>
             ),
@@ -131,7 +139,7 @@ export const getColumns = (
                 return (
                     <div className="h-4 w-6">
                         <SvgInline
-                            path="weather_icons/wind.svg"
+                            path="/weather_icons/wind.svg"
                             title="Wind icon"
                             className="fill-primary"
                             style={{
@@ -141,14 +149,14 @@ export const getColumns = (
                     </div>
                 );
             },
-            header: () => <p>{WeatherConditions.WINDDIR}</p>,
+            header: () => <p>{i18nConditions.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.WINDDIR.toLowerCase())}</p>,
         }),
         columnHelper.accessor((row) => row.date_created, {
             id: "stationUpdate",
             cell: (info) => {
                 return <span>{fullDateWithTime(info.getValue())}</span>;
             },
-            header: () => <p>Last update</p>,
+            header: () => <p>{i18n.getFixedT(selectedLanguage, "common")("StationsTable.lastUpdate")}</p>,
             enableSorting: false,
         }),
         columnHelper.accessor((row) => row.weather_station_id.id, {
@@ -165,7 +173,7 @@ export const getColumns = (
                     </div>
                 );
             },
-            header: () => <span>Favourite</span>,
+            header: () => <span>{i18n.getFixedT(selectedLanguage, "common")("StationsTable.favourite")}</span>,
             enableSorting: false,
         })
     ];

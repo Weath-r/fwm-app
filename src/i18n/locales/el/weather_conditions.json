@@ -1,0 +1,12 @@
+{
+    "weatherNow": "Καιρός τώρα",
+    "temperature": "Θερμοκρασία",
+    "humidity": "Υγρασία",
+    "wind": "Άνεμος",
+    "windspd": "Άνεμος",
+    "rain": "Βροχή",
+    "percipitation": "Βροχή",
+    "rainrate": "Ένταση βροχής",
+    "wind direction": "Κατεύθυνση Ανέμου",
+    "barometer": "Βαρόμετρο"
+}

@@ -1,0 +1,26 @@
+{
+    "homepage": {
+        "title": "myWEATHR.com - Live weather conditions in Central Greece",
+        "description": "MyWeathr is the ultimate weather app for Greece, delivering accurate local forecasts updated every 30 minutes. View real-time conditions, interactive maps, and detailed 5-day predictions. Stay safe with instant weather alerts and warnings tailored to your region."
+    },
+    "stations": {
+        "title": "Stations list",
+        "description": "Explore MyWeathr weather stations across Greece. View real-time local data, regional conditions, and live measurements from Central Greece."
+    },
+    "warnings": {
+        "title": "Weather warnings",
+        "description": "Stay safe with MyWeathr weather warnings for Greece. Get instant alerts for storms, heavy rain, strong winds, and extreme conditions in your area."
+    },
+    "fthiotidaForecast": {
+        "title": "Weather forecast for Fthiotis region",
+        "description": "Accurate Fthiotida weather forecast with real-time updates. MyWeathr delivers detailed predictions for Lamia, the wider Fthiotida region, and the maritime areas of Maliakos Gulf, Oreoi Strait, and the Northern Euboean Gulf."
+    },
+    "aboutUs": {
+        "title": "About the application",
+        "description": "Learn more about MyWeathr, your trusted weather app for Greece. Discover our mission to provide accurate forecasts, real-time updates, and alerts."
+    },
+    "stationIndividual": {
+        "title": "{{station}} weather now",
+        "description": "Live weather data from the {{station}} station, Central Greece. MyWeathr provides real-time updates, forecasts, and local alerts for {{station}}."
+    }
+}

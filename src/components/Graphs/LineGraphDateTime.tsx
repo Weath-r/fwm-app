@@ -2,18 +2,20 @@ import * as Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import noDataToDisplay from "highcharts/modules/no-data-to-display";
 import { useRef, useEffect, useState } from "react";
-import { dateWithMsToDay } from "@/utils/dateTimeUtils";
+import { dateWithMsToDay, fullDateWithTime } from "@/utils/dateTimeUtils";
 
 type LineGraphDateTimeProps = {
     graphData: number[][];
     variable: string;
+    i18n: any;
 };
 if (typeof Highcharts === "object") {
     noDataToDisplay(Highcharts);
 }
 
-
 export default function LineGraphDateTime(props: LineGraphDateTimeProps) {
+    const selectedLanguage = props.i18n.language;
+
     const [chartOptions, setChartOptions] = useState<Highcharts.Options>({
         title: {
             text: "",
@@ -38,6 +40,20 @@ export default function LineGraphDateTime(props: LineGraphDateTimeProps) {
         },
         legend: {
             enabled: false,
+        },
+        credits: {
+            enabled: false,
+        },
+        tooltip: {
+            formatter: function () {
+                if (this.points && this.key) {
+                    return this.points.reduce(
+                        (s, point) => `${s}<br/>
+                            ${point.series.name}: <b>${point.y}</b>`,
+                        `${fullDateWithTime(this.key)}`
+                    );};
+            },
+            shared: true,
         },
         xAxis: {
             type: "datetime",
@@ -95,7 +111,7 @@ export default function LineGraphDateTime(props: LineGraphDateTimeProps) {
             ...prevOptions,
             series: [{ 
                 type: "line",
-                name: props.variable,
+                name: props.i18n.getFixedT(selectedLanguage, "weather_conditions")(props.variable),
                 data: props.graphData,
             }],
         }));

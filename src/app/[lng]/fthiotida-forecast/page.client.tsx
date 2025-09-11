@@ -8,7 +8,7 @@ const FthiotidaForecastsPage = dynamic(
     }
 );
 
-export default function Warnings() {
+export default function FthiotidaForecastClientPage() {
     return (
         <main className="relative flex flex-1 flex-col">
             <FthiotidaForecastsPage></FthiotidaForecastsPage>

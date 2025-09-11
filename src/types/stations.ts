@@ -18,6 +18,10 @@ export type StationResponse = {
     website_url: string;
     accuweather_location: AccuWeatherLocation;
     elevation: number;
+    translations: {
+        languages_code: string;
+        name: string;
+    }[];
 };
 
 export type Station = {

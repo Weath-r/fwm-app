@@ -2,7 +2,7 @@ import * as Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import noDataToDisplay from "highcharts/modules/no-data-to-display";
 import { useRef, useEffect, useState } from "react";
-import { dateWithMsToDay } from "@/utils/dateTimeUtils";
+import { dateWithMsToDay, fullDateWithTime } from "@/utils/dateTimeUtils";
 
 type GraphStyle = {
     height: string;
@@ -12,6 +12,7 @@ type AreaGraphDateTimeProps = {
     graphData: number[][];
     variable: string;
     graphStyle: GraphStyle;
+    i18n: any;
 };
 
 if (typeof Highcharts === "object") {
@@ -20,6 +21,8 @@ if (typeof Highcharts === "object") {
 
 export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
     const [xAxisLabels, setxAxisLabels] = useState<Array<string | number>>([]);
+    const selectedLanguage = props.i18n.language;
+
     const [chartOptions, setChartOptions] = useState<Highcharts.Options>({
         title: {
             text: "",
@@ -83,6 +86,17 @@ export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
             minorGridLineWidth: 0,
             tickInterval: 20,
         },
+        tooltip: {
+            formatter: function () {
+                if (this.points && this.key) {
+                    return this.points.reduce(
+                        (s, point) => `${s}<br/>
+                            ${point.series.name}: <b>${point.y}</b>`,
+                        `${fullDateWithTime(this.key)}`
+                    );};
+            },
+            shared: true,
+        },
         plotOptions: {
             area: {
                 lineWidth: 3,
@@ -139,7 +153,7 @@ export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
                 },
                 series: [{ 
                     type: "area",
-                    name: props.variable,
+                    name: props.i18n.getFixedT(selectedLanguage, "weather_conditions")(props.variable),
                     data: props.graphData,
                 }],
             };

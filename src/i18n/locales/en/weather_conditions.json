@@ -1,0 +1,13 @@
+{
+    "weatherNow": "Weather now",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "windspd": "Wind",
+    "rain": "Rain",
+    "percipitation": "Rain",
+    "rainrate": "Rain rate",
+    "wind direction": "Wind Direction",
+    "barometer": "Pressure",
+    "sunny": "Sunny"
+}
