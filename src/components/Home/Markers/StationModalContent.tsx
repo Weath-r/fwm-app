@@ -10,6 +10,7 @@ import { StationModalWeatherSummary } from "../WeatherModal/StationModalWeatherS
 import { StationWeatherForecastDetails } from "../WeatherModal/StationWeatherForecastDetails";
 import { StationModalHeading } from "../WeatherModal/StationModalHeading";
 import { useConfigurationStore } from "@/stores/configurationStore";
+import { useParams } from "next/navigation";
 
 const MODAL_TIMEOUT: number = 600;
 
@@ -26,12 +27,27 @@ export default function StationModalContent() {
     const { activeStation } = useAppStore();
     const { featureFlags } = useConfigurationStore();
     const isForecastEnabled = featureFlags?.forecasts.modalForecast;
+    const params = useParams();
+    const currentLanguage = params.lng;
 
     const getWeatherData = async () => {
         await dataService
             .fetchWeatherDataByStation(activeStation)
             .then(async (response) => {
                 const weatherData: WeatherData[] = response.map((elem: WeatherDataResponse) => {
+                    if (currentLanguage && elem.weather_station_id.translations) {
+                        const translationStationName = elem.weather_station_id.translations.find(t => t.languages_code === currentLanguage);
+                        if (translationStationName) {
+                            elem.weather_station_id.name = translationStationName.name;
+                        }
+                    }
+
+                    if (currentLanguage && elem.weather_station_id.prefecture_id.translations) {
+                        const translationPrefectureName = elem.weather_station_id.prefecture_id.translations.find(t => t.languages_code === currentLanguage);
+                        if (translationPrefectureName) {
+                            elem.weather_station_id.prefecture_id.label = translationPrefectureName.name;
+                        }
+                    }
                     return buildWeatherData(elem);
                 });
                 if (isForecastEnabled) {

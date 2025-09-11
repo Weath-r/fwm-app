@@ -8,11 +8,13 @@ export enum WeatherConditions {
 }
 
 export enum Measurements {
-  PERCENTAGE = "%",
-  PRESSURE = "hPa",
-  SPEED = "km/h",
-  MILLIMETER = "mm",
-  CELCIUS = "°C",
+    PERCENTAGE = "%",
+    PRESSURE = "hPa",
+    SPEED = "km/h",
+    MILLIMETER = "mm",
+    CELCIUS = "°C",
+    BFT = "Bft",
+    CM = "cm",
 }
 
 export enum GraphVariables {

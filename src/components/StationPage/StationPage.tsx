@@ -1,8 +1,8 @@
 "use client";
 import { WeatherDataResponse } from "@/types";
-import { properStationName } from "@/helpers/createStationName";
 import { timeFromNowUtil } from "@/utils/dateTimeUtils";
 import useRedirectToHomeOnBack from "@/hooks/useRedirectToHomeOnBack";
+import { useT } from "@/i18n/client";
 
 import StationStandaloneCurrentWeather from "@/components/StationPage/StationStandaloneCurrentWeather";
 import LastDayGraph from "@/components/StationPage/LastDayGraph";
@@ -18,10 +18,11 @@ type StationPageProps = {
     weatherData: WeatherDataResponse[];
 };
 
-export default function StationPage({ params, weatherData }: StationPageProps) {
+export default function StationPage({ weatherData }: StationPageProps) {
     useRedirectToHomeOnBack();
-    const { name: stationName } = params;
     const currentWeather = weatherData[0];
+    const { i18n } = useT("stationModal");
+    const selectedLanguage = i18n.language;
 
     return (
         <main className="flex flex-col">
@@ -31,9 +32,9 @@ export default function StationPage({ params, weatherData }: StationPageProps) {
                         <ChevronLeftIcon className="size-6 text-primary" />
                     </BackButton>
                     <h2 className="mb-4 text-2xl text-primary">
-                        {properStationName(stationName)}
+                        {weatherData[0].weather_station_id.name}
                         <small className="block text-sm text-primary opacity-60">
-                        Last update {timeFromNowUtil(currentWeather.date_created)}
+                            {i18n.getFixedT(selectedLanguage, "stationModal")("lastUpdated")} {timeFromNowUtil(currentWeather.date_created)}
                         </small>
                     </h2>
                 </div>

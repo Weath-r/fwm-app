@@ -1,5 +1,5 @@
 import { useRef } from "react";
-
+import { Measurements } from "@/types";
 import { FthiotidaForecastObject } from "@/types";
 import { useAnimeIcon } from "@/hooks/useAnimeIcon";
 import SvgInline from "@/components/Common/SvgInline";
@@ -9,6 +9,7 @@ import { LocationMetadata } from "@/helpers/fthiotidaForecastLocations";
 type ForecastIndividualCardProps = {
     metadata: LocationMetadata;
     forecast: FthiotidaForecastObject;
+    i18n: any;
 };
 
 export default function FthiotidaForecastsIndividualCard(props: Readonly<ForecastIndividualCardProps>) {
@@ -20,10 +21,12 @@ export default function FthiotidaForecastsIndividualCard(props: Readonly<Forecas
         parameters: animationParameters, 
     });
     
+    const selectedLanguage = props.i18n.language;
+
     return (
         <div className="w-full rounded-lg bg-white p-4 shadow-md">
             <h3 className="text-sm font-semibold text-primary">
-                {`${props.metadata.label}`}
+                {props.i18n.getFixedT(selectedLanguage, "forecasts")(`FthiotidaForecasts.locations.${props.metadata.value}`)}
             </h3>
             <div className="flex size-32 items-center justify-between gap-2">
                 <section
@@ -40,10 +43,10 @@ export default function FthiotidaForecastsIndividualCard(props: Readonly<Forecas
                 </section>
                 <div className="flex shrink flex-col gap-1 p-2">
                     <p className="font-semibold text-danger">
-                        H <span className="ml-2 inline-block text-primary">{props.forecast.wmax}Bft</span>
+                        {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.highT")} <span className="ml-2 inline-block text-primary">{props.forecast.wmax} {Measurements.BFT}</span>
                     </p>
                     <p className="font-semibold text-success">
-                        L <span className="ml-2 inline-block text-primary">{props.forecast.wmin}Bft</span>
+                        {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.lowT")} <span className="ml-2 inline-block text-primary">{props.forecast.wmin} {Measurements.BFT}</span>
                     </p>
                 </div>
             </div>

@@ -3,6 +3,7 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 type OptionsProp = {
   label: string;
+  value: string;
 };
 
 type DropdownMenuComponentProps = {
@@ -11,7 +12,7 @@ type DropdownMenuComponentProps = {
 };
 
 export default function DropdownMenu({ options, handleChangeVal }: Readonly<DropdownMenuComponentProps>) {
-    const [selected, setSelected] = useState<OptionsProp>({ label: "" });
+    const [selected, setSelected] = useState<OptionsProp>({ label: "", value: "" });
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,7 @@ export default function DropdownMenu({ options, handleChangeVal }: Readonly<Drop
 
     const handleOnChange = (value: OptionsProp) => {
         setSelected(value);
-        handleChangeVal(value.label);
+        handleChangeVal(value.value);
         setIsOpen(false);
     };
 

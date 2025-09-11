@@ -24,6 +24,7 @@
         ]
     },
     "dependencies": {
+        "accept-language": "3.0.20",
         "@heroicons/react": "2.0.18",
         "@radix-ui/react-accordion": "1.2.1",
         "@radix-ui/react-dialog": "1.1.6",
@@ -40,6 +41,9 @@
         "dayjs": "1.11.13",
         "highcharts": "11.4.7",
         "highcharts-react-official": "3.2.1",
+        "i18next": "25.3.2",
+        "i18next-browser-languagedetector": "8.2.0",
+        "i18next-resources-to-backend": "1.2.1",
         "leaflet": "1.9.4",
         "leaflet-velocity": "2.1.4",
         "next": "14.2.25",
@@ -48,6 +52,7 @@
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "react-dropdown-select": "4.11.4",
+        "react-i18next": "15.6.1",
         "react-inlinesvg": "4.1.0",
         "react-leaflet": "4.2.1",
         "react-leaflet-cluster": "2.1.0",
@@ -77,6 +82,7 @@
         "husky": "8.0.3",
         "lint-staged": "15.5.0",
         "prettier": "3.0.3",
-        "standard-version": "9.5.0"
+        "standard-version": "9.5.0",
+        "i18next-resources-for-ts": "1.6.0"
     }
 }

@@ -6,6 +6,7 @@ import { locationsObject, LocationMetadata } from "@/helpers/fthiotidaForecastLo
 
 type ForecastsSectionProps = {
     forecasts: { [key: string]: FthiotidaForecastObject };
+    i18n: any;
 };
 
 type StructuredForecast = Record<
@@ -17,6 +18,7 @@ type StructuredForecast = Record<
 >;
 export default function FthioridaForecastsSection(props: Readonly<ForecastsSectionProps>) {
     const [structuredForecast, setStructuredForecast] = useState<StructuredForecast>({ wind: [], forecast: [] });
+    const selectedLanguage = props.i18n.language;
 
     useEffect(() => {
         const groupedForecasts = Object.keys(props.forecasts).reduce(
@@ -40,19 +42,20 @@ export default function FthioridaForecastsSection(props: Readonly<ForecastsSecti
     return (
         <section>
             <h3 className="my-2 text-lg font-semibold text-primary">
-                Weather conditions
+                {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.weatherConditions")}
             </h3>
             <div className="flex flex-wrap items-center justify-center gap-2">
                 {structuredForecast["forecast"].map((elem,index) => {
                     return <FthiotidaForecastsIndividualForecastCard
-                        key={`${elem.metadata.label}-${index}`}
+                        key={`${elem.metadata.value}-${index}`}
                         metadata={elem.metadata}
                         forecast={elem.forecast}
+                        i18n={props.i18n}
                     ></FthiotidaForecastsIndividualForecastCard>;
                 })}
             </div>
             <h3 className="my-4 text-lg font-semibold text-primary">
-                Winds
+                {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.winds")}
             </h3>
             <div className="flex gap-1 overflow-hidden overflow-x-auto overscroll-contain py-3">
                 {structuredForecast["wind"].map((elem,index) => {
@@ -60,6 +63,7 @@ export default function FthioridaForecastsSection(props: Readonly<ForecastsSecti
                         key={index}
                         metadata={elem.metadata}
                         forecast={elem.forecast}
+                        i18n={props.i18n}
                     ></FthiotidaForecastsIndividualWindCard>;
                 })}
             </div>

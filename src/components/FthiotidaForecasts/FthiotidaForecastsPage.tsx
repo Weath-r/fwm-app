@@ -3,6 +3,7 @@ import { DataService } from "@/services/DataService";
 import { FthiotidaForecast, FthiotidaForecastDates } from "@/types";
 import dayjs from "@/utils/dateTimeUtils";
 import { dateValueOf, isTheSame } from "@/utils/dateManipulation";
+import { useT } from "@/i18n/client";
 
 import CalendarSection from "./components/CalendarSection";
 import NoForecastSection from "./components/NoForecastSection";
@@ -13,6 +14,9 @@ export default function FthiotidaForecastPage() {
     const dataService = new DataService();
     const [forecasts, setForecasts] = useState<FthiotidaForecast[]>([]);
     const [forecastDates, setForecastDates] = useState<FthiotidaForecastDates[]>([]);
+
+    const { i18n } = useT("forecasts");
+    const selectedLanguage = i18n.language;
 
     const getFthiotidaForecasts = async () => {
         await dataService
@@ -66,15 +70,15 @@ export default function FthiotidaForecastPage() {
     return (
         <div className="mx-4 mt-4 md:container md:mx-auto">
             <h2 className="mb-4 text-2xl text-primary">
-                Fthiotida weather forecast
+                {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.pageTitle")}
                 <small className="block text-sm text-primary opacity-60">
-                    until today
+                    {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.untilToday")}
                 </small>
             </h2>
             <div className="relative my-4 w-full rounded-xl bg-white drop-shadow-md">
                 <div className="rounded-t-lg bg-primary p-4 text-sm font-bold text-white">
                     <p>
-                        Provided by <a href="https://fthiotida-meteogroup.gr/" target="_blank" className="decoration-dashed" title="Fthiotida Meteogroup - Local forecasts for Fthiotida" rel="noreferrer">Fthiotida-Meteogroup</a>
+                        {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.providedBy")} <a href="https://fthiotida-meteogroup.gr/" target="_blank" className="decoration-dashed" title="Fthiotida Meteogroup - Local forecasts for Fthiotida" rel="noreferrer">Fthiotida-Meteogroup</a>
                     </p>
                 </div>
                 <section className="flex flex-col px-4 pb-2">
@@ -88,17 +92,18 @@ export default function FthiotidaForecastPage() {
                         <FthiotidaForecastsSection
                             key={selectedForecastIndex}
                             forecasts={forecasts[selectedForecastIndex].forecast.data}
+                            i18n={i18n}
                         />
                     )}
-                    {!forecasts[selectedForecastIndex] && !showLoading && <NoForecastSection></NoForecastSection>}
-                    {showLoading && <LoadingForecastData></LoadingForecastData>}
+                    {!forecasts[selectedForecastIndex] && !showLoading && <NoForecastSection i18n={i18n}></NoForecastSection>}
+                    {showLoading && <LoadingForecastData i18n={i18n}></LoadingForecastData>}
 
                     <div className="my-4 w-full border-t-2 border-primary/10 pt-2">
                         <p className="text-sm text-primary">
-                            Fthiotida forecasts are provided by the legendary local amateur meteorologist group <a href="https://fthiotida-meteogroup.gr/" target="_blank" className="font-bold" rel="noreferrer">Fthiotida-Meteogroup</a>. As always, we thank them for their kind support and help. <br />Visit their site for more detailed local forecasts.
+                            {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.footerNote_1")} <a href="https://fthiotida-meteogroup.gr/" target="_blank" className="font-bold" rel="noreferrer">Fthiotida-Meteogroup</a>. {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.footerNote_2")}
                         </p>
                         <p className="mt-2 text-xs text-primary">
-                            <span className="font-bold">Disclaimer:</span> Please always check the official weather services before making any life decisions based on these forecasts.
+                            <span className="font-bold">Disclaimer:</span> {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.disclaimer")}
                         </p>
                     </div>
                 </section>

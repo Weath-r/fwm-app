@@ -1,0 +1,34 @@
+{
+    "forecast": "forecast",
+    "FthiotidaForecasts": {
+        "pageTitle": "Fthiotida weather forecast",
+        "untilToday": "until today",
+        "providedBy": "Provided by",
+        "footerNote_1": "Fthiotida forecasts are provided by the legendary local amateur meteorologist group",
+        "footerNote_2": "As always, we thank them for their kind support and help. Visit their site for more detailed local forecasts.",
+        "disclaimer": "Please always check the official weather services before making any life decisions based on these forecasts.",
+        "noForecastData": "No clouds in sight — at least not in our data!",
+        "weatherConditions": "Weather conditions",
+        "winds": "Winds",
+        "locations": {
+            "lamia": "Lamia",
+            "mt_oiti": "Mt. Oiti",
+            "north_fthiotida": "North Fthiotida",
+            "east_fthiotida": "East Fthiotida",
+            "mt_orthris": "Mt. Orthris",
+            "west_fthiotida": "West Fthiotida",
+            "amfiklia": "Amfiklia",
+            "lokrida": "Lokrida",
+            "kamena_vourla": "Kamena Vourla",
+            "oreoi": "Oreoi",
+            "n_fthiotida": "N.Fthiotida",
+            "w_fthiotida": "W.Fthiotida",
+            "maliakos_gulf": "Maliakos gulf",
+            "mt_Parnassos": "Mt. Parnassos",
+            "evvoikos_gulf": "Evvoikos gulf"
+        },
+        "highT": "H",
+        "lowT": "L",
+        "snow": "snow"
+    }
+}

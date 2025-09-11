@@ -5,6 +5,8 @@ import { useConfigurationStore } from "@/stores/configurationStore";
 import { GroupedWarnings, Station, StationResponse } from "@/types";
 import { buildStation } from "@/utils/weatherDataFormatUtils";
 import { createContext, ReactElement, useContext, useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
+import { translatedContent } from "@/utils/transformTranslations";
 
 interface CurrentStationContextType {
     stations: Station[];
@@ -42,6 +44,8 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
     const { featureFlags } = useConfigurationStore();
     const areWarningsEnabled = featureFlags.warnings?.showWarningsPanel;
     const { favouriteStations, showFavouriteStations } = useAppStore();
+    const params = useParams();
+    const currentLanguage = Array.isArray(params.lng) ? params.lng[0] : params.lng;
 
     const fetchStationsData = async () => {
         await dataService
@@ -49,6 +53,14 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
             .then((response) => {
                 const exportedStations = response.map((elem: StationResponse) => {
                     return buildStation(elem);
+                }).map(station => {
+                    if (currentLanguage && station.translations) {
+                        const translation = station.translations.find(t => t.languages_code === currentLanguage);
+                        if (translation) {
+                            return { ...station, name: translation.name };
+                        }
+                    }
+                    return station;
                 });
                 setStations(exportedStations);
             })
@@ -68,13 +80,38 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
                     const location = warning.warning_location_id.value;
                     const geojson = warning.warning_location_id.geojson;
                     const order = warning.warning_location_id.order;
-                    const warningLevel = warning.level_id;
+
+                    const translatedLevels = translatedContent({
+                        data: [warning.level_id],
+                        selectedLanguage: currentLanguage,
+                    });
+                    const translatedHazard = translatedContent({
+                        data: [warning.hazard_id],
+                        selectedLanguage: currentLanguage,
+                    });
+
+                    const translatedLocation = translatedContent({
+                        data: [warning.warning_location_id],
+                        selectedLanguage: currentLanguage,
+                    });
+
+                    const warningLevel = {
+                        ...translatedLevels[0],
+                        id: warning.level_id.id,
+                        color: translatedLevels[0].color ?? "",
+                    };
+
+                    const newWarning = {
+                        ...warning,
+                        hazard_id: { ...warning.hazard_id, ...translatedHazard[0] },
+                    };
+
                     const indexOfAcc = acc.findIndex((elem) => elem.assetName === location);
                     if (indexOfAcc < 0) {
                         acc.push({
                             assetName: location,
-                            location: warning.warning_location_id.label,
-                            warnings: [warning],
+                            location: translatedLocation[0].label,
+                            warnings: [newWarning],
                             geojson,
                             warningLevel,
                             order,

@@ -4,11 +4,23 @@ const warningsLevels = z.object({
     id: z.number().min(1),
     label: z.string().min(1),
     color: z.string().min(1).startsWith("#"),
+    translations: z.array(
+        z.object({
+            languages_code: z.string().min(1),
+            name: z.string().min(1),
+        })
+    ),
 });
 const hazardLevels = z.object({
     id: z.number().optional(),
     label: z.string().min(1),
     asset: z.string().min(1),
+    translations: z.array(
+        z.object({
+            languages_code: z.string().min(1),
+            name: z.string().min(1),
+        })
+    ),
 });
 
 export const WeatherWarnings = z.object({
@@ -26,6 +38,12 @@ export const WeatherWarnings = z.object({
         value: z.string().min(1),
         geojson: z.string().optional(),
         order: z.number().optional(),
+        translations: z.array(
+            z.object({
+                languages_code: z.string().min(1),
+                name: z.string().min(1),
+            })
+        ),
     }),
     level_id: warningsLevels,
     hazard_id: hazardLevels,

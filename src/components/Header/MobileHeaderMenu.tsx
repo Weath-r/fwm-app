@@ -3,10 +3,16 @@ import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SvgInline from "../Common/SvgInline";
+import { useT } from "@/i18n/client";
+import { calculateActiveClass } from "@/helpers/internationalization";
+import HeaderChangeLanguageMenu from "./HeaderChangeLanguageMenu";
 
 export default function MobileHeaderMenu() {
     const pathname = usePathname();
     const { menu } = useConfigurationStore();
+    
+    const { i18n } = useT("common");
+    const selectedLanguage = i18n.language;
 
     return (
         <NavigationMenu.Root className="relative z-10 flex w-full justify-end pr-4">
@@ -28,15 +34,18 @@ export default function MobileHeaderMenu() {
                                     <NavigationMenu.Link asChild>
                                         <Link
                                             className={`text-md p-2 pl-0 text-primary ${
-                                                pathname === elem.pathName ? "font-bold text-success" : ""
+                                                calculateActiveClass(pathname, elem.pathName, selectedLanguage) ? "font-bold text-success" : ""
                                             }`}
-                                            href={elem.pathName}
+                                            href={`/${selectedLanguage}/${elem.pathName}`}
                                         >
-                                            {elem.text}
+                                            {i18n.getFixedT(selectedLanguage, "common")(elem.value)}
                                         </Link>
                                     </NavigationMenu.Link>
                                 </li>
                             ))}
+                            <li className="mb-2 border-t-2 border-light_white pt-2">
+                                <HeaderChangeLanguageMenu></HeaderChangeLanguageMenu>
+                            </li>
                         </ul>
                     </NavigationMenu.Content>
                 </NavigationMenu.Item>

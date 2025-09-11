@@ -11,23 +11,23 @@ type ConfiguratorStore = {
 
 const initialMenu: MenuLink[] = [
     {
-        pathName: "/",
+        pathName: "",
         text: "Weather Map",
         value: "map",
     },{
-        pathName: "/stations",
+        pathName: "stations",
         text: "Stations",
         value: "stationslist",
     },{
-        pathName: "/warnings",
+        pathName: "warnings",
         text: "Warnings",
         value: "warnings",
     },{
-        pathName: "/fthiotida-forecast",
+        pathName: "fthiotida-forecast",
         text: "Fthiotida Forecast",
         value: "fthiotidaforecast",
     },{
-        pathName: "/about-us",
+        pathName: "about-us",
         text: "About Us",
         value: "aboutus",
     }
