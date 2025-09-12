@@ -1,10 +1,10 @@
 export enum WeatherConditions {
-  HUMIDITY = "Humidity",
-  BAROMETER = "Barometer",
-  WIND = "Wind",
-  RAIN = "Rain",
-  TEMP = "Temperature",
-  WINDDIR = "Wind direction",
+    HUMIDITY = "Humidity",
+    BAROMETER = "Barometer",
+    WIND = "Wind",
+    RAIN = "Rain",
+    TEMP = "Temperature",
+    WINDDIR = "Wind direction",
 }
 
 export enum Measurements {
