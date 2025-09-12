@@ -72,14 +72,14 @@ export default function StationsTableData(props: Readonly<TableDataProps>) {
                                         {{
                                             asc: (
                                                 <SvgInline
-                                                    path="icons/caret-up.svg"
+                                                    path="/icons/caret-up.svg"
                                                     title="Sort ascending"
                                                     className="w-2 fill-primary"
                                                 />
                                             ),
                                             desc: (
                                                 <SvgInline
-                                                    path="icons/caret-down.svg"
+                                                    path="/icons/caret-down.svg"
                                                     title="Sort descending"
                                                     className="w-2 fill-primary"
                                                 />

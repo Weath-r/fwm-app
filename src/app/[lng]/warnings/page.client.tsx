@@ -1,17 +1,17 @@
 "use client";
 import dynamic from "next/dynamic";
 
-const StationsPage = dynamic(
-    () => import("@/components/Stations/StationsPage"),
+const WarningsPage = dynamic(
+    () => import("@/components/Warnings/WarningsPage"),
     {
         ssr: false,
     }
 );
 
-export default function Stations() {
+export default function ClientPageWarnings() {
     return (
         <main className="relative flex flex-1 flex-col">
-            <StationsPage></StationsPage>
+            <WarningsPage></WarningsPage>
         </main>
     );
 }

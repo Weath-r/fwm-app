@@ -9,6 +9,13 @@ dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+export async function setDayjsLocale(locale: string) {
+    if (locale === "el") {
+        await import("dayjs/locale/el");
+    }
+    dayjs.locale(locale);
+}
+
 export default dayjs;
 
 export const timeFromNowUtil = (inputDate: Date | string, suffix: boolean = false): string => {

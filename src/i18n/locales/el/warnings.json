@@ -1,0 +1,18 @@
+{
+    "warningsPageTitle": "Προειδοποιήσεις",
+    "untilToday": "μέχρι σήμερα",
+    "activeWarnings": "Προειδοποιήσεις",
+    "hazardsTitle": "Είδη προειδοποιήσεων",
+    "warningLevels": "Επίπεδα επικινδυνότητας",
+    "information": "Πληροφορίες",
+    "tableData": {
+        "dateCreated": "Ημ/νια δημιουργίας",
+        "location": "Περιοχή",
+        "warningLevel": "Επίπεδο προειδοποίησης",
+        "warningHazard": "Φαινόμενο",
+        "warningDescription": "Περιγραφή",
+        "startingTime": "Ώρα έναρξης",
+        "endingTime": "Ώρα λήξης",
+        "issuedBy": "Εκδόθηκε από"
+    }
+}

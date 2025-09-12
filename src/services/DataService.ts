@@ -47,9 +47,10 @@ export class DataService {
         this.client = createAxiosInstance();
     }
 
+    // To do here. Add the proper stations to Prod directus
     fetchWeatherStations = (): Promise<StationResponse[]> => {
         const STATIONS_FILTER_PREFIX = "items/weather_stations";
-        const STATIONS_FILTER = "?fields=id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.weather_condition_icon.asset,elevation&filter[_and][0][_and][0][status][_eq]=published";
+        const STATIONS_FILTER = "?fields=id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.weather_condition_icon.asset,elevation,translations.languages_code,translations.name&filter[_and][0][_and][0][status][_eq]=published";
         const STATIONS_PATH = `${STATIONS_FILTER_PREFIX}${STATIONS_FILTER}`;
 
         return new Promise<any>((resolve, reject) => {
@@ -71,12 +72,10 @@ export class DataService {
         });
     };
 
-    // WindDir returns null values for Mavrolithari.
-    // We need to handle it in the BE.
     // ZOD IS DISABLED
     fetchWeatherDataByStation = (station_id: number): Promise<WeatherDataResponse[]> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
-        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_condition_icon`;
+        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.elevation,weather_station_id.translations.languages_code,weather_station_id.translations.name`;
         const WEATHER_DATA_PATH = `${WEATHER_DATA_FILTER_PREFIX}${WEATHER_DATA_FILTER}`;
 
         return new Promise<WeatherDataResponse[]>((resolve, reject) => {
@@ -99,9 +98,6 @@ export class DataService {
         });
     };
 
-    // WindDir returns null values for Mavrolithari.
-    // We need to handle it in the BE.
-    // ZOD IS DISABLED
     fetchWeatherDataByStationPaginated = ({
         station_id,
         start_date,
@@ -110,7 +106,7 @@ export class DataService {
         limit = 64,
     }: FetchStationDataPaginated): Promise<WeatherDataResponse[]> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
-        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_condition_icon&filter[_and][0][_and][1][date_created][_lte]=${end_date}&filter[_and][0][_and][2][date_created][_gte]=${start_date}&page=${page}&limit=${limit}`;
+        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.elevation,weather_station_id.translations.languages_code,weather_station_id.translations.name&filter[_and][0][_and][1][date_created][_lte]=${end_date}&filter[_and][0][_and][2][date_created][_gte]=${start_date}&page=${page}&limit=${limit}`;
 
         const WEATHER_DATA_PATH = `${WEATHER_DATA_FILTER_PREFIX}${WEATHER_DATA_FILTER}`;
 
@@ -141,7 +137,7 @@ export class DataService {
             from: "$NOW(-1 hour)",
             to: "$NOW",
         };
-        const WEATHER_DATA_FILTER = `?filter[_and][0][_and][1][weather_station_id][status][_eq]=published&filter[_and][0][_and][0][date_created][_between][0]=${DATE_FILTERS.from}&filter[_and][0][_and][0][date_created][_between][1]=${DATE_FILTERS.to}&sort=date_created&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_condition_icon`;
+        const WEATHER_DATA_FILTER = `?filter[_and][0][_and][1][weather_station_id][status][_eq]=published&filter[_and][0][_and][0][date_created][_between][0]=${DATE_FILTERS.from}&filter[_and][0][_and][0][date_created][_between][1]=${DATE_FILTERS.to}&sort=date_created&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.translations.languages_code,weather_station_id.translations.name`;
         const WEATHER_DATA_PATH = `${WEATHER_DATA_FILTER_PREFIX}${WEATHER_DATA_FILTER}`;
 
         return new Promise<any>((resolve, reject) => {
@@ -175,7 +171,7 @@ export class DataService {
     fetchWeatherWarningsByCreatedDate = (date:string): Promise<WeatherWarnings[]> => {
         const WARNINGS_PREFIX = "items/weather_warnings";
         const WARNING_FILTER =
-            "?fields=id,date_created,meteoalarm_warning_id,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,warning_location_id.geojson,warning_location_id.order,level_id.id,level_id.label,level_id.color,hazard_id.label,hazard_id.asset&filter[_and][0][_and][1][end_date][_gt]=$NOW";
+            "?fields=id,date_created,meteoalarm_warning_id,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,warning_location_id.geojson,warning_location_id.order,warning_location_id.translations.languages_code,warning_location_id.translations.name,level_id.id,level_id.label,level_id.color,level_id.translations.languages_code,level_id.translations.name,hazard_id.label,hazard_id.asset,hazard_id.translations.languages_code,hazard_id.translations.name&filter[_and][0][_and][1][end_date][_gt]=$NOW";
         const WARNINGS_PATH = `${WARNINGS_PREFIX}${WARNING_FILTER}`;
 
         return new Promise<any>((resolve, reject) => {
@@ -199,7 +195,7 @@ export class DataService {
 
     fetchWeatherHazards = (): Promise<WarningHazard[]> => {
         const HAZARD_TYPES_PREFIX = "items/hazard_types";
-        const HAZARD_FILTER = "?fields=id,label,asset";
+        const HAZARD_FILTER = "?fields=id,label,asset,translations.languages_code,translations.name";
         const HAZARD_PATH = `${HAZARD_TYPES_PREFIX}${HAZARD_FILTER}`;
 
         return new Promise<any>((resolve, reject) => {
@@ -223,7 +219,7 @@ export class DataService {
 
     fetchWarningLevels = (): Promise<WarningLevel[]> => {
         const WARNING_LEVELS_PREFIX = "items/warning_levels";
-        const WARNING_LEVELS_FILTER = "?fields=id,label,color";
+        const WARNING_LEVELS_FILTER = "?fields=id,label,color,translations.languages_code,translations.name";
         const WARNING_LEVELS_PATH = `${WARNING_LEVELS_PREFIX}${WARNING_LEVELS_FILTER}`;
 
         return new Promise<any>((resolve, reject) => {
@@ -253,7 +249,7 @@ export class DataService {
         const limitPerPage = 50;
         const WARNINGS_PREFIX = "items/weather_warnings";
         const WARNING_FILTER =
-            `?fields=id,date_created,meteoalarm_warning_id,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,level_id.id,level_id.label,level_id.color,hazard_id.label,hazard_id.asset&sort=-date_created&limit=${limitPerPage}&page=${page}`;
+            `?fields=id,date_created,meteoalarm_warning_id,start_date,end_date,description_en,description_el,instruction_en,instruction_el,warning_location_id.label,warning_location_id.value,level_id.id,level_id.label,level_id.color,level_id.translations.languages_code,level_id.translations.name,hazard_id.label,hazard_id.asset,hazard_id.translations.languages_code,hazard_id.translations.name,warning_location_id.translations.languages_code,warning_location_id.translations.name&sort=-date_created&limit=${limitPerPage}&page=${page}`;
         const WARNINGS_PATH = `${WARNINGS_PREFIX}${WARNING_FILTER}`;
         const COUNT_PATH = "items/weather_warnings?aggregate[countDistinct]=id";
 

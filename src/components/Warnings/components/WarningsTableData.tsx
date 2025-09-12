@@ -16,7 +16,8 @@ import { timeOnlyUtil, fullDateNoTime } from "@/utils/dateTimeUtils";
 import { printIssuedByUser } from "../utils/warningsHelpers";
 
 type TableDataProps = {
-    data: WeatherWarnings[]
+    data: WeatherWarnings[];
+    i18n: any;
 };
 
 // Sorting Fns
@@ -26,78 +27,83 @@ const sortHazardFn: SortingFn<WeatherWarnings> = (rowA, rowB) => {
 
 // Columns initialisation
 const columnHelper = createColumnHelper<WeatherWarnings>();
-const columns = [
-    columnHelper.accessor(row => row.date_created, {
-        id: "dateCreated",
-        cell: info => {
-            return <p>{fullDateNoTime(info.getValue())} <span className="block opacity-60">{timeOnlyUtil(info.getValue())}</span></p>;
-        },
-        header: () => <p>Date created</p>,
-    }),
-    columnHelper.accessor(row => row.warning_location_id.label, {
-        id: "location",
-        cell: info => <span>{info.getValue()}</span>,
-        header: () => <span>Location</span>,
-    }),
-    columnHelper.accessor(row => row.level_id, {
-        id: "warningLevel",
-        cell: info => <div className="flex items-center gap-2">
-            <div className="size-4 rounded-lg" style={{ backgroundColor: info.getValue().color }}></div>
-            <p>
-                {info.getValue().label}
-            </p>
-        </div>,
-        header: () => <span>Level</span>,
-    }),
-    columnHelper.accessor(row => row.hazard_id, {
-        id: "hazard",
-        cell: info => {
-            const { label, asset } = info.getValue();
-            return <HazardIcon label={label} asset={asset} className="size-6 fill-primary"></HazardIcon>;
-        },
-        header: () => <span>Hazard</span>,
-        sortingFn: sortHazardFn,
-    }),
-    columnHelper.accessor(row => row.description_en, {
-        id: "warningDescription",
-        cell: info => <span>{info.getValue()}</span>,
-        header: () => <span>Description</span>,
-        enableSorting: false,
-    }),
-    columnHelper.accessor(row => row.start_date, {
-        id: "warningStart",
-        cell: info => {
-            return <p>{fullDateNoTime(info.getValue())} <span className="block opacity-60">{timeOnlyUtil(info.getValue())}</span></p>;
-        },
-        header: () => <p>Starting time</p>,
-        enableSorting: false,
-    }),
-    columnHelper.accessor(row => row.end_date, {
-        id: "warningEnd",
-        cell: info => {
-            return <p>{fullDateNoTime(info.getValue())} <span className="block opacity-60">{timeOnlyUtil(info.getValue())}</span></p>;
-        },
-        header: () => <p>Ending time</p>,
-        enableSorting: false,
-    }),
-    columnHelper.accessor(row => row.meteoalarm_warning_id, {
-        id: "userCreated",
-        cell: info => {
-            const warningId = info.getValue();
-            return <span>{printIssuedByUser(warningId)}</span>;
-        },
-        header: () => <span>Issued by</span>,
-        enableSorting: false,
-    })
-];
+const createColumns = (i18n: any, selectedLanguage: string) => {
+    const descriptionColumnId = `description_${selectedLanguage}`;
+
+    return [
+        columnHelper.accessor(row => row.date_created, {
+            id: "dateCreated",
+            cell: info => {
+                return <p>{fullDateNoTime(info.getValue())} <span className="block opacity-60">{timeOnlyUtil(info.getValue())}</span></p>;
+            },
+            header: () => <p>{i18n.getFixedT(selectedLanguage, "warnings")("tableData.dateCreated")}</p>,
+        }),
+        columnHelper.accessor(row => row.warning_location_id.label, {
+            id: "location",
+            cell: info => <span>{info.getValue()}</span>,
+            header: () => <span>{i18n.getFixedT(selectedLanguage, "warnings")("tableData.location")}</span>,
+        }),
+        columnHelper.accessor(row => row.level_id, {
+            id: "warningLevel",
+            cell: info => <div className="flex items-center gap-2">
+                <div className="size-4 rounded-lg" style={{ backgroundColor: info.getValue().color }}></div>
+                <p>
+                    {info.getValue().label}
+                </p>
+            </div>,
+            header: () => <span>{i18n.getFixedT(selectedLanguage, "warnings")("tableData.warningLevel")}</span>,
+        }),
+        columnHelper.accessor(row => row.hazard_id, {
+            id: "hazard",
+            cell: info => {
+                const { label, asset } = info.getValue();
+                return <HazardIcon label={label} asset={asset} className="size-6 fill-primary"></HazardIcon>;
+            },
+            header: () => <span>{i18n.getFixedT(selectedLanguage, "warnings")("tableData.warningHazard")}</span>,
+            sortingFn: sortHazardFn,
+        }),
+        columnHelper.accessor(row => row[descriptionColumnId], {
+            id: "warningDescription",
+            cell: info => <span>{info.getValue()}</span>,
+            header: () => <span>{i18n.getFixedT(selectedLanguage, "warnings")("tableData.warningDescription")}</span>,
+            enableSorting: false,
+        }),
+        columnHelper.accessor(row => row.start_date, {
+            id: "warningStart",
+            cell: info => {
+                return <p>{fullDateNoTime(info.getValue())} <span className="block opacity-60">{timeOnlyUtil(info.getValue())}</span></p>;
+            },
+            header: () => <p>{i18n.getFixedT(selectedLanguage, "warnings")("tableData.startingTime")}</p>,
+            enableSorting: false,
+        }),
+        columnHelper.accessor(row => row.end_date, {
+            id: "warningEnd",
+            cell: info => {
+                return <p>{fullDateNoTime(info.getValue())} <span className="block opacity-60">{timeOnlyUtil(info.getValue())}</span></p>;
+            },
+            header: () => <p>{i18n.getFixedT(selectedLanguage, "warnings")("tableData.endingTime")}</p>,
+            enableSorting: false,
+        }),
+        columnHelper.accessor(row => row.meteoalarm_warning_id, {
+            id: "userCreated",
+            cell: info => {
+                const warningId = info.getValue();
+                return <span>{printIssuedByUser(warningId)}</span>;
+            },
+            header: () => <span>{i18n.getFixedT(selectedLanguage, "warnings")("tableData.issuedBy")}</span>,
+            enableSorting: false,
+        })
+    ];
+};
   
 export default function StationsTableData(props: Readonly<TableDataProps>) {
     const { data } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
+    const selectedLanguage = props.i18n.language;
 
     const table = useReactTable({
         data,
-        columns,
+        columns: createColumns(props.i18n, selectedLanguage),
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         onSortingChange: setSorting,

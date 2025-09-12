@@ -12,6 +12,11 @@ export const AccuweatherLocation = z.object({
     }),
 });
 
+export const WeatherStationsTranslationsSchema = z.object({
+    languages_code: z.string().min(1),
+    name: z.string().min(1),
+});
+
 export const WeatherStationSchema = z.object({
     id: z.number().min(1),
     name: z.string().min(1),
@@ -19,6 +24,7 @@ export const WeatherStationSchema = z.object({
     location: WeatherLocationSchema,
     accuweather_location: AccuweatherLocation,
     elevation: z.number(),
+    translations: z.array(WeatherStationsTranslationsSchema).optional(),
 });
 
 export const StationResponsesSchema = z.array(WeatherStationSchema);

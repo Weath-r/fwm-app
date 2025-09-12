@@ -2,6 +2,7 @@ import { useAppStore } from "@/hooks/useAppStore";
 import { useStationsProvider } from "@/providers/StationsProvider";
 import { Station } from "@/types";
 import Select from "react-dropdown-select";
+import { useT } from "@/i18n/client";
 
 type SearchFormProps = {
     showStationModal: (val: number) => void;
@@ -25,6 +26,9 @@ export default function MapSearchForm(props: Readonly<SearchFormProps>) {
         }
     };
 
+    const { i18n } = useT("common");
+    const selectedLanguage = i18n.language;
+
     return (
         <Select
             name="Search stations"
@@ -33,7 +37,7 @@ export default function MapSearchForm(props: Readonly<SearchFormProps>) {
             searchBy="name"
             sortBy="name"
             clearable
-            placeholder="Search station"
+            placeholder={i18n.getFixedT(selectedLanguage, "common")("searchStation")}
             closeOnSelect={true}
             className="h-[40px] !rounded-lg !border-0 !bg-white/90 !p-2.5 !font-normal text-primary !shadow-sm focus:outline-none"
             clearRenderer={() => <></>}

@@ -9,6 +9,7 @@ import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
 import BaseDialog from "@/components/BaseComponents/BaseDialog";
 import { createClusterCustomIcon } from "@/components/Home/Markers/ClusterMarkersContent";
 import StationModalContent from "@/components/Home/Markers/StationModalContent";
+import { useT } from "@/i18n/client";
 
 const MarkerClusterGroup = dynamic(() => import("react-leaflet-cluster"), {
     ssr: false,
@@ -38,7 +39,7 @@ type ModalView = "list" | "stationDetails";
 const renderStationInCluster = ({ station, handleClick, changeView }: RenderStationInClusterProps) => {
     if (!station.options.customAttr) return null;
     const { assetId, weatherDescription, stationName, stationId }: MarkerCustomAttrs = station.options.customAttr;
-
+    
     const onStationClick = (stationId: number) => {
         handleClick(stationId);
         changeView("stationDetails");
@@ -74,6 +75,8 @@ export default function ClusterGroupLayer({ markers }: { markers: React.ReactNod
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const { handleModal, handleCloseModal } = useMarkerStationsClick();
     const [currentView, setCurrentView] = useState<ModalView>("list");
+    const { i18n } = useT("stationModal");
+    const selectedLanguage = i18n.language;
 
     if (markers.length === 0) {
         return null;
@@ -115,8 +118,12 @@ export default function ClusterGroupLayer({ markers }: { markers: React.ReactNod
             <BaseDialog 
                 dialogTitle={
                     currentView === "list" 
-                        ? <div className="text-sm font-bold uppercase text-primary">Available stations</div> 
-                        : <div className="text-sm font-bold uppercase text-primary">Currently outside</div> 
+                        ? <div className="text-sm font-bold uppercase text-primary">
+                            {i18n.getFixedT(selectedLanguage, "stationModal")("availableStations")}
+                        </div> 
+                        : <div className="text-sm font-bold uppercase text-primary">
+                            {i18n.getFixedT(selectedLanguage, "stationModal")("currentlyOutside")}
+                        </div> 
                 }
                 onClose={onCloseDialog}
                 isOpen={isModalOpen}

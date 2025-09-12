@@ -1,0 +1,29 @@
+{
+    "languageSelect": "Επιλογή γλώσσας",
+    "logoMoto": "Καιρικές συνθήκες για τη Στερεά Ελλάδα",
+    "logoTitle": "myWeathr - Η εφαρμογή καιρού για τη Στερεά Ελλάδα",
+    "map": "Χάρτης καιρού",
+    "stationslist": "Σταθμοί",
+    "warnings": "Προειδοποιήσεις",
+    "fthiotidaforecast": "Πρόγνωση Φθιώτιδας",
+    "aboutus": "Σχετικά με εμάς",
+    "searchStation": "Αναζήτηση σταθμού",
+    "favoriteStations": "Αγαπημένοι σταθμοί",
+    "options": "Επιλογές",
+    "page": "Σελίδα",
+    "StationsPage": {
+        "active": "Ενεργοί",
+        "favoriteStationsTitle": "Αγαπημένοι σταθμοί",
+        "stationsListTitle": "Λίστα σταθμών"
+    },
+    "StationsTable": {
+        "stationName": "Σταθμός",
+        "stationWeatherIcon": "Συνθήκες",
+        "favourite": "Αγαπημένος σταθμός",
+        "lastUpdate": "Τελευταία ενημέρωση"
+    },
+    "StationPage": {
+        "lastTwoDays": "Τελευταίες 2 ημέρες",
+        "thirtyDays": "Τελευταίες 30 ημέρες"
+    }
+}

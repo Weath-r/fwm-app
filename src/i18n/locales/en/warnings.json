@@ -1,0 +1,18 @@
+{
+    "warningsPageTitle": "Weather warnings",
+    "untilToday": "until today",
+    "activeWarnings": "Active warnings",
+    "hazardsTitle": "Hazards",
+    "warningLevels": "Warning levels",
+    "information": "Information",
+    "tableData": {
+        "dateCreated": "Date created",
+        "location": "Location",
+        "warningLevel": "Warning level",
+        "warningHazard": "Hazard",
+        "warningDescription": "Description",
+        "startingTime": "Starting time",
+        "endingTime": "Ending time",
+        "issuedBy": "Issued by"
+    }
+}

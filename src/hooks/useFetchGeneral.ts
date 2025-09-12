@@ -11,7 +11,7 @@ export const useFetchGeneral = () => {
     const setFeatureFlags = useConfigurationStore((state) => state.setFeatureFlags);
     const { menu } = useConfigurationStore();
     const dataService = new DataService();
-    
+
     const fetchHazards = async () => {
         await dataService
             .fetchWeatherHazards()

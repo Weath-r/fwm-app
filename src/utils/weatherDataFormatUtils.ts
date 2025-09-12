@@ -29,5 +29,6 @@ export const buildStation = (elem: StationResponse) => {
         currentWeatherDescription: elem.accuweather_location.current_weather_description,
         currentWeatherConditionIcon: elem.accuweather_location.weather_condition_icon.asset,
         elevation: elem.elevation,
+        translations: elem.translations,
     };
 };

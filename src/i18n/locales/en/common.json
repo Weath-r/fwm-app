@@ -1,0 +1,30 @@
+{
+    "languageSelect": "Select your language",
+    "logoMoto": "Weather conditions for Central Greece",
+    "logoTitle": "myWeathr - Your weather application for Central Greece",
+    "map": "Weather map",
+    "stationslist": "Stations",
+    "warnings": "Warnings",
+    "fthiotidaforecast": "Fthiotida forecast",
+    "aboutus": "About Us",
+    "searchStation": "Search station",
+    "favoriteStations": "Favorite stations",
+    "options": "Options",
+    "page": "Page",
+    "StationsPage": {
+        "active": "Active",
+        "favoriteStationsTitle": "My Favourite Stations",
+        "stationsListTitle": "Stations List"
+    },
+    "StationsTable": {
+        "stationName": "Station Name",
+        "stationWeatherIcon": "Current conditions",
+        "favourite": "Favourite",
+        "lastUpdate": "Last update"
+    },
+    "StationPage": {
+        "lastTwoDays": "Last two days",
+        "thirtyDays": "Last 30 days"
+
+    }
+}

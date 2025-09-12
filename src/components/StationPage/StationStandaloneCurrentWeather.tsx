@@ -1,12 +1,17 @@
 import { WeatherDataResponse, WeatherConditions, Measurements } from "@/types";
 import SvgInline from "@/components/Common/SvgInline";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
+import { useT } from "@/i18n/client";
 
 export default function StationStandaloneCurrentWeather({ currentWeather }: { currentWeather: WeatherDataResponse[]}) {
+    const { i18n } = useT("weather_conditions");
+    const { i18n: i18n_icons } = useT("weather_icons");
+    const selectedLanguage = i18n.language;
+
     return (
         <section className="h-full">
             <h4 className="mb-2 text-lg font-bold text-primary">
-                Weather now
+                {i18n.getFixedT(selectedLanguage, "weather_conditions")("weatherNow")}
             </h4>
             {currentWeather.map((elem, index) => {
                 return (
@@ -20,7 +25,7 @@ export default function StationStandaloneCurrentWeather({ currentWeather }: { cu
                                     />
                                 </div>
                                 <p className="text-md ml-2 font-bold capitalize leading-tight text-primary">
-                                    {elem.weather_condition}
+                                    {i18n_icons.getFixedT(selectedLanguage, "weather_icons")(elem.weather_condition.toLowerCase())}
                                 </p>
                             </div>
                             
@@ -28,7 +33,7 @@ export default function StationStandaloneCurrentWeather({ currentWeather }: { cu
                                 <div className="size-6 lg:size-8">
                                     <SvgInline
                                         path="/weather_icons/wind.svg"
-                                        title="Wind icon"
+                                        title={i18n.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.WIND.toLowerCase())}
                                         className="fill-primary"
                                         style={{
                                             transform: `rotate(${elem.winddir}deg)`,
@@ -36,7 +41,7 @@ export default function StationStandaloneCurrentWeather({ currentWeather }: { cu
                                     />
                                 </div>
                                 <p className="text-md leading-tight text-primary/70 lg:text-lg">
-                                    {WeatherConditions.WIND}
+                                    {i18n.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.WIND.toLowerCase())}
                                     <span className="block text-xs font-bold text-primary">
                                         {elem.windspd} {Measurements.SPEED}
                                     </span>
@@ -46,7 +51,7 @@ export default function StationStandaloneCurrentWeather({ currentWeather }: { cu
                         <div className="flex items-center justify-between px-1 lg:flex-auto lg:gap-2">
                             <div className="flex items-center">
                                 <p className="text-md leading-tight text-primary/70 lg:text-lg">
-                                    {WeatherConditions.TEMP}
+                                    {i18n.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.TEMP.toLowerCase())}
                                     <span className="block text-xs font-bold text-primary">
                                         {elem.temperature} {Measurements.CELCIUS}
                                     </span>
@@ -54,7 +59,7 @@ export default function StationStandaloneCurrentWeather({ currentWeather }: { cu
                             </div>
                             <div className="flex items-center">
                                 <p className="text-md leading-tight text-primary/70 lg:text-lg">
-                                    {WeatherConditions.HUMIDITY}
+                                    {i18n.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.HUMIDITY.toLowerCase())}
                                     <span className="block text-xs font-bold text-primary">
                                         {elem.humidity} {Measurements.PERCENTAGE}
                                     </span>
@@ -62,7 +67,7 @@ export default function StationStandaloneCurrentWeather({ currentWeather }: { cu
                             </div>
                             <div className="flex items-center">
                                 <p className="text-md leading-tight text-primary/70 lg:text-lg">
-                                    {WeatherConditions.RAIN}
+                                    {i18n.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.RAIN.toLowerCase())}
                                     <span className="block text-xs font-bold text-primary">
                                         {elem.percipitation} {Measurements.MILLIMETER}
                                     </span>
@@ -70,7 +75,7 @@ export default function StationStandaloneCurrentWeather({ currentWeather }: { cu
                             </div>
                             <div className="flex items-center">
                                 <p className="text-md leading-tight text-primary/70 lg:text-lg">
-                                    {WeatherConditions.BAROMETER}
+                                    {i18n.getFixedT(selectedLanguage, "weather_conditions")(WeatherConditions.BAROMETER.toLowerCase())}
                                     <span className="block text-xs font-bold text-primary">
                                         {elem.barometer} {Measurements.PRESSURE}
                                     </span>
