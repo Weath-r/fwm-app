@@ -9,3 +9,4 @@ export * from "./stationPage";
 export * from "./assets";
 export * from "./gisTypes";
 export * from "./FthiotidaForecasts";
+export * from "./loading_messages";
