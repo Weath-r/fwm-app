@@ -7,7 +7,7 @@ const languages = configuration.languages.map(lang => lang.id);
 acceptLanguage.languages(languages);
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js|site.webmanifest).*)"],
+    matcher: ["/((?!api|_next/static|_next/image|sitemap|assets|favicon.ico|sw.js|site.webmanifest).*)"],
 };
 
 export function middleware(req: NextRequest) {
