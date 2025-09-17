@@ -27,7 +27,7 @@
         "accept-language": "3.0.20",
         "@heroicons/react": "2.0.18",
         "@radix-ui/react-accordion": "1.2.1",
-        "@radix-ui/react-dialog": "1.1.6",
+        "@radix-ui/react-dialog": "1.1.15",
         "@radix-ui/react-dropdown-menu": "2.1.6",
         "@radix-ui/react-navigation-menu": "1.2.10",
         "@radix-ui/react-slider": "1.2.1",

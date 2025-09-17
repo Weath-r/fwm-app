@@ -1,17 +1,13 @@
 "use client";
-
 import { ReactNode, useMemo } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XCircleIcon } from "@heroicons/react/24/solid";
-import { useDialog } from "@/hooks/useDialog"; 
+import { useDialogStore } from "@/stores/dialogStore";
 
 type BaseModalProps = {
     children?: ReactNode;
     dialogTitle?: ReactNode;
-    onOpen?: () => void;
     onClose?: () => void;
-    isOpen?: boolean;
-    setIsOpen?: (isOpen: boolean) => void;
     trigger?: ReactNode;
     triggerClass?: string;
 };
@@ -19,20 +15,11 @@ type BaseModalProps = {
 export default function BaseDialog({
     children,
     dialogTitle = "",
-    onOpen,
     onClose,
-    isOpen,
-    setIsOpen,
     trigger,
     triggerClass = "",
 }: Readonly<BaseModalProps>) {
-    const { open, openDialog, closeDialog } = useDialog({
-        isOpen,
-        setIsOpen,
-        onOpen,
-        onClose,
-    });
-
+    const { dialog } = useDialogStore();
     const portalContainer = useMemo(() => {
         if (typeof window !== "undefined") {
             return document.getElementById("portal") || undefined;
@@ -40,11 +27,9 @@ export default function BaseDialog({
         return undefined;
     }, []);
 
-
     return (
         <Dialog.Root 
-            open={open} 
-            onOpenChange={(o) => (o ? openDialog() : closeDialog())}
+            open={dialog}
         >
             {trigger && (
                 <Dialog.Trigger className={triggerClass}>
@@ -59,7 +44,9 @@ export default function BaseDialog({
                 <Dialog.Content
                     className="fixed left-1/2 top-1/2 z-10 max-h-[90vh] w-[98vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 overflow-y-hidden rounded-2xl bg-white p-4 focus:outline-none md:max-h-[98vh]"
                     onInteractOutside={(e) => e.preventDefault()}
+                    aria-description="Modal content"
                 >
+                    <Dialog.DialogDescription></Dialog.DialogDescription>
                     <Dialog.Title className="mb-2 flex items-center justify-between">
                         {dialogTitle}
                         <Dialog.Close asChild>
@@ -67,13 +54,15 @@ export default function BaseDialog({
                                 className="appearance-none text-sm text-danger focus:outline-none"
                                 title="Close"
                                 aria-label="Close"
-                                onClick={closeDialog}
+                                onClick={onClose}
                             >
                                 <XCircleIcon className="size-6" />
                             </button>
                         </Dialog.Close>
                     </Dialog.Title>
-                    {children}
+                    <>
+                        { children }
+                    </>
                 </Dialog.Content>
             </Dialog.Portal>
         </Dialog.Root>

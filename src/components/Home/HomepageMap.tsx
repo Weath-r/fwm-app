@@ -2,19 +2,16 @@ import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
 import { useStationsProvider, useWarningsProvider } from "@/providers/StationsProvider";
 import L from "leaflet";
 import dynamic from "next/dynamic";
-import { useEffect } from "react";
-import { useT } from "@/i18n/client";
+import { useMemo } from "react";
 
 import { useMapStore } from "@/stores/mapStore";
 import { MAP_CONFIG, Station } from "@/types";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
+
 import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
-import StationModalContent from "./Markers/StationModalContent";
+import MapMarketWithLabel from "./Markers/MapMarkerWithLabel";
 
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
-    ssr: false,
-});
-const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"), {
     ssr: false,
 });
 const TemperatureLayer = dynamic(() => import("@/components/Home/Layers/TemperatureLayer"), {
@@ -26,39 +23,22 @@ const WindLayer = dynamic(() => import("@/components/Home/Layers/WindLayer"), {
 const ClusterStationsLayer = dynamic(() => import("@/components/Home/Layers/ClusterStationsLayer"), {
     ssr: false,
 });
-const BaseDialog = dynamic(() => import("@/components/BaseComponents/BaseDialog"), {
-    ssr: false,
-});
 
 const getStationsMarkers = function (
     stations: Station[],
-    handleModal: (stationId: number) => void,
-    handleCloseModal: () => void,
-    i18n: any,
-    selectedLanguage: string
+    handleModal: (stationId: number) => void
 ) {
-    const dialogTitle = (<div className="text-sm font-bold uppercase text-primary">
-        {i18n.getFixedT(selectedLanguage, "stationModal")("currentlyOutside")}
-    </div>);
-
     return stations.map((station) => {
         return (
-            <BaseDialog
+            <MapMarketWithLabel 
                 key={station.id}
-                trigger={<BaseMarker
-                    key={station.id}
-                    position={getReversedCoordinates(station.location.coordinates)}
-                    stationId={station.id}
-                    weatherDescription={station.currentWeatherDescription}
-                    assetId={station.currentWeatherConditionIcon}
-                    stationName={station.name}
-                />}
-                onOpen={() => handleModal(station.id)}
-                onClose={() => handleCloseModal()}
-                dialogTitle={dialogTitle}
-            >
-                <StationModalContent/>
-            </BaseDialog>
+                position={getReversedCoordinates(station.location.coordinates)}
+                stationId={station.id}
+                weatherDescription={station.currentWeatherDescription}
+                assetId={station.currentWeatherConditionIcon}
+                stationName={station.name}
+                handleClick={() => handleModal(station.id)}
+            ></MapMarketWithLabel>
         );
     });
 };
@@ -67,12 +47,9 @@ export default function HomepageMap() {
     const map = useMapStore((state) => state.map);
     const { stations } = useStationsProvider();
     const { warnings, shouldRenderWarnings } = useWarningsProvider();
-    const { handleModal, handleCloseModal } = useMarkerStationsClick();
+    const { handleModal } = useMarkerStationsClick();
 
-    const { i18n } = useT("stationModal");
-    const selectedLanguage = i18n.language;
-
-    useEffect(() => {
+    useMemo(() => {
         if (map) {
             const stationsToCoordinates = stations.map((station) => {
                 return {
@@ -87,7 +64,7 @@ export default function HomepageMap() {
         }
     }, [map]);
 
-    const markers = getStationsMarkers(stations, handleModal, handleCloseModal, i18n, selectedLanguage);
+    const markers = getStationsMarkers(stations, handleModal);
 
     return (
         <BaseMap

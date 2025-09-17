@@ -1,30 +1,25 @@
-import dynamic from "next/dynamic";
-import BaseWeatherIcon from "./BaseWeatherIcon";
+import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import { DivIconLeafletMarker, DivIconContainer } from "@/components/Common/DivIconMarker";
-const DivIconMarker = dynamic(() => import("@/components/Common/DivIconMarker"), {
-    ssr: false,
-});
-/**
-* @todo This is more of a specific Marker with a modal functionality and less a base one.
-Refactor might be possible here. https://tzoupy.atlassian.net/browse/FWM-38
-*/
+import DivIconMarker from "@/components/Common/DivIconMarker";
 
-type BaseMarkerProps = {
+type MapMarkerProps = {
     position: [number, number];
-    handleClick?: any;
+    handleClick?: (id: number) => void;
     stationId: number;
     weatherDescription: string;
     assetId: string;
     stationName?: string;
 };
 
-export default function BaseMarker({
+export default function MapMarketWithLabel({
     position,
+    handleClick,
     stationId,
     weatherDescription,
     assetId,
     stationName,
-}: Readonly<BaseMarkerProps>) {
+}: Readonly<MapMarkerProps>) {
+
     const marker: DivIconLeafletMarker = {
         position,
         weatherDescription,
@@ -33,25 +28,33 @@ export default function BaseMarker({
         stationId,
         eventHandlers: {
             click: () => {
-                return console.log("stationId", stationId);
+                return false;
             },
         },
     };
 
     const container: DivIconContainer = {
-        tagName: "div",
-        className: "",
+        tagName: "section",
+        className: "w-[100px]",
+    };
+
+    const stationContainerClick = (stationId: number) => {
+        return handleClick?.(stationId);
     };
 
     return (
         <DivIconMarker leafletMarker={marker} container={container}>
-            <div className="flex flex-col items-center justify-center">
-                <div className="w-[58px]">
+            <div 
+                className="relative flex h-8 items-center gap-1 rounded-lg bg-primary/80 p-1" onClick={() => stationContainerClick(stationId)}>
+                <div className="w-8 p-1">
                     <BaseWeatherIcon
                         weatherDescriptionText={weatherDescription}
                         assetId={assetId}
                     />
                 </div>
+                <p className="truncate font-semibold text-white">
+                    {stationName}
+                </p>
             </div>
         </DivIconMarker>
     );

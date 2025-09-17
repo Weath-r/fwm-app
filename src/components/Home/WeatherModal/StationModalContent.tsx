@@ -2,30 +2,26 @@
 import { useState, useEffect } from "react";
 import { DataService } from "@/services/DataService";
 import { WeatherData, WeatherDataResponse } from "@/types";
-import LoadingSpinner from "@/components/Common/LoadingSpinner";
-
-import { useAppStore } from "@/hooks/useAppStore";
-import { buildWeatherData } from "@/utils/weatherDataFormatUtils";
-import { StationModalWeatherSummary } from "../WeatherModal/StationModalWeatherSummary";
-import { StationWeatherForecastDetails } from "../WeatherModal/StationWeatherForecastDetails";
-import { StationModalHeading } from "../WeatherModal/StationModalHeading";
 import { useConfigurationStore } from "@/stores/configurationStore";
 import { useParams } from "next/navigation";
 
-const MODAL_TIMEOUT: number = 600;
+import { useAppStore } from "@/hooks/useAppStore";
+import { useDialogStore } from "@/stores/dialogStore";
+import { buildWeatherData } from "@/utils/weatherDataFormatUtils";
 
-const loadingBlock = (
-    <div className="absolute z-10 flex h-[calc(100%_-_16px)] w-[93.6vw] items-center justify-center overflow-hidden rounded-2xl bg-white md:size-full md:h-[calc(100%_-_34px)]">
-        <LoadingSpinner />
-    </div>
-);
+import { StationModalWeatherSummary } from "./StationModalWeatherSummary";
+import { StationWeatherForecastDetails } from "./StationWeatherForecastDetails";
+import { StationModalHeading } from "./StationModalHeading";
+import LoadingSpinner from "@/components/Common/LoadingSpinner";
+
+const MODAL_TIMEOUT: number = 600;
 
 export default function StationModalContent() {
     const dataService = new DataService();
     const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
     const { activeStation } = useAppStore();
     const { featureFlags } = useConfigurationStore();
+    const { setDialogLoading, dialogLoading } = useDialogStore();
     const isForecastEnabled = featureFlags?.forecasts.modalForecast;
     const params = useParams();
     const currentLanguage = params.lng;
@@ -34,6 +30,7 @@ export default function StationModalContent() {
         await dataService
             .fetchWeatherDataByStation(activeStation)
             .then(async (response) => {
+                setDialogLoading(true);
                 const weatherData: WeatherData[] = response.map((elem: WeatherDataResponse) => {
                     if (currentLanguage && elem.weather_station_id.translations) {
                         const translationStationName = elem.weather_station_id.translations.find(t => t.languages_code === currentLanguage);
@@ -50,6 +47,7 @@ export default function StationModalContent() {
                     }
                     return buildWeatherData(elem);
                 });
+
                 if (isForecastEnabled) {
                     await dataService
                         .fetchForecastByStation(activeStation)
@@ -62,7 +60,6 @@ export default function StationModalContent() {
                                 };
                             });
                             return setWeatherData(newResponse);
-    
                         })
                         .catch((error) => {
                             console.log(error);
@@ -77,7 +74,7 @@ export default function StationModalContent() {
             })
             .finally(() => {
                 setTimeout(() => {
-                    setIsLoading(false);
+                    setDialogLoading(false);
                 }, MODAL_TIMEOUT);
             });
     };
@@ -86,20 +83,29 @@ export default function StationModalContent() {
         getWeatherData();
     }, []);
 
+    const loadingBlock = (
+        <div className="flex size-full min-h-[90vh] items-center justify-center overflow-hidden rounded-2xl bg-white md:size-full md:h-[calc(100%_-_34px)]">
+            <LoadingSpinner />
+        </div>
+    );
+
     return (
-        weatherData.map((elem: WeatherData) => {
-            return (
-                <div className="relative flex h-full flex-col gap-2 text-black" key={elem.station.id}>
-                    {isLoading && loadingBlock}
-                    <div className="w-full">
-                        <StationModalHeading {...elem } />
+        dialogLoading ? (
+            loadingBlock
+        ) : (
+            <>
+                {weatherData.map((elem: WeatherData) => (
+                    <div className="relative flex h-full flex-col gap-2 text-black" key={elem.station.id}>
+                        <div className="w-full">
+                            <StationModalHeading {...elem } />
+                        </div>
+                        <StationModalWeatherSummary {...elem} />
+                        {isForecastEnabled &&
+                            <StationWeatherForecastDetails {...elem} />
+                        }
                     </div>
-                    <StationModalWeatherSummary {...elem} />
-                    {isForecastEnabled &&
-                        <StationWeatherForecastDetails {...elem} />
-                    }
-                </div>
-            );
-        })
+                ))}
+            </>
+        )
     );
 }
