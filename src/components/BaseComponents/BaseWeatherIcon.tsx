@@ -13,9 +13,8 @@ export default function BaseWeatherIcon({ weatherDescriptionText, assetId, class
     return <Image 
         src={imagePath} 
         alt={weatherDescriptionText}
-        className={`h-full !w-full ${className}`} 
+        className={`h-full !w-full ${className} object-contain`} 
         width={100}
         height={100}
-        objectFit="contain"
     />;
 }

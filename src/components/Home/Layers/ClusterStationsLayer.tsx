@@ -1,15 +1,18 @@
 import L, { LeafletMouseEvent, Marker } from "leaflet";
 import dynamic from "next/dynamic";
-
-import { useState } from "react";
-import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
-import { ChevronRightIcon } from "@heroicons/react/24/solid";
-import { useAppStore } from "@/hooks/useAppStore";
-import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
-import BaseDialog from "@/components/BaseComponents/BaseDialog";
-import { createClusterCustomIcon } from "@/components/Home/Markers/ClusterMarkersContent";
-import StationModalContent from "@/components/Home/Markers/StationModalContent";
 import { useT } from "@/i18n/client";
+import { useState } from "react";
+
+import { ChevronRightIcon } from "@heroicons/react/24/solid";
+import { createClusterCustomIcon } from "@/components/Home/Markers/ClusterMarkersContent";
+
+import { useAppStore } from "@/hooks/useAppStore";
+import { useDialogStore } from "@/stores/dialogStore";
+import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
+
+import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
+import BaseDialog from "@/components/BaseComponents/BaseDialog";
+import StationModalContent from "@/components/Home/WeatherModal/StationModalContent";
 
 const MarkerClusterGroup = dynamic(() => import("react-leaflet-cluster"), {
     ssr: false,
@@ -25,7 +28,6 @@ type MarkerCustomAttrs = {
 type RenderStationInClusterProps = {
     station: Marker;
     handleClick: (stationId: number) => void;
-    changeView: (view: ModalView) => void;
 };
 
 declare module "leaflet" {
@@ -34,15 +36,12 @@ declare module "leaflet" {
     }
 }
 
-type ModalView = "list" | "stationDetails";
-
-const renderStationInCluster = ({ station, handleClick, changeView }: RenderStationInClusterProps) => {
+const renderStationInCluster = ({ station, handleClick }: RenderStationInClusterProps) => {
     if (!station.options.customAttr) return null;
     const { assetId, weatherDescription, stationName, stationId }: MarkerCustomAttrs = station.options.customAttr;
     
     const onStationClick = (stationId: number) => {
         handleClick(stationId);
-        changeView("stationDetails");
     };
 
     const triggerStationModal = (
@@ -72,9 +71,9 @@ const renderStationInCluster = ({ station, handleClick, changeView }: RenderStat
 export default function ClusterGroupLayer({ markers }: { markers: React.ReactNode[] }) {
     const [clusterData, setClusterData] = useState<L.Marker[]>([]);
     const { activeStation } = useAppStore();
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const { dialogMarkerType, setDialogMarkerType, setDialog } = useDialogStore();
     const { handleModal, handleCloseModal } = useMarkerStationsClick();
-    const [currentView, setCurrentView] = useState<ModalView>("list");
+
     const { i18n } = useT("stationModal");
     const selectedLanguage = i18n.language;
 
@@ -84,17 +83,39 @@ export default function ClusterGroupLayer({ markers }: { markers: React.ReactNod
 
     const handleClusterClick = (ev: LeafletMouseEvent) => {
         const markersInCluster: L.Marker[] = ev.layer.getAllChildMarkers();
+        setDialogMarkerType("list");
         setClusterData(markersInCluster);
-        setIsModalOpen(true);
+        setDialog(true);
     };
 
     const onCloseDialog = () => {
-        setCurrentView("list");
         if (activeStation > 0) {
             return handleCloseModal();
         }
-        return null;
+        return setDialog(false);
     };
+
+    let renderedContent;
+    if (dialogMarkerType === "list") {
+        renderedContent = (
+            <div className="mt-4 max-h-60 overflow-auto">
+                <div className="flex flex-col gap-2">
+                    {clusterData.map((marker, index) => (
+                        <div 
+                            key={index} 
+                            className="border-b border-secondary/90 py-1 text-primary">
+                            {renderStationInCluster({ 
+                                station: marker,
+                                handleClick: handleModal,
+                            })}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    } else {
+        renderedContent = <StationModalContent />;
+    }
 
     return (
         <>
@@ -117,7 +138,7 @@ export default function ClusterGroupLayer({ markers }: { markers: React.ReactNod
             </MarkerClusterGroup>
             <BaseDialog 
                 dialogTitle={
-                    currentView === "list" 
+                    dialogMarkerType === "list" 
                         ? <div className="text-sm font-bold uppercase text-primary">
                             {i18n.getFixedT(selectedLanguage, "stationModal")("availableStations")}
                         </div> 
@@ -126,28 +147,8 @@ export default function ClusterGroupLayer({ markers }: { markers: React.ReactNod
                         </div> 
                 }
                 onClose={onCloseDialog}
-                isOpen={isModalOpen}
-                setIsOpen={setIsModalOpen}
             >
-                {currentView === "list" && (
-                    <div className="mt-4 max-h-60 overflow-auto">
-                        <div className="flex flex-col gap-2">
-                            {clusterData.map((marker, index) => (
-                                <div 
-                                    key={index} 
-                                    className="border-b border-secondary/90 py-1 text-primary">
-                                    {renderStationInCluster({ 
-                                        station: marker,
-                                        handleClick: handleModal,
-                                        changeView: setCurrentView,
-                                    })}
-                                </div>
-                            ))}
-                        </div>
-                    </div>)}
-                {currentView === "stationDetails" && (
-                    <StationModalContent />
-                )}
+                {renderedContent}
             </BaseDialog>
         </>
     );

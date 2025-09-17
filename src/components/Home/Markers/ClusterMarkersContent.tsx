@@ -49,9 +49,9 @@ export const createClusterCustomIcon = function (cluster: MarkerCluster) {
 
     return L.divIcon({
         html: `<div class="flex justify-center items-center">
-            <div class="w-[58px] h-[58px] relative">
+            <div class="size-10 relative">
                 <img src="${summarizedIcons[0].imgUrl}" class="w-full h-full" alt="${summarizedIcons[0].description}" />
-                <div class="absolute bottom-0 right-0 bg-primary rounded px-1">
+                <div class="absolute bottom-0 right-0 bg-primary/80 rounded px-1">
                 <p class="text-white">
                     ${cluster.getChildCount()}
                 </p>
