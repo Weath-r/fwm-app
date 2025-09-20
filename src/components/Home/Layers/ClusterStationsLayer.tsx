@@ -8,7 +8,7 @@ import { useAppStore } from "@/hooks/useAppStore";
 import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
 import BaseDialog from "@/components/BaseComponents/BaseDialog";
 import { createClusterCustomIcon } from "@/components/Home/Markers/ClusterMarkersContent";
-import StationModalContent from "@/components/Home/Markers/StationModalContent";
+import StationModalContent from "@/components/Home/WeatherModal/StationModalContent";
 import { useT } from "@/i18n/client";
 
 const MarkerClusterGroup = dynamic(() => import("react-leaflet-cluster"), {

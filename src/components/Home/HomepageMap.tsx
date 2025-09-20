@@ -9,12 +9,10 @@ import { useMapStore } from "@/stores/mapStore";
 import { MAP_CONFIG, Station } from "@/types";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
 import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
-import StationModalContent from "./Markers/StationModalContent";
-
+import StationModalContent from "./WeatherModal/StationModalContent";
+import MapMarketWithLabel from "./Markers/MapMarkerWithLabel";
+import BaseDialog from "@/components/BaseComponents/BaseDialog";
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
-    ssr: false,
-});
-const BaseMarker = dynamic(() => import("@/components/BaseComponents/BaseMarker"), {
     ssr: false,
 });
 const TemperatureLayer = dynamic(() => import("@/components/Home/Layers/TemperatureLayer"), {
@@ -26,9 +24,7 @@ const WindLayer = dynamic(() => import("@/components/Home/Layers/WindLayer"), {
 const ClusterStationsLayer = dynamic(() => import("@/components/Home/Layers/ClusterStationsLayer"), {
     ssr: false,
 });
-const BaseDialog = dynamic(() => import("@/components/BaseComponents/BaseDialog"), {
-    ssr: false,
-});
+
 
 const getStationsMarkers = function (
     stations: Station[],
@@ -45,7 +41,7 @@ const getStationsMarkers = function (
         return (
             <BaseDialog
                 key={station.id}
-                trigger={<BaseMarker
+                trigger={<MapMarketWithLabel
                     key={station.id}
                     position={getReversedCoordinates(station.location.coordinates)}
                     stationId={station.id}
