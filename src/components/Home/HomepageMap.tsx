@@ -1,4 +1,3 @@
-import { useMarkerStationsClick } from "@/hooks/useMarkerStations";
 import { useStationsProvider, useWarningsProvider } from "@/providers/StationsProvider";
 import L from "leaflet";
 import dynamic from "next/dynamic";
@@ -6,12 +5,12 @@ import { useEffect } from "react";
 import { useT } from "@/i18n/client";
 
 import { useMapStore } from "@/stores/mapStore";
-import { MAP_CONFIG, Station } from "@/types";
+import { MAP_CONFIG, Station, StationParamsUrlProp } from "@/types";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
 import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
-import StationModalContent from "./WeatherModal/StationModalContent";
 import MapMarketWithLabel from "./Markers/MapMarkerWithLabel";
-import BaseDialog from "@/components/BaseComponents/BaseDialog";
+import StationLink from "@/components/Common/StationLink";
+
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
     ssr: false,
 });
@@ -28,33 +27,31 @@ const ClusterStationsLayer = dynamic(() => import("@/components/Home/Layers/Clus
 
 const getStationsMarkers = function (
     stations: Station[],
-    handleModal: (stationId: number) => void,
-    handleCloseModal: () => void,
-    i18n: any,
     selectedLanguage: string
 ) {
-    const dialogTitle = (<div className="text-sm font-bold uppercase text-primary">
-        {i18n.getFixedT(selectedLanguage, "stationModal")("currentlyOutside")}
-    </div>);
+    
+    const queryParams: StationParamsUrlProp[] = [
+        { "isForecastEnabled": "true" }
+    ];
 
     return stations.map((station) => {
         return (
-            <BaseDialog
+            <StationLink
                 key={station.id}
-                trigger={<MapMarketWithLabel
-                    key={station.id}
+                pageName="live-weather-conditions"
+                lang={selectedLanguage}
+                stationId={station.id}
+                stationName={station.name}
+                paramsQuery={queryParams}
+            >
+                <MapMarketWithLabel
                     position={getReversedCoordinates(station.location.coordinates)}
                     stationId={station.id}
                     weatherDescription={station.currentWeatherDescription}
                     assetId={station.currentWeatherConditionIcon}
                     stationName={station.name}
-                />}
-                onOpen={() => handleModal(station.id)}
-                onClose={() => handleCloseModal()}
-                dialogTitle={dialogTitle}
-            >
-                <StationModalContent/>
-            </BaseDialog>
+                />
+            </StationLink>
         );
     });
 };
@@ -63,7 +60,6 @@ export default function HomepageMap() {
     const map = useMapStore((state) => state.map);
     const { stations } = useStationsProvider();
     const { warnings, shouldRenderWarnings } = useWarningsProvider();
-    const { handleModal, handleCloseModal } = useMarkerStationsClick();
 
     const { i18n } = useT("stationModal");
     const selectedLanguage = i18n.language;
@@ -83,7 +79,7 @@ export default function HomepageMap() {
         }
     }, [map]);
 
-    const markers = getStationsMarkers(stations, handleModal, handleCloseModal, i18n, selectedLanguage);
+    const markers = getStationsMarkers(stations, selectedLanguage);
 
     return (
         <BaseMap

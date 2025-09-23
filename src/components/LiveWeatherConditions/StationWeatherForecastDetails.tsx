@@ -1,3 +1,4 @@
+"use client";
 import { WeatherData, ForecastData, Measurements } from "@/types";
 import { useState } from "react";
 import { 
@@ -5,8 +6,8 @@ import {
     fullDateNoTime,
     dayWithNameUtilWithCustom 
 } from "@/utils/dateTimeUtils";
-import BaseWeatherIcon from "../../BaseComponents/BaseWeatherIcon";
-import SvgInline from "../../Common/SvgInline";
+import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
+import SvgInline from "@/components/Common/SvgInline";
 import CommonButton from "@/components/Common/CommonButton";
 import StationLink from "@/components/Common/StationLink";
 import { useConfigurationStore } from "@/stores/configurationStore";
@@ -57,7 +58,6 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
     const getExtremeDayValues = (date:string) => {
         const valuesArr = [];
         for(const value of structuredForecast[date]) {
-            // there is a scenario that the temperature is undefined
             value.temperature && valuesArr.push(value.temperature);
         }
         return {
@@ -67,7 +67,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
     };
 
     const { featureFlags } = useConfigurationStore();
-    const isFullStationPageEnabled = featureFlags?.standalone_station.moreDetailsModalUrl;    
+    const isFullStationPageEnabled = featureFlags?.standalone_station?.moreDetailsModalUrl;
 
     return (
         <div className="p-1">
@@ -140,7 +140,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                             <div className="flex items-center">
                                 <div className="h-4 w-6">
                                     <SvgInline
-                                        path="weather_icons/wind.svg"
+                                        path="/weather_icons/wind.svg"
                                         title="Wind icon"
                                         className="fill-primary"
                                         style={{
@@ -170,6 +170,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                         <StationLink
                             stationId={elem.station.id}
                             stationName={elem.station.name}
+                            pageName="station"
                             lang={selectedLanguage}
                             className="text-sm font-bold uppercase text-primary"
                         >

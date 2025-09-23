@@ -1,3 +1,4 @@
+"use client";
 import { WeatherData, Measurements, WeatherConditions } from "@/types";
 import SvgInline from "@/components/Common/SvgInline";
 import { useT } from "@/i18n/client";
@@ -12,7 +13,7 @@ export function StationModalWeatherDetails(elem: Readonly<WeatherData>) {
                 <div className="flex w-[100px] items-center">
                     <div className="h-4 w-6">
                         <SvgInline
-                            path="weather_icons/wind.svg"
+                            path="/weather_icons/wind.svg"
                             title="Wind icon"
                             className="fill-primary"
                             style={{
@@ -30,7 +31,7 @@ export function StationModalWeatherDetails(elem: Readonly<WeatherData>) {
                 <div className="flex w-[100px] items-center">
                     <div className="size-6">
                         <SvgInline
-                            path="weather_icons/rain.svg"
+                            path="/weather_icons/rain.svg"
                             title="Rain icon"
                             className="fill-primary"
                         />
@@ -48,7 +49,7 @@ export function StationModalWeatherDetails(elem: Readonly<WeatherData>) {
                 <div className="flex w-[100px] items-center">
                     <div className="size-6">
                         <SvgInline
-                            path="weather_icons/humidity.svg"
+                            path="/weather_icons/humidity.svg"
                             title="Humidity icon"
                             className="fill-primary"
                         />
@@ -64,7 +65,7 @@ export function StationModalWeatherDetails(elem: Readonly<WeatherData>) {
                 <div className="flex w-[100px] items-center">
                     <div className="size-6">
                         <SvgInline
-                            path="weather_icons/barometer.svg"
+                            path="/weather_icons/barometer.svg"
                             className="fill-primary"
                             title="Barometer icon"
                         />

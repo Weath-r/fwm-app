@@ -2,7 +2,7 @@ import { useWarningsProvider } from "@/providers/StationsProvider";
 import { dateWithTime, dayWithNameUtil } from "@/utils/dateTimeUtils";
 import { useGeneralStore } from "@/stores/settingsStore";
 import SvgInline from "@/components/Common/SvgInline";
-import BaseDialog from "@/components/BaseComponents/BaseDialog";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/Common/CommonDialog";
 import WarningHazardsLegend from "./components/WarningHazardsLegend";
 import WarningLevelsLegend from "./components/WarningLevelsLegend";
 import HazardIcon from "./components/HazardIcon";
@@ -130,7 +130,9 @@ export default function WarningsPanel() {
                 </section>
             );
         });
-        
+    
+    const dialogTitle = (<div className="text-sm font-bold uppercase text-primary">{i18n.getFixedT(selectedLanguage, "warnings")("information")}</div>);
+
     const panelLayout = (
         <section className="flex size-full flex-col">
             <div className="flex w-full flex-col p-3">
@@ -141,17 +143,25 @@ export default function WarningsPanel() {
                             {today}
                         </small>
                     </h2>
-                    <BaseDialog 
-                        dialogTitle={<div className="text-sm font-bold uppercase text-primary">{i18n.getFixedT(selectedLanguage, "warnings")("information")}</div> }
-                        trigger={
+                    <Dialog>
+                        <DialogTrigger>
                             <SvgInline path="icons/circle-info.svg" className="size-3 fill-primary"></SvgInline>
-                        }
-                    >
-                        <section>
-                            <WarningHazardsLegend hazards={hazards} i18n={i18n}></WarningHazardsLegend>
-                            <WarningLevelsLegend levels={warningLevels} i18n={i18n}></WarningLevelsLegend>
-                        </section>
-                    </BaseDialog>
+                        </DialogTrigger>
+                        <DialogContent
+                            dialogTitle={dialogTitle}
+                        >
+                            <section>
+                                <WarningHazardsLegend 
+                                    hazards={hazards} 
+                                    i18n={i18n}
+                                ></WarningHazardsLegend>
+                                <WarningLevelsLegend 
+                                    levels={warningLevels}
+                                    i18n={i18n}
+                                ></WarningLevelsLegend>
+                            </section>
+                        </DialogContent>
+                    </Dialog>
                 </div>
                 <div className="max-h-[66vh] w-full">
                     {panelContent}
