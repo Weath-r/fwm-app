@@ -94,17 +94,9 @@ export async function generateMetadata() {
             type: "website",
         },
         robots: {
-            index: false,
+            index: true,
             follow: true,
             nocache: true,
-            googleBot: {
-                index: true,
-                follow: false,
-                noimageindex: true,
-                "max-video-preview": -1,
-                "max-image-preview": "large",
-                "max-snippet": -1,
-            },
         },
         verification: {
             google: "ckL2sSissjkQt1lxgjAeaCPd8uAH9jR00l57zdcd8BU",
