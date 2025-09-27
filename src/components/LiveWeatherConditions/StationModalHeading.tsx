@@ -38,7 +38,7 @@ export function StationModalHeading(elem: Readonly<WeatherData>) {
                     </p>
                 </div>
                 <div className="flex items-center gap-1">
-                    <FavoriteStationButton></FavoriteStationButton>
+                    <FavoriteStationButton activeStation={elem.station.id}></FavoriteStationButton>
                 </div>
             </div>
         </div>
