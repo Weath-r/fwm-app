@@ -41,6 +41,7 @@ export const getColumns = (
                         <StationLink 
                             stationId={stationId} 
                             stationName={stationName}
+                            pageName="station"
                             className="whitespace-nowrap pr-6 font-bold text-primary"
                             lang={selectedLanguage}
                         >

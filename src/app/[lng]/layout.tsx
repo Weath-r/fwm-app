@@ -118,21 +118,20 @@ type RootLayoutProps = {
 
 export default async function RootLayout({ children, params }: Readonly<RootLayoutProps>) {
     const { lng } = await params;
-    
     return (
         <html lang={lng} dir={dir(lng)}>
             <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-            <ClientProvider>
-                <body className={fontFamily.className}>
+            <body className={fontFamily.className}>
+                <ClientProvider>
                     <DayjsLocaleProvider locale={lng} />
                     <Suspense fallback={<div>Loading...</div>}>
                         <PostHogPageView />
                         <Header></Header>
                         {children}
                     </Suspense>
-                    <div id="portal" className="absolute z-20"></div>
-                </body>
-            </ClientProvider>
+                </ClientProvider>
+                <div id="portal" className="absolute z-20"></div>
+            </body>
         </html>
     );
 }

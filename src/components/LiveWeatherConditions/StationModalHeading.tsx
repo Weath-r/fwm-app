@@ -1,3 +1,4 @@
+"use client";
 import { WeatherData } from "@/types";
 import { timeFromNowUtil } from "@/utils/dateTimeUtils";
 import { MapPinIcon, ClockIcon } from "@heroicons/react/24/solid";
