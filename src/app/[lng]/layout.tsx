@@ -118,7 +118,6 @@ type RootLayoutProps = {
 
 export default async function RootLayout({ children, params }: Readonly<RootLayoutProps>) {
     const { lng } = await params;
-    
     return (
         <html lang={lng} dir={dir(lng)}>
             <link rel="icon" type="image/x-icon" href="/favicon.ico" />

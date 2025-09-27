@@ -1,5 +1,6 @@
+"use client";
 import { WeatherData, Measurements } from "@/types";
-import BaseWeatherIcon from "../../BaseComponents/BaseWeatherIcon";
+import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import { StationModalWeatherDetails } from "./StationModalWeatherDetails";
 import { useT } from "@/i18n/client";
 

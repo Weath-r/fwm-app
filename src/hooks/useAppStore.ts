@@ -7,8 +7,6 @@ import {
 import { create } from "zustand";
 
 type AppStore = {
-    activeStation: number;
-    setActiveStation: (stationId: number) => void;
     isStationFavourite: (stationId: number) => boolean;
     favouriteStations: number[];
     handleFavouriteStationButton: (stationId: number) => void;
@@ -17,10 +15,6 @@ type AppStore = {
 };
 
 export const useAppStore = create<AppStore>((set, get) => ({
-    activeStation: 0,
-    setActiveStation: (activeStation) => {
-        set(() => ({ activeStation }));
-    },
     favouriteStations: getFavouritesStationList(),
     isStationFavourite: (stationId: number) => {
         const storedFavouriteStations = getFavouritesStationList();
