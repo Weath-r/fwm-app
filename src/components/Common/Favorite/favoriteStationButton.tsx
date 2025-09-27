@@ -3,8 +3,8 @@ import { HeartIcon } from "@heroicons/react/24/solid";
 
 import { useAppStore } from "@/hooks/useAppStore";
 
-export function FavoriteStationButton() {
-    const { activeStation, isStationFavourite, handleFavouriteStationButton } = useAppStore();
+export function FavoriteStationButton({ activeStation }: { activeStation: number }) {
+    const { isStationFavourite, handleFavouriteStationButton } = useAppStore();
     return (
         <CommonButton
             handleClick={() => handleFavouriteStationButton(activeStation)}
