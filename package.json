@@ -8,8 +8,8 @@
         "start": "next start",
         "lint": "eslint --fix --ext .ts,.tsx ./src",
         "release": "standard-version",
-        "release:minor": "standard-version --release-as minor",
         "release:patch": "standard-version --release-as patch",
+        "release:minor": "standard-version --release-as minor",
         "release:major": "standard-version --release-as major"
     },
     "standard-version": {
@@ -63,7 +63,7 @@
         "zustand": "4.5.5"
     },
     "devDependencies": {
-        "@next/eslint-plugin-next": "15.2.3",
+        "@next/eslint-plugin-next": "14.2.33",
         "@types/d3": "7.4.3",
         "@types/leaflet": "1.9.4",
         "@types/leaflet.markercluster": "1.5.4",
@@ -73,7 +73,7 @@
         "@typescript-eslint/eslint-plugin": "6.10.0",
         "@typescript-eslint/parser": "6.10.0",
         "eslint": "8.53.0",
-        "eslint-config-next": "14.2.25",
+        "eslint-config-next": "14.2.33",
         "eslint-config-prettier": "9.0.0",
         "eslint-plugin-prettier": "5.0.0",
         "eslint-plugin-react": "7.33.2",
