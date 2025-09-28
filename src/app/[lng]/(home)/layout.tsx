@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
 export type HomeLayoutProps = {
+    children: ReactNode;
     modal: ReactNode;
-    children: ReactNode
 };
 
 export default async function HomepageLayout({

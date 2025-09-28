@@ -13,6 +13,10 @@ type StationPageProps = {
 };
 const LOADING_TIME = 600;
 
+export const dynamic = "force-dynamic";
+export const runtime = "edge";
+
+
 export default async function LiveWeatherConditionsModal({ params, searchParams }: StationPageProps) {
     const { id, lng } = params;
     const isForecastEnabled = !!searchParams.isForecastEnabled || false;
