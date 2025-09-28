@@ -1,8 +1,7 @@
-import LiveWeatherConditionsPage from "@/components/LiveWeatherConditions/LiveWeatherConditionsPage";
+import ClientPageLiveWeatherConditions from "./page.client";
 import { getT } from "@/i18n";
 import { properStationName } from "@/helpers/createStationName";
 import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/helpers/fetchWeatherDara";
-
 import { StationParamsUrlProp } from "@/types";
 
 type LiveWeatherConditionsProps = {
@@ -46,23 +45,16 @@ export async function generateMetadata({ params }: LiveWeatherConditionsProps) {
 }
 
 export default async function StationPageView({ params, searchParams }: LiveWeatherConditionsProps) {
-    const { id, lng } = params;
-
     const isForecastEnabled = !!searchParams.isForecastEnabled || false;
+    const { lng, id } = params;
 
     const { weatherData } = await FetchLiveWeatherStationData({
         lng,
         stationId: +id,
         isForecastEnabled,
     });
-
-    return (
-        <main className="flex flex-1 flex-col">
-            <div className="mx-2 md:container md:mx-auto">
-                <div className="my-4 w-full overflow-x-scroll rounded-xl bg-white p-4 drop-shadow-md md:overflow-x-auto">
-                    <LiveWeatherConditionsPage params={params} weatherData={weatherData} />
-                </div>
-            </div>
-        </main>
-    );
+    return <ClientPageLiveWeatherConditions 
+        params={params}
+        weatherData={weatherData}
+    ></ClientPageLiveWeatherConditions>;
 }
