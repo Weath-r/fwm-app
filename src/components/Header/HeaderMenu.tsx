@@ -16,7 +16,9 @@ export default function HeaderMenu() {
             {menu.map((element) => (
                 <Link
                     className={`px-2 text-lg text-primary ${
-                        calculateActiveClass(pathname, element.pathName, selectedLanguage) ? "font-bold text-success" : ""
+                        calculateActiveClass(pathname, element.pathName, selectedLanguage)
+                            ? "font-bold text-success"
+                            : ""
                     }`}
                     href={`/${selectedLanguage}/${element.pathName}`}
                     key={element.text}

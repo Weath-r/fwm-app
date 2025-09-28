@@ -6,7 +6,8 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "eslint --fix --ext .ts,.tsx ./src",
+        "lint": "eslint --ext .ts,.tsx ./src",
+        "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
         "release": "standard-version",
         "release:patch": "standard-version --release-as patch",
         "release:minor": "standard-version --release-as minor",
@@ -20,7 +21,7 @@
     },
     "lint-staged": {
         "**/*.{js,jsx,ts,tsx}": [
-            "npm run lint"
+            "npm run lint:fix"
         ]
     },
     "dependencies": {
@@ -72,13 +73,12 @@
         "@types/react-dom": "18.3.1",
         "@typescript-eslint/eslint-plugin": "6.10.0",
         "@typescript-eslint/parser": "6.10.0",
-        "eslint": "8.53.0",
+        "eslint": "8.57.0",
         "eslint-config-next": "14.2.33",
         "eslint-config-prettier": "9.0.0",
-        "eslint-plugin-prettier": "5.0.0",
         "eslint-plugin-react": "7.33.2",
         "eslint-plugin-react-hooks": "4.6.0",
-        "eslint-plugin-tailwindcss": "3.17.4",
+        "eslint-plugin-tailwindcss": "3.18.2",
         "husky": "8.0.3",
         "i18next-resources-for-ts": "1.6.0",
         "lint-staged": "15.5.0",
