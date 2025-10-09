@@ -1,7 +1,7 @@
 import { StationParamsUrlProp } from "@/types";
 import LiveWeatherConditionsModalPage from "./page.client";
 import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/helpers/fetchWeatherDara";
-import { timer } from "@/helpers/general";
+import { unstable_noStore as noStore } from "next/cache";
 
 type StationPageProps = {
     params: {
@@ -11,13 +11,13 @@ type StationPageProps = {
     },
     searchParams: StationParamsUrlProp
 };
-const LOADING_TIME = 600;
 
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 
 
 export default async function LiveWeatherConditionsModal({ params, searchParams }: StationPageProps) {
+    noStore();
     const { id, lng } = params;
     const isForecastEnabled = !!searchParams.isForecastEnabled || false;
 
@@ -26,8 +26,6 @@ export default async function LiveWeatherConditionsModal({ params, searchParams 
         stationId: +id,
         isForecastEnabled,
     });
-
-    await timer(LOADING_TIME);
 
     return (
         <LiveWeatherConditionsModalPage 
