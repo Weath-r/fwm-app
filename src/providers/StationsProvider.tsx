@@ -1,12 +1,11 @@
 "use client";
-import { useAppStore } from "@/hooks/useAppStore";
 import { DataService } from "@/services/DataService";
 import { useConfigurationStore } from "@/stores/configurationStore";
 import { GroupedWarnings, Station, StationResponse } from "@/types";
-import { buildStation } from "@/utils/weatherDataFormatUtils";
-import { createContext, ReactElement, useContext, useEffect, useMemo, useState } from "react";
-import { useParams } from "next/navigation";
 import { translatedContent } from "@/utils/transformTranslations";
+import { buildStation } from "@/utils/weatherDataFormatUtils";
+import { useParams } from "next/navigation";
+import { createContext, ReactElement, useContext, useEffect, useMemo, useState } from "react";
 
 interface CurrentStationContextType {
     stations: Station[];
@@ -43,7 +42,6 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
     const [shouldRenderWarnings, setShouldRenderWarnings] = useState<boolean>(false);
     const { featureFlags } = useConfigurationStore();
     const areWarningsEnabled = featureFlags.warnings?.showWarningsPanel;
-    const { favouriteStations, showFavouriteStations } = useAppStore();
     const params = useParams();
     const currentLanguage = Array.isArray(params.lng) ? params.lng[0] : params.lng;
 
@@ -51,17 +49,21 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
         await dataService
             .fetchWeatherStations()
             .then((response) => {
-                const exportedStations = response.map((elem: StationResponse) => {
-                    return buildStation(elem);
-                }).map(station => {
-                    if (currentLanguage && station.translations) {
-                        const translation = station.translations.find(t => t.languages_code === currentLanguage);
-                        if (translation) {
-                            return { ...station, name: translation.name };
+                const exportedStations = response
+                    .map((elem: StationResponse) => {
+                        return buildStation(elem);
+                    })
+                    .map((station) => {
+                        if (currentLanguage && station.translations) {
+                            const translation = station.translations.find(
+                                (t) => t.languages_code === currentLanguage
+                            );
+                            if (translation) {
+                                return { ...station, name: translation.name };
+                            }
                         }
-                    }
-                    return station;
-                });
+                        return station;
+                    });
                 setStations(exportedStations);
             })
             .catch((error) => {
@@ -148,15 +150,7 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
         areWarningsEnabled && fetchWarnings();
     }, [areWarningsEnabled]);
 
-    const favStations = stations.filter((station) =>
-        favouriteStations.some((st) => station.id === st)
-    );
-    const stationValue = useMemo(
-        () => ({
-            stations: showFavouriteStations ? favStations : stations,
-        }),
-        [stations, showFavouriteStations]
-    );
+    const stationValue = useMemo(() => ({ stations }), [stations]);
 
     const warningsValue = useMemo(
         () => ({
