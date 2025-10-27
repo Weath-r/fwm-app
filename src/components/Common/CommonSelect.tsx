@@ -22,7 +22,7 @@ export const Select = React.forwardRef<
             <SelectPrimitive.Root {...props}>
                 <SelectPrimitive.Trigger 
                     ref={forwardedRef} 
-                    className="flex w-full items-center justify-between"
+                    className="flex w-full items-center gap-2"
                 >
                     <SelectPrimitive.Value placeholder={placeholder} />
                     <SelectPrimitive.Icon>
@@ -32,7 +32,7 @@ export const Select = React.forwardRef<
                 <SelectPrimitive.Portal container={portalContainer}>
                     <SelectPrimitive.Content 
                         className="w-full rounded-md bg-white text-primary"
-                        position="popper" 
+                        position="popper"
                         sideOffset={5}
                     >
                         <SelectPrimitive.ScrollUpButton>

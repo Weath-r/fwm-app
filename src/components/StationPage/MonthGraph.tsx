@@ -26,7 +26,7 @@ export default function MonthGraph({ weatherData }: { weatherData: WeatherDataRe
             .map(data => [dateValueOf(data.date_created), data[selectedFilter] as number])
             .reverse();
         setGraphData(transformedMonthData);
-    }, [weatherData, selectedFilter]);
+    }, [selectedFilter]);
 
     useEffect(() => {
         const dropdownMenuOptions = Object.values(GraphVariables).map(elem => {

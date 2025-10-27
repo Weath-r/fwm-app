@@ -3,6 +3,14 @@ import HighchartsReact from "highcharts-react-official";
 import noDataToDisplay from "highcharts/modules/no-data-to-display";
 import { useRef, useEffect, useState } from "react";
 import { dateWithMsToDay, fullDateWithTime } from "@/utils/dateTimeUtils";
+import { GraphVariables, GraphVariablesSuffixes, TickIntervalPerVariable } from "@/types";
+import { 
+    temperatureZones,
+    windSpeedZones,
+    humidityZones,
+    pressureZones,
+    windPlotBands
+} from "@/helpers/graphHelpers";
 
 type GraphStyle = {
     height: string;
@@ -10,7 +18,7 @@ type GraphStyle = {
 
 type AreaGraphDateTimeProps = {
     graphData: number[][];
-    variable: string;
+    variable: GraphVariables;
     graphStyle: GraphStyle;
     i18n: any;
 };
@@ -18,6 +26,25 @@ type AreaGraphDateTimeProps = {
 if (typeof Highcharts === "object") {
     noDataToDisplay(Highcharts);
 }
+
+const graphOptions = {
+    zones: {
+        [GraphVariables.temperature]: temperatureZones,
+        [GraphVariables.barometer]: pressureZones,
+        [GraphVariables.humidity]: humidityZones,
+        [GraphVariables.percipitation]: [],
+        [GraphVariables.rainrate]: [],
+        [GraphVariables.windspd]: windSpeedZones,
+    },
+    plotBands: {
+        [GraphVariables.temperature]: [],
+        [GraphVariables.barometer]: [],
+        [GraphVariables.humidity]: [],
+        [GraphVariables.percipitation]: [],
+        [GraphVariables.rainrate]: [],
+        [GraphVariables.windspd]: windPlotBands,
+    },
+};
 
 export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
     const [xAxisLabels, setxAxisLabels] = useState<Array<string | number>>([]);
@@ -84,18 +111,6 @@ export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
             },
             gridLineWidth: 0,
             minorGridLineWidth: 0,
-            tickInterval: 20,
-        },
-        tooltip: {
-            formatter: function () {
-                if (this.points && this.key) {
-                    return this.points.reduce(
-                        (s, point) => `${s}<br/>
-                            ${point.series.name}: <b>${point.y}</b>`,
-                        `${fullDateWithTime(this.key)}`
-                    );};
-            },
-            shared: true,
         },
         plotOptions: {
             area: {
@@ -144,22 +159,49 @@ export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
                     } as Highcharts.XAxisPlotLinesOptions;;
                 })
                 .filter((plotLine): plotLine is Highcharts.XAxisPlotLinesOptions => plotLine !== null);
-    
+                
+            const maxYValue = props.graphData.reduce((max, entry) => (entry[1] > max ? entry[1] : max), 0);
+            const minYValue = props.graphData.reduce((min, entry) => (entry[1] < min ? entry[1] : min), Infinity);
+
             return {
                 ...prevOptions,
+                yAxis: {
+                    ...(prevOptions.yAxis as Highcharts.YAxisOptions),
+                    max: maxYValue,
+                    min: minYValue,
+                    tickInterval: TickIntervalPerVariable[props.variable],
+                    labels: {
+                        useHTML: true,
+                        formatter: function () {
+                            return `<span class="text-primary/70 text-xs">${this.value} ${GraphVariablesSuffixes[props.variable]}</span>`;
+                        },
+                    },
+                    plotBands: graphOptions.plotBands[props.variable],
+                },
                 xAxis: {
                     ...(prevOptions.xAxis as Highcharts.XAxisOptions),
                     plotLines: newPlotLines,
+                },
+                tooltip: {
+                    formatter: function () {
+                        if (this.points && this.key) {
+                            return this.points.reduce(
+                                (s, point) => `${s}<br/>
+                            ${point.series.name}: <b>${point.y} ${GraphVariablesSuffixes[props.variable]}</b>`,
+                                `${fullDateWithTime(this.key)}`
+                            );};
+                    },
+                    shared: true,
                 },
                 series: [{ 
                     type: "area",
                     name: props.i18n.getFixedT(selectedLanguage, "weather_conditions")(props.variable),
                     data: props.graphData,
+                    zones: graphOptions.zones[props.variable],
                 }],
             };
         });
     }, [props.graphData, xAxisLabels]);
-    
 
     return (
         <HighchartsReact

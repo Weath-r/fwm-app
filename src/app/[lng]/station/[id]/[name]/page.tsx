@@ -46,7 +46,7 @@ export default async function StationPageView({ params }: StationPageProps) {
     const dataService = new DataService();
     const end_date = "$NOW";
     const start_date = "$NOW(-1 month)";
-    const currentWeather = await dataService.fetchWeatherDataByStationPaginated({
+    const monthlyWeatherData = await dataService.fetchWeatherDataByStationPaginated({
         station_id: +params.id,
         start_date,
         end_date,
@@ -54,8 +54,25 @@ export default async function StationPageView({ params }: StationPageProps) {
         limit: -1,
     });
     const { lng } = params;
+    const currentWeather = (await dataService.fetchWeatherDataByStation(+params.id)).map(station => {
+        if (station.weather_station_id.translations) {
+            const translatedStationName = station.weather_station_id.translations.find(t => t.languages_code === lng);
+            if (translatedStationName) {
+                station.weather_station_id.name = translatedStationName.name;
+            }
+        }
+        if (station.weather_station_id.prefecture_id.translations) {
+            const translatedPrefecture = station.weather_station_id.prefecture_id.translations.find(t => t.languages_code === lng);
+            if (translatedPrefecture) {
+                station.weather_station_id.prefecture_id.label = translatedPrefecture.name;
+            }
+        }
+        return station;
+    });
+    const climateLocationId = currentWeather[0].weather_station_id.climatology_location_id;
+    const historicalClimateData = await dataService.fetchStationHistoricalClimateData(climateLocationId);
 
-    const translatedResponse = currentWeather.map(station => {
+    const translatedResponse = monthlyWeatherData.map(station => {
         if (station.weather_station_id.translations) {
             const translatedStationName = station.weather_station_id.translations.find(t => t.languages_code === lng);
             if (translatedStationName) {
@@ -67,7 +84,12 @@ export default async function StationPageView({ params }: StationPageProps) {
 
     return (
         <>
-            <StationPage params={params} weatherData={translatedResponse} />
+            <StationPage 
+                params={params}
+                weatherData={translatedResponse}
+                climateData={historicalClimateData}
+                currentWeather={currentWeather[0]}
+            />
         </>
     );
 }

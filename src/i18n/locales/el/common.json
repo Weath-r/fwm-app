@@ -25,5 +25,14 @@
     "StationPage": {
         "lastTwoDays": "Τελευταίες 2 ημέρες",
         "thirtyDays": "Τελευταίες 30 ημέρες"
+    },
+    "StationTypes": {
+        "NOA": "ΕΑΑ",
+        "PWS": "ΙΜΣ",
+        "MeteoIoT": "MeteoIoT",
+        "EU Weather": "EU Weather",
+        "Wunderground": "Wunderground",
+        "WeatherCloud": "WeatherCloud",
+        "WeatherLink": "WeatherLink"
     }
 }
