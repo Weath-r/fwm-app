@@ -1,0 +1,25 @@
+{
+    "backToCTA": "Επιστροφή",
+    "information": {
+        "title": "Πληροφορίες σταθμού",
+        "subtitle": "Καιρός τελευταίας εβδομάδας",
+        "rainyDaysTitle": "Βροχερές ημέρες",
+        "temperature": "Θερμοκρασία",
+        "meanTemp": "Μέση θερμοκρασία",
+        "maxWind": "Μέγιστη ταχύτητα ανέμου"
+    },
+    "climatology": {
+        "summaryTitle": "Κλιματολογικές συνθήκες για",
+        "climaThisMonth": "Κλιματολογικές μήνα",
+        "low": "Ελαχ",
+        "high": "Μεγ",
+        "rain": "Βροχή",
+        "winterSummer": "(χειμώνας - καλοκαίρι)",
+        "meanTemperature": "Μέση θερμοκρασία",
+        "warmestMonth": "Πιο ζεστός μήνας είναι ο {{month}} με μέση θερμοκρασία ",
+        "coldestMonth": "Πιο ψυχρός μήνας είναι ο {{month}} με μέση θερμοκρασία ",
+        "extremeValues": "Ακραίες τιμές",
+        "lowWinter": "Ελαχ χειμώνα",
+        "highSummer": "Μεγ καλοκαίρι"
+    }
+}

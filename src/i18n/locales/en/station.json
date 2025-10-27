@@ -1,0 +1,25 @@
+{
+    "backToCTA": "Back",
+    "information": {
+        "title": "Information",
+        "subtitle": "Last week weather",
+        "rainyDaysTitle": "Rainy days recorded",
+        "temperature": "Temperature",
+        "meanTemp": "Mean temperature",
+        "maxWind": "Peak wind speed"
+    },
+    "climatology": {
+        "summaryTitle": "Climatology for",
+        "climaThisMonth": "Month history",
+        "low": "Low",
+        "high": "High",
+        "rain": "Rain",
+        "winterSummer": "(winter - summer)",
+        "meanTemperature": "Mean temperature",
+        "warmestMonth": "{{month}} is the warmest month with mean temperature of ",
+        "coldestMonth": "{{month}} is the coldest month with mean temperature of ",
+        "extremeValues": "Extreme values",
+        "lowWinter": "Low winter",
+        "highSummer": "High summer"
+    }
+}
