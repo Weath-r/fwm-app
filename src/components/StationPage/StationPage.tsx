@@ -1,14 +1,17 @@
 "use client";
-import { WeatherDataResponse } from "@/types";
-import { timeFromNowUtil } from "@/utils/dateTimeUtils";
+import { WeatherDataResponse, ClimateWeatherData } from "@/types";
 import useRedirectToHomeOnBack from "@/hooks/useRedirectToHomeOnBack";
 import { useT } from "@/i18n/client";
 
-import StationStandaloneCurrentWeather from "@/components/StationPage/StationStandaloneCurrentWeather";
+import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import LastDayGraph from "@/components/StationPage/LastDayGraph";
 import MonthGraph from "@/components/StationPage/MonthGraph";
 import { BackButton } from "@/components/StationPage/components/BackButton";
-import { ChevronLeftIcon } from "@heroicons/react/24/solid";
+import StationPageHeader from "@/components/StationPage/components/StationPageHeader";
+import StationPageClimateSummary from "@/components/StationPage/components/StationPageClimateSummary";
+import StationPageInformation from "@/components/StationPage/components/StationPageInformation";
+
+import { extremeValuesLastNDaysPerVariable, calculateRainyDays } from "@/helpers/stationPage/getExtremeValues";
 
 type StationPageProps = {
     params: {
@@ -16,37 +19,70 @@ type StationPageProps = {
         name: string;
     },
     weatherData: WeatherDataResponse[];
+    climateData: ClimateWeatherData[];
+    currentWeather: WeatherDataResponse;
 };
 
-export default function StationPage({ weatherData }: StationPageProps) {
+export default function StationPage({ weatherData, climateData, currentWeather }: StationPageProps) {
     useRedirectToHomeOnBack();
-    const currentWeather = weatherData[0];
     const { i18n } = useT("stationModal");
-    const selectedLanguage = i18n.language;
+    const { i18n: i18n_icons } = useT("weather_icons");
+    const lang = i18n.language;
+    const DAYS_FOR_EXTREME_CALCULATION = 7;
+
+    const extremeTemperatureValues = extremeValuesLastNDaysPerVariable({
+        weatherData,
+        numberOfDays: DAYS_FOR_EXTREME_CALCULATION,
+        variable: "temperature",
+    });
+
+    const { rainyDays } = calculateRainyDays({
+        weatherData,
+        numberOfDays: DAYS_FOR_EXTREME_CALCULATION,
+    });
+
+    const extremeWindSpeedValues = extremeValuesLastNDaysPerVariable({
+        weatherData,
+        numberOfDays: DAYS_FOR_EXTREME_CALCULATION,
+        variable: "windspd",
+    });
 
     return (
-        <main className="flex flex-col">
-            <div className="mx-4 mt-4 md:container md:mx-auto">
-                <div className="flex items-center gap-2">
-                    <BackButton>
+        <main className="mx-4 mt-4 md:container md:mx-auto">
+            <div className="mb-4">
+                <BackButton>
+                    <p className="text-primary flex items-center gap-1">
                         <ChevronLeftIcon className="size-6 text-primary" />
-                    </BackButton>
-                    <h2 className="mb-4 text-2xl text-primary">
-                        {weatherData[0].weather_station_id.name}
-                        <small className="block text-sm text-primary opacity-60">
-                            {i18n.getFixedT(selectedLanguage, "stationModal")("lastUpdated")} {timeFromNowUtil(currentWeather.date_created)}
-                        </small>
-                    </h2>
+                        {i18n.getFixedT(lang, "station")("backToCTA")}
+                    </p>
+                </BackButton>
+                    
+            </div>
+            <StationPageHeader
+                stationCurrentWeather={currentWeather}
+                i18n={i18n}
+                i18n_icons={i18n_icons}
+            ></StationPageHeader>
+            <div className="flex flex-wrap gap-2">
+                <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md lg:w-[calc(33.333%-0.5rem)]">
+                    <StationPageInformation
+                        i18n={i18n}
+                        extremeTemperatureValues={extremeTemperatureValues}
+                        extremeWindSpeedValues={extremeWindSpeedValues}
+                        rainyDays={rainyDays}
+                        stationMetadata={currentWeather.weather_station_id}
+                    ></StationPageInformation>
                 </div>
-                <div className="flex flex-wrap gap-2 lg:flex-nowrap">
-                    <div className="my-2 w-full rounded-xl bg-white p-2 drop-shadow-md lg:w-1/3 lg:p-4">
-                        <StationStandaloneCurrentWeather currentWeather={[currentWeather]}></StationStandaloneCurrentWeather>
-                    </div>
-                    <div className="my-2 w-full rounded-xl bg-white p-2 drop-shadow-md lg:w-2/3 lg:p-4">
-                        <LastDayGraph weatherData={weatherData}></LastDayGraph>
-                    </div>
+                <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md lg:w-[calc(66.666%-0.5rem)]">
+                    <LastDayGraph weatherData={weatherData}></LastDayGraph>
                 </div>
-                <div className="my-2 w-full rounded-xl bg-white p-2 drop-shadow-md lg:p-4">
+                <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md">
+                    <StationPageClimateSummary
+                        climateData={climateData}
+                        weatherStation={currentWeather.weather_station_id.name}
+                    ></StationPageClimateSummary>
+                </div>
+                <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md">
                     <MonthGraph weatherData={weatherData}></MonthGraph>
                 </div>
             </div>

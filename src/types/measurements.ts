@@ -15,13 +15,6 @@ export enum Measurements {
     CELCIUS = "°C",
     BFT = "Bft",
     CM = "cm",
-}
-
-export enum GraphVariables {
-    temperature = "temperature",
-    humidity = "humidity",
-    barometer = "barometer",
-    percipitation = "percipitation",
-    rainrate = "rainrate",
-    windspd = "windspd",
+    MMHR = "mm/hr",
+    METER = "m",
 }

@@ -9,7 +9,8 @@ import {
     WeatherForecastResponse,
     FetchStationDataPaginated,
     Assets,
-    FthiotidaForecast
+    FthiotidaForecast,
+    ClimateWeatherData
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance, AxiosResponse } from "axios";
@@ -22,7 +23,8 @@ import {
     WarningLevelsResponsesSchema,
     ConfigurationSchema,
     WeatherForecastDataResponsesSchema,
-    AssetsSchema
+    AssetsSchema,
+    HistoricalClimaDataResponse
 } from "@/schemas";
 
 type HandleResponseParams<T> = {
@@ -72,10 +74,34 @@ export class DataService {
         });
     };
 
+    fetchStationHistoricalClimateData = (clima_location_id: number): Promise<ClimateWeatherData[]> => {
+        const CLIMA_DATA_PREFIX = "items/historical_climatological_data";
+        const CLIMA_DATA_FILTER = `?fields=month_id.value,month_id.translations.languages_code,month_id.translations.name,max_temperature,min_temperature,mean_temperature,precipitation&filter[_and][0][_and][0][climatology_location_id][_eq]=${clima_location_id}`;
+        const CLIMA_DATA_PATH = `${CLIMA_DATA_PREFIX}${CLIMA_DATA_FILTER}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${CLIMA_DATA_PATH}`)
+                .then((response) => {
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: HistoricalClimaDataResponse,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
     // ZOD IS DISABLED
     fetchWeatherDataByStation = (station_id: number): Promise<WeatherDataResponse[]> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
-        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.elevation,weather_station_id.translations.languages_code,weather_station_id.translations.name`;
+        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.elevation,weather_station_id.translations.languages_code,weather_station_id.translations.name,weather_station_id.climatology_location_id,weather_station_id.station_type.label,weather_station_id.station_type.value`;
         const WEATHER_DATA_PATH = `${WEATHER_DATA_FILTER_PREFIX}${WEATHER_DATA_FILTER}`;
 
         return new Promise<WeatherDataResponse[]>((resolve, reject) => {

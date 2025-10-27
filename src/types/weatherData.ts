@@ -15,8 +15,10 @@ export type WeatherStation = {
     id: number;
     name: string;
     prefecture_id: StationPerfecture;
+    station_type: StationType;
     website_url: string;
     elevation: number;
+    climatology_location_id: number;
     translations: {
         languages_code: string;
         name: string;
@@ -38,6 +40,11 @@ type StationPerfecture = {
         languages_code: string;
         name: string;
     }[];
+};
+
+type StationType = {
+    label: string;
+    value: string;
 };
 
 export type WeatherDataResponse = CommonWeatherData & {

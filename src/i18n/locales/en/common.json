@@ -26,5 +26,14 @@
         "lastTwoDays": "Last two days",
         "thirtyDays": "Last 30 days"
 
+    },
+    "StationTypes": {
+        "NOA": "NOA",
+        "PWS": "PWS",
+        "MeteoIoT": "MeteoIoT",
+        "EU Weather": "EU Weather",
+        "Wunderground": "Wunderground",
+        "WeatherCloud": "WeatherCloud",
+        "WeatherLink": "WeatherLink"
     }
 }
