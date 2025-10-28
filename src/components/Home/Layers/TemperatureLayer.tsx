@@ -29,7 +29,7 @@ const MAX_TEMP = 46;
 
 const myFeaturesMap = new L.FeatureGroup();
 
-export default function TempLayer({ stationsList }: { stationsList: Station[]}) {
+export default function TemperatureLayer({ stationsList }: { stationsList: Station[]}) {
     const [tempData, setTempData] = useState<TemperatureLayerData[]>([]);
     const [geojson, setGeojson] = useState<GeoJSON.FeatureCollection | null>(null);
     const [variogram, setVariogram] = useState<Variogram | null>(null);
