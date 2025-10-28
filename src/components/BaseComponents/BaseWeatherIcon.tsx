@@ -12,8 +12,8 @@ export default function BaseWeatherIcon({ weatherDescriptionText, assetId, class
     const imagePath = assetUrl(assetId);
     const iconCustomClass = className ? className : "";
 
-    return <Image 
-        src={imagePath} 
+    return <Image
+        src={imagePath}
         alt={weatherDescriptionText}
         className={`h-full !w-full ${iconCustomClass} object-contain`} 
         width={100}
