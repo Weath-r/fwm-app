@@ -42,7 +42,7 @@ export default function MapMarketWithLabel({
         <DivIconMarker leafletMarker={marker} container={container}>
             <div 
                 className="relative flex h-8 items-center gap-1 rounded-lg bg-primary/80 p-1">
-                <div className="w-8 p-1">
+                <div className="w-8 p-1 shrink-0">
                     <BaseWeatherIcon
                         weatherDescriptionText={weatherDescription}
                         assetId={assetId}

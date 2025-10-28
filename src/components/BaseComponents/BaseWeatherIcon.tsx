@@ -10,10 +10,12 @@ type BaseWeatherIconProps = {
 
 export default function BaseWeatherIcon({ weatherDescriptionText, assetId, className }: Readonly<BaseWeatherIconProps>) {
     const imagePath = assetUrl(assetId);
-    return <Image 
-        src={imagePath} 
+    const iconCustomClass = className ? className : "";
+
+    return <Image
+        src={imagePath}
         alt={weatherDescriptionText}
-        className={`h-full !w-full ${className} object-contain`} 
+        className={`h-full !w-full ${iconCustomClass} object-contain`} 
         width={100}
         height={100}
     />;
