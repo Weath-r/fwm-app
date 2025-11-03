@@ -23,6 +23,7 @@ export type WeatherStation = {
         languages_code: string;
         name: string;
     }[];
+    municipality_id: number;
 };
 
 export type WeatherData = CommonWeatherData & {
@@ -31,6 +32,7 @@ export type WeatherData = CommonWeatherData & {
     assetId: string;
     weatherDescription: string;
     full_forecast: ForecastData[];
+    frost_data?: FrostData | null;
 };
 
 type StationPerfecture = {
@@ -52,4 +54,10 @@ export type WeatherDataResponse = CommonWeatherData & {
     weather_station_id: WeatherStation;
     weather_condition: string;
     weather_condition_icon: string;
+};
+
+export type FrostData = {
+    frost_location_id: number;
+    frost_level: number;
+    frost_date: string;
 };
