@@ -10,7 +10,8 @@ import {
     FetchStationDataPaginated,
     Assets,
     FthiotidaForecast,
-    ClimateWeatherData
+    ClimateWeatherData,
+    FrostData
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance, AxiosResponse } from "axios";
@@ -24,7 +25,8 @@ import {
     ConfigurationSchema,
     WeatherForecastDataResponsesSchema,
     AssetsSchema,
-    HistoricalClimaDataResponse
+    HistoricalClimaDataResponse,
+    FrostinDataResponsesSchema
 } from "@/schemas";
 
 type HandleResponseParams<T> = {
@@ -101,7 +103,7 @@ export class DataService {
     // ZOD IS DISABLED
     fetchWeatherDataByStation = (station_id: number): Promise<WeatherDataResponse[]> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
-        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.elevation,weather_station_id.translations.languages_code,weather_station_id.translations.name,weather_station_id.climatology_location_id,weather_station_id.station_type.label,weather_station_id.station_type.value`;
+        const WEATHER_DATA_FILTER = `?filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1&fields=date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.elevation,weather_station_id.translations.languages_code,weather_station_id.translations.name,weather_station_id.climatology_location_id,weather_station_id.station_type.label,weather_station_id.station_type.value,weather_station_id.municipality_id`;
         const WEATHER_DATA_PATH = `${WEATHER_DATA_FILTER_PREFIX}${WEATHER_DATA_FILTER}`;
 
         return new Promise<WeatherDataResponse[]>((resolve, reject) => {
@@ -413,6 +415,30 @@ export class DataService {
                 .get(`${PREFIX}`)
                 .then((response) => {
                     resolve(response.data.data);
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
+    fetchFrostDataByMunicipality = (municipality: number): Promise<FrostData[]> => {
+        const FROST_DATA_PREFIX = "items/frost_data";
+        const FROST_DATA_FILTER = `?filter[_and][0][frost_location_id][municipality_id][_eq]=${municipality}&fields=frost_level,frost_date,frost_location_id&sort=-date_created&limit=1`;
+        const FROST_DATA_PATH = `${FROST_DATA_PREFIX}${FROST_DATA_FILTER}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${FROST_DATA_PATH}`)
+                .then((response) => {
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: FrostinDataResponsesSchema,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));

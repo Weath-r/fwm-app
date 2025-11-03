@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { StationPageMessages, LoadingMessages } from "@/types";
 import { headerName, fallbackLng } from "@/i18n/settings";
 import { randomIndexFromArray } from "@/helpers/general";
-
+import { useRef } from "react";
 
 export default async function StationPageLoading() {
 
@@ -14,7 +14,8 @@ export default async function StationPageLoading() {
         el: StationPageMessages.el,
     };
 
-    const randomIndex = randomIndexFromArray(weatherMessages[language]);
+    const randomIndexRef = useRef(randomIndexFromArray(weatherMessages[language]));
+    const randomIndex = randomIndexRef.current;
 
     return <div className="h-screen w-screen">
         <div className="flex h-[260px] w-full items-center justify-center">
