@@ -38,5 +38,12 @@ export const WeatherForecastData = z.object({
     })),
 });
 
+const FrostData = z.object({
+    frost_location_id: z.number().min(1),
+    frost_level: z.number().gte(0),
+    frost_date: z.string(),
+});
+
 export const WeatherDataResponsesSchema = z.array(WeatherData);
 export const WeatherForecastDataResponsesSchema = z.array(WeatherForecastData);
+export const FrostinDataResponsesSchema = z.array(FrostData);

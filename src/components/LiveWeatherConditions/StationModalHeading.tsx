@@ -2,8 +2,9 @@
 import { WeatherData } from "@/types";
 import { timeFromNowUtil } from "@/utils/dateTimeUtils";
 import { MapPinIcon, ClockIcon } from "@heroicons/react/24/solid";
-import { FavoriteStationButton } from "@/components/Common/Favorite/favoriteStationButton";
 import { useT } from "@/i18n/client";
+import { FavoriteStationButton } from "@/components/Common/Favorite/favoriteStationButton";
+import { FrostWarning } from "./components/FrostWarning";
 
 export function StationModalHeading(elem: Readonly<WeatherData>) {
     const headerElemement = elem.station.website_url.includes("http") ?
@@ -38,6 +39,7 @@ export function StationModalHeading(elem: Readonly<WeatherData>) {
                     </p>
                 </div>
                 <div className="flex items-center gap-1">
+                    { elem.frost_data && elem.frost_data.frost_level > 0 && <FrostWarning warningLevel={elem.frost_data?.frost_level} />}
                     <FavoriteStationButton activeStation={elem.station.id}></FavoriteStationButton>
                 </div>
             </div>

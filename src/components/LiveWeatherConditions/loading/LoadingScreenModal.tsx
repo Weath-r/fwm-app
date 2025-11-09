@@ -1,8 +1,10 @@
 "use client";
 import { StationPageMessages, LoadingMessages } from "@/types";
 import { randomIndexFromArray } from "@/helpers/general";
-import { Dialog, DialogTrigger, DialogContent } from "@/components/Common/CommonDialog";
 import { useT } from "@/i18n/client";
+import { useRef } from "react";
+
+import { Dialog, DialogTrigger, DialogContent } from "@/components/Common/CommonDialog";
 
 export default function LoadingScreenModal() {
 
@@ -13,7 +15,8 @@ export default function LoadingScreenModal() {
         el: StationPageMessages.el,
     };
 
-    const randomIndex = randomIndexFromArray(weatherMessages[language]);
+    const randomIndexRef = useRef(randomIndexFromArray(weatherMessages[language]));
+    const randomIndex = randomIndexRef.current;
 
     return (
         <Dialog 
