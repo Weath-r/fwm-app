@@ -25,7 +25,7 @@ export default function LastDayGraph({ weatherData }: { weatherData: WeatherData
             weatherData,
             variable: selectedFilter,
             numberOfDays: 2,
-        });
+        }).filter((v): v is number[] => v !== undefined);
         setGraphData(pastTwoDaysArray);
     }, [selectedFilter]);
 
