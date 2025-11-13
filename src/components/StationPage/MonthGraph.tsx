@@ -2,6 +2,7 @@ import { WeatherDataResponse, GraphVariables } from "@/types";
 import { useEffect, useState } from "react";
 import { dateValueOf } from "@/utils/dateManipulation";
 import { useT } from "@/i18n/client";
+import dayjs from "@/utils/dateTimeUtils";
 
 import LineGraphDateTime from "@/components/Graphs/LineGraphDateTime";
 import DropdownMenu from "@/components/Common/DropdownMenu";
@@ -11,6 +12,28 @@ type DropdownOptions = {
     label: string;
     value: string;
 };
+
+function aggregatePerFourHoursData(weatherData: WeatherDataResponse[]) {
+    if (weatherData.length === 0) return [];
+
+    const result: WeatherDataResponse[] = [];
+    let lastPushed = weatherData[0];
+    result.push(lastPushed);
+
+    for (let i = 1; i < weatherData.length; i++) {
+        const current = weatherData[i];
+        const diffHours = dayjs(current.date_created).diff(
+            dayjs(lastPushed.date_created),
+            "hour"
+        );
+        if (Math.abs(diffHours) > 3) {
+            result.push(current);
+            lastPushed = current;
+        }
+    }
+
+    return result;
+}
 
 export default function MonthGraph({ weatherData }: { weatherData: WeatherDataResponse[]}) {
     const [selectedFilter, setSelectedFilter] = useState<GraphVariables>(GraphVariables.temperature);
@@ -22,7 +45,7 @@ export default function MonthGraph({ weatherData }: { weatherData: WeatherDataRe
     const selectedLanguage = i18n.language;
 
     useEffect(() => {
-        const transformedMonthData = weatherData
+        const transformedMonthData = aggregatePerFourHoursData(weatherData)
             .map(data => [dateValueOf(data.date_created), data[selectedFilter] as number])
             .reverse();
         setGraphData(transformedMonthData);
