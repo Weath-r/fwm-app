@@ -60,10 +60,15 @@ export const calculateRainyDays = ({
 export const manipulateGraphDataLastNDays = ({
     weatherData,
     numberOfDays = 2,
+    variable,
 }: filterWeatherDataLastNDaysParams) => {
     const filteredData = filterWeatherDataLastNDays({ weatherData, numberOfDays });
     const graphData = filteredData
-        .map(data => [dateValueOf(data.date_created), data.temperature as number])
+        .map(data => {
+            if (variable) {
+                return [dateValueOf(data.date_created), data[variable] as number];
+            }
+        })
         .reverse();
     return graphData;
 };

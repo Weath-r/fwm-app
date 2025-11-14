@@ -55,16 +55,16 @@ export default function FthiotidaForecastsIndividualCard(props: Readonly<Forecas
                                 }
                             </div>
                         </div>
-                        <div className="relative z-10 ml-auto flex flex-col items-start gap-1 rounded-lg bg-white/75 p-2 shadow-lg">
-                            <p className="font-semibold text-danger">
-                                {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.highT")} <span className="ml-2 inline-block text-primary">{props.forecast.tmax} {Measurements.CELCIUS}</span>
-                            </p>
-                            <p className="font-semibold text-success">
-                                {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.lowT")} <span className="ml-2 inline-block text-primary">{props.forecast.tmin} {Measurements.CELCIUS}</span>
-                            </p>
+                        <div className="relative z-10 flex flex-col items-center gap-1 rounded p-2 bg-primary w-7/12 mx-auto">
+                            <div className="w-full text-center">
+                                <p className="font-semibold text-white">
+                                    {props.forecast.tmin} {Measurements.CELCIUS} <span className="inline-block mx-2">-</span>
+                                    {props.forecast.tmax} {Measurements.CELCIUS}
+                                </p>
+                            </div>
                             {props.forecast.snow && props.forecast.snow > 0 && 
-                                <p className="text-sm font-semibold text-primary">
-                                    {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.snow")}: <span className="text-md ml-2 inline-block lowercase">{props.forecast.snow} {Measurements.CM}</span>
+                                <p className="text-sm font-semibold">
+                                    <span className="text-md ml-2 inline-block lowercase">{props.forecast.snow} {Measurements.CM}</span>
                                 </p>
                             }
                         </div>

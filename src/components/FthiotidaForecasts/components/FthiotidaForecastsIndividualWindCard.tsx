@@ -28,7 +28,7 @@ export default function FthiotidaForecastsIndividualCard(props: Readonly<Forecas
             <h3 className="text-sm font-semibold text-primary">
                 {props.i18n.getFixedT(selectedLanguage, "forecasts")(`FthiotidaForecasts.locations.${props.metadata.value}`)}
             </h3>
-            <div className="flex size-32 items-center justify-between gap-2">
+            <div className="flex w-32 h-16 items-center justify-between gap-2">
                 <section
                     ref={icon}
                     className="size-8 sm:size-10"
@@ -41,12 +41,9 @@ export default function FthiotidaForecastsIndividualCard(props: Readonly<Forecas
                         className={"size-full"}
                     ></SvgInline> 
                 </section>
-                <div className="flex shrink flex-col gap-1 p-2">
-                    <p className="font-semibold text-danger">
-                        {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.highT")} <span className="ml-2 inline-block text-primary">{props.forecast.wmax} {Measurements.BFT}</span>
-                    </p>
-                    <p className="font-semibold text-success">
-                        {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.lowT")} <span className="ml-2 inline-block text-primary">{props.forecast.wmin} {Measurements.BFT}</span>
+                <div className="flex shrink flex-col gap-1 p-2 bg-primary rounded">
+                    <p className="font-semibold text-white text-sm">
+                        {props.forecast.wmin} - {props.forecast.wmax} {Measurements.BFT}
                     </p>
                 </div>
             </div>
