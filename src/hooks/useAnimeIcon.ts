@@ -13,7 +13,6 @@ type useAnimeIconParams = {
 export function useAnimeIcon({ target, parameters }: useAnimeIconParams) {
     useEffect(() => {
         if (!target.current) return;
-
         let animation: JSAnimation | undefined;
         let observer: MutationObserver | undefined;
 
