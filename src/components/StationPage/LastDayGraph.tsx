@@ -41,7 +41,7 @@ export default function LastDayGraph({ weatherData }: { weatherData: WeatherData
     
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-center justify-between">
                 <h4 className="mb-2 text-lg font-bold text-primary">
                     {i18n.getFixedT(selectedLanguage, "common")("StationPage.lastTwoDays")} 
                 </h4>

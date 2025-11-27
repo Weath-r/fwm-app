@@ -82,6 +82,8 @@ export default async function StationPageView({ params }: StationPageProps) {
         return station;
     });
 
+    const stationForecast = await dataService.fetchForecastByStation(+params.id);
+
     return (
         <>
             <StationPage 
@@ -89,6 +91,7 @@ export default async function StationPageView({ params }: StationPageProps) {
                 weatherData={translatedResponse}
                 climateData={historicalClimateData}
                 currentWeather={currentWeather[0]}
+                forecast={stationForecast[0]}
             />
         </>
     );

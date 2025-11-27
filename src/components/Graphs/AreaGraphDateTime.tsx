@@ -1,7 +1,7 @@
 import * as Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import noDataToDisplay from "highcharts/modules/no-data-to-display";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { dateWithMsToDay, fullDateWithTime } from "@/utils/dateTimeUtils";
 import { GraphVariables, GraphVariablesSuffixes, TickIntervalPerVariable } from "@/types";
 import { 
@@ -136,7 +136,6 @@ export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
             data: [] as number[],
         }],
     });
-    const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
 
     useEffect(() => {
         setChartOptions(prevOptions => {
@@ -201,13 +200,12 @@ export default function AreaGraphDateTime(props: AreaGraphDateTimeProps) {
                 }],
             };
         });
-    }, [props.graphData, xAxisLabels]);
+    }, [props.graphData]);
 
     return (
         <HighchartsReact
             highcharts={Highcharts}
             options={chartOptions}
-            ref={chartComponentRef}
         />
     );
 }

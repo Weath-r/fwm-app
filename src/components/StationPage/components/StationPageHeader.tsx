@@ -1,20 +1,23 @@
+"use client";
 import SvgInline from "@/components/Common/SvgInline";
 import Image from "next/image";
 import { Measurements, WeatherDataResponse, WeatherConditions } from "@/types";
 import { timeFromNowUtil } from "@/utils/dateTimeUtils";
-
+import { BackButton } from "@/components/StationPage/components/BackButton";
+import { ChevronLeftIcon } from "@heroicons/react/24/solid";
+import { useT } from "@/i18n/client";
 
 type StationPageHeaderProps = {
     stationCurrentWeather: WeatherDataResponse;
-    i18n: any;
-    i18n_icons: any;
 };
 
-export default function StationPageHeader({ stationCurrentWeather, i18n, i18n_icons }: StationPageHeaderProps) {
+export default function StationPageHeader({ stationCurrentWeather }: StationPageHeaderProps) {
+    const { i18n } = useT("station");
+    const { i18n: i18n_icons } = useT("weather_icons");
     const selectedLanguage = i18n.language;
 
     return (
-        <div className="w-full h-48 rounded-t-lg drop-shadow-md">
+        <div className="w-full h-52 rounded-t-lg drop-shadow-md">
             <div className="flex items-center justify-center h-full">
                 <Image
                     src="/assets/bg/mountain.webp"
@@ -24,7 +27,15 @@ export default function StationPageHeader({ stationCurrentWeather, i18n, i18n_ic
                     className="object-cover object-center rounded-t-lg"
                 />
             </div>
-            <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-t from-black/80 to-transparent rounded-t-lg"></div>
+            <div className="absolute top-0 left-0 w-full h-52 bg-gradient-to-t from-black/80 to-transparent rounded-t-lg"></div>
+            <div className="absolute top-1 left-0 z-10">
+                <BackButton>
+                    <p className="text-secondary/75 flex items-center gap-1 text-sm">
+                        <ChevronLeftIcon className="size-4 text-secondary/75" />
+                        {i18n.getFixedT(selectedLanguage, "station")("backToCTA")}
+                    </p>
+                </BackButton>
+            </div>
             <div className="absolute bottom-0 left-0 text-secondary z-10 w-full">
                 <div className="flex items-center justify-between gap-2 w-full px-4 flex-wrap md:flex-nowrap mb-2 md:mb-0">
                     <h2 className="mb-4 text-2xl font-bold">
