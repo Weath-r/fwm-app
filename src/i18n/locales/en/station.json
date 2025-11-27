@@ -1,5 +1,10 @@
 {
     "backToCTA": "Back",
+    "tabs": {
+        "forecast": "Forecast",
+        "graphs": "Station graphs",
+        "climatology": "Climatology"
+    },
     "information": {
         "title": "Information",
         "subtitle": "Last week weather",

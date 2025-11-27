@@ -63,7 +63,7 @@ export default function MonthGraph({ weatherData }: { weatherData: WeatherDataRe
     
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-center justify-between">
                 <h4 className="mb-2 text-lg font-bold text-primary">
                     {i18nCommon.getFixedT(selectedLanguage, "common")("StationPage.thirtyDays")}
                 </h4>
