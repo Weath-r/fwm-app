@@ -138,12 +138,26 @@ export const animationPerAsset: AnimationsPerAssetParams = {
             onUpdate: () => {},
         },
     },
-    "90": {
+    "intermittent_clouds": {
+        extraTarget: ["g > g[fill='#bdd9e5'], g > path[fill='#d9ecf2']"],
         animationConfig: {
-            rotateZ: 10,
-            duration: 1600,
+            duration: 8500,
+            translateY: "280px",
+            ease: "linear",
+            loop: 10,
+            alternate: false,
+            autoplay: true,
+            onBegin: () => {},
+            onLoop: () => {},
+            onUpdate: () => {},
+        },
+    },
+    "dust": {
+        animationConfig: {
+            opacity: [0.7, 1],
+            duration: 3000,
             ease: "cubicBezier(0.5, 0, 0.5, 1)",
-            loop: true,
+            loop: 10,
             alternate: true,
             autoplay: true,
             onBegin: () => {},
@@ -151,7 +165,38 @@ export const animationPerAsset: AnimationsPerAssetParams = {
             onUpdate: () => {},
         },
     },
-    "315": {
+    "thin_cloudy": {
+        animationConfig: {
+            translateX: 8,
+            duration: 3000,
+            ease: "cubicBezier(0.5, 0, 0.5, 1)",
+            loop: 10,
+            alternate: true,
+            autoplay: true,
+            onBegin: () => {},
+            onLoop: () => {},
+            onUpdate: () => {},
+        },
+    },
+    "showers": {
+        extraTarget: ["g:nth-child(2) > path[fill='#168aa5']:last-of-type", "g:nth-child(2) > path[fill='#26a3b9']", "g:nth-child(2) > g[fill='#168aa5']"], 
+        animationConfig: {
+            duration: 2000,
+            translateY: {
+                from: "15px",
+                to: "100px",
+            },
+            ease: "linear",
+            loop: 10,
+            alternate: false,
+            autoplay: true,
+            loopDelay: 600,
+            onBegin: () => {},
+            onLoop: () => {},
+            onUpdate: () => {},
+        },
+    },
+    "0": {
         animationConfig: {
             rotateZ: 10,
             duration: 1600,
@@ -177,7 +222,33 @@ export const animationPerAsset: AnimationsPerAssetParams = {
             onUpdate: () => {},
         },
     },
+    "90": {
+        animationConfig: {
+            rotateZ: 10,
+            duration: 1600,
+            ease: "cubicBezier(0.5, 0, 0.5, 1)",
+            loop: true,
+            alternate: true,
+            autoplay: true,
+            onBegin: () => {},
+            onLoop: () => {},
+            onUpdate: () => {},
+        },
+    },
     "135": {
+        animationConfig: {
+            rotateZ: 10,
+            duration: 1600,
+            ease: "cubicBezier(0.5, 0, 0.5, 1)",
+            loop: true,
+            alternate: true,
+            autoplay: true,
+            onBegin: () => {},
+            onLoop: () => {},
+            onUpdate: () => {},
+        },
+    },
+    "180": {
         animationConfig: {
             rotateZ: 10,
             duration: 1600,
@@ -204,6 +275,19 @@ export const animationPerAsset: AnimationsPerAssetParams = {
         },
     },
     "270": {
+        animationConfig: {
+            rotateZ: 10,
+            duration: 1600,
+            ease: "cubicBezier(0.5, 0, 0.5, 1)",
+            loop: true,
+            alternate: true,
+            autoplay: true,
+            onBegin: () => {},
+            onLoop: () => {},
+            onUpdate: () => {},
+        },
+    },
+    "315": {
         animationConfig: {
             rotateZ: 10,
             duration: 1600,
