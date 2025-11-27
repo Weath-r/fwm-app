@@ -1,7 +1,7 @@
 import * as Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import noDataToDisplay from "highcharts/modules/no-data-to-display";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { dateWithMsToDay, fullDateWithTime } from "@/utils/dateTimeUtils";
 import { GraphVariables, GraphVariablesSuffixes, TickIntervalPerVariable } from "@/types";
 import { 
@@ -121,7 +121,6 @@ export default function LineGraphDateTime(props: LineGraphDateTimeProps) {
             data: [] as number[],
         }],
     });
-    const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
 
     useEffect(() => {
         const maxYValue = props.graphData.reduce((max, entry) => (entry[1] > max ? entry[1] : max), 0);
@@ -167,7 +166,6 @@ export default function LineGraphDateTime(props: LineGraphDateTimeProps) {
         <HighchartsReact
             highcharts={Highcharts}
             options={chartOptions}
-            ref={chartComponentRef}
         />
     );
 }
