@@ -1,7 +1,6 @@
 {
     "warningsPageTitle": "Weather warnings",
-    "untilToday": "until today",
-    "activeWarnings": "Active warnings",
+    "activeWarnings": "Weather warnings in the next hours",
     "hazardsTitle": "Hazards",
     "warningLevels": "Warning levels",
     "information": "Information",
