@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { StationsProvider } from "@/providers/StationsProvider";
 
 export type HomeLayoutProps = {
     children: ReactNode;
@@ -10,9 +11,11 @@ export default async function HomepageLayout({
     modal,
 }: HomeLayoutProps) {
     return (
-        <>
-            {children}
-            {modal}
-        </>
+        <StationsProvider>
+            <>
+                {children}
+                {modal}
+            </>
+        </StationsProvider>
     );
 }

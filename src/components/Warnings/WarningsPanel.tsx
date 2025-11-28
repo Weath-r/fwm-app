@@ -1,26 +1,21 @@
-import { useWarningsProvider } from "@/providers/StationsProvider";
-import { dateWithTime, dayWithNameUtil } from "@/utils/dateTimeUtils";
-import { useGeneralStore } from "@/stores/settingsStore";
-import SvgInline from "@/components/Common/SvgInline";
-import { Dialog, DialogTrigger, DialogContent } from "@/components/Common/CommonDialog";
-import WarningHazardsLegend from "./components/WarningHazardsLegend";
-import WarningLevelsLegend from "./components/WarningLevelsLegend";
+import { dateWithTime } from "@/utils/dateTimeUtils";
+
 import HazardIcon from "./components/HazardIcon";
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon, ClockIcon } from "@heroicons/react/20/solid";
 
 import { printIssuedByUser } from "./utils/warningsHelpers";
 import { useState } from "react";
-import { useT } from "@/i18n/client";
+import { GroupedWarnings } from "@/types";
   
 type ClampState = boolean[][];
 
-export default function WarningsPanel() {
-    const { hazards, warningLevels } = useGeneralStore();
-    const { warnings } = useWarningsProvider();
-    const today = dayWithNameUtil(new Date());
-    
-    const { i18n } = useT("warnings");
+type WarningsPanelProps = {
+    warnings: GroupedWarnings[];
+    i18n: any;
+};
+
+export default function WarningsPanel({ warnings, i18n }: Readonly<WarningsPanelProps>) {
     const selectedLanguage = i18n.language;
 
     const [clampStates, setClampStates] = useState<ClampState>(
@@ -130,45 +125,10 @@ export default function WarningsPanel() {
                 </section>
             );
         });
-    
-    const dialogTitle = (<div className="text-sm font-bold uppercase text-primary">{i18n.getFixedT(selectedLanguage, "warnings")("information")}</div>);
 
-    const panelLayout = (
-        <section className="flex size-full flex-col">
-            <div className="flex w-full flex-col p-3">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-bold text-primary">
-                        {i18n.getFixedT(selectedLanguage, "warnings")("activeWarnings")}
-                        <small className="block text-xs opacity-60">
-                            {today}
-                        </small>
-                    </h2>
-                    <Dialog>
-                        <DialogTrigger>
-                            <SvgInline path="icons/circle-info.svg" className="size-3 fill-primary"></SvgInline>
-                        </DialogTrigger>
-                        <DialogContent
-                            dialogTitle={dialogTitle}
-                        >
-                            <section>
-                                <WarningHazardsLegend 
-                                    hazards={hazards} 
-                                    i18n={i18n}
-                                ></WarningHazardsLegend>
-                                <WarningLevelsLegend 
-                                    levels={warningLevels}
-                                    i18n={i18n}
-                                ></WarningLevelsLegend>
-                            </section>
-                        </DialogContent>
-                    </Dialog>
-                </div>
-                <div className="max-h-[66vh] w-full">
-                    {panelContent}
-                </div>
-            </div>
+    return (
+        <section className="flex size-full flex-col p-3 w-full">
+            {panelContent}
         </section>
     );
-
-    return warnings.length > 0 && panelLayout;
 }
