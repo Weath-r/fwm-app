@@ -38,8 +38,8 @@ export default function Homepage() {
                     <LayersMenu></LayersMenu>
                 </div>
             </aside>
-            <aside className="absolute left-0 top-1 z-[2] w-full">
-                { warningsCount > 0 &&<WeatherWarningBanner warnings={warnings} />}
+            <aside className={`absolute left-0 top-1 z-[2] w-full ${warningsCount === 0 ? "hidden" : ""}`}>
+                <WeatherWarningBanner warnings={warnings} />
             </aside>
             <HomepageMap></HomepageMap>
             <section className="fixed bottom-0 z-[2] w-full lg:bottom-0">
