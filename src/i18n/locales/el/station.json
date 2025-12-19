@@ -3,7 +3,8 @@
     "tabs": {
         "forecast": "Πρόγνωση",
         "graphs": "Γραφήματα",
-        "climatology": "Κλιματολογία"
+        "climatology": "Κλιματολογία",
+        "history": "Ιστορικό"
     },
     "information": {
         "title": "Πληροφορίες σταθμού",
@@ -26,5 +27,9 @@
         "extremeValues": "Ακραίες τιμές",
         "lowWinter": "Ελαχ χειμώνα",
         "highSummer": "Μεγ καλοκαίρι"
+    },
+    "history": {
+        "tempPrecipGraph": "Μέση θερμοκρασία & συνολικός υετός",
+        "windDirSpdGraph": "Μέση ταχύτητα & διεύθυνση ανέμου"
     }
 }

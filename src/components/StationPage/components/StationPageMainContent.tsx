@@ -1,9 +1,11 @@
-import { ClimateWeatherData, WeatherDataResponse, WeatherForecastResponse } from "@/types";
+import { ClimateWeatherData, WeatherDataResponse, WeatherForecastResponse, WeatherHistoricalData } from "@/types";
 import * as Tabs from "@radix-ui/react-tabs";
 
 import MonthGraph from "@/components/StationPage/MonthGraph";
 import StationPageClimateSummary from "@/components/StationPage/components/StationPageClimateSummary";
 import StationFullForecast from "@/components/StationPage/components/StationPageFullForecast";
+import StationPageHistoricalData from "@/components/StationPage/components/StationPageHistoricalData";
+
 import { useState } from "react";
 
 type StationPageMainContentProps = {
@@ -11,26 +13,29 @@ type StationPageMainContentProps = {
     stationForecast: WeatherForecastResponse;
     stationWeather: WeatherDataResponse[];
     stationClimate: ClimateWeatherData[];
+    historicalData: WeatherHistoricalData[];
     stationName: string;
 };
 
-export default function StationPageMainContent({ i18n, stationForecast, stationWeather, stationClimate, stationName }: StationPageMainContentProps) {
+export default function StationPageMainContent({ i18n, stationForecast, stationWeather, stationClimate, stationName, historicalData }: StationPageMainContentProps) {
 
-    const [activeTab, setActiveTab] = useState("tab1");
+    const [activeTab, setActiveTab] = useState("forecast");
     const tabs = [{
-        value: "tab1",
+        value: "forecast",
         label: i18n.getFixedT(i18n.language, "station")("tabs.forecast"),
     },{
-        value: "tab2",
+        value: "graphs",
         label: i18n.getFixedT(i18n.language, "station")("tabs.graphs"),
     },{
-        value: "tab3",
+        value: "history",
+        label: i18n.getFixedT(i18n.language, "station")("tabs.history"),
+    },{
+        value: "climate",
         label: i18n.getFixedT(i18n.language, "station")("tabs.climatology"),
     }];
     return (
         <Tabs.Root
             className="flex flex-col gap-4 w-full"
-            defaultValue="tab1"
             value={activeTab}
             onValueChange={setActiveTab}
         >
@@ -54,7 +59,7 @@ export default function StationPageMainContent({ i18n, stationForecast, stationW
             </Tabs.List>
             <Tabs.Content
                 className="grow rounded-b-md text-primary outline-none mb-4"
-                value="tab1"
+                value="forecast"
             >
                 <div className="w-full rounded-xl bg-white p-4 drop-shadow-md">
                     <StationFullForecast stationForecast={stationForecast} />
@@ -62,7 +67,7 @@ export default function StationPageMainContent({ i18n, stationForecast, stationW
             </Tabs.Content>
             <Tabs.Content
                 className="grow outline-none w-full"
-                value="tab2"
+                value="graphs"
             >
                 <section>
                     <div className="w-full rounded-xl bg-white p-4 drop-shadow-md">
@@ -72,13 +77,21 @@ export default function StationPageMainContent({ i18n, stationForecast, stationW
             </Tabs.Content>
             <Tabs.Content
                 className="grow rounded-b-md text-primary outline-none focus:shadow-black"
-                value="tab3"
+                value="climate"
             >
                 <div className="w-full rounded-xl bg-white p-4 drop-shadow-md">
                     <StationPageClimateSummary
                         climateData={stationClimate}
                         weatherStation={stationName}
                     ></StationPageClimateSummary>
+                </div>
+            </Tabs.Content>
+            <Tabs.Content
+                className="grow rounded-b-md text-primary outline-none focus:shadow-black"
+                value="history"
+            >
+                <div className="w-full rounded-xl bg-white p-4 drop-shadow-md">
+                    <StationPageHistoricalData historicalData={historicalData}></StationPageHistoricalData>
                 </div>
             </Tabs.Content>
         </Tabs.Root>);

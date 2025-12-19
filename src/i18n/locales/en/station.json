@@ -3,7 +3,8 @@
     "tabs": {
         "forecast": "Forecast",
         "graphs": "Station graphs",
-        "climatology": "Climatology"
+        "climatology": "Climatology",
+        "history": "History"
     },
     "information": {
         "title": "Information",
@@ -26,5 +27,9 @@
         "extremeValues": "Extreme values",
         "lowWinter": "Low winter",
         "highSummer": "High summer"
+    },
+    "history": {
+        "tempPrecipGraph": "Avg temperature & total precipitation",
+        "windDirSpdGraph": "Avg wind speed & direction"
     }
 }

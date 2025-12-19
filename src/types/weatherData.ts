@@ -61,3 +61,15 @@ export type FrostData = {
     frost_level: number;
     frost_date: string;
 };
+
+export type WeatherHistoricalData = {
+    weather_station_id: number;
+    year: number;
+    month: number;
+    avg_temperature: number;
+    avg_humidity: number;
+    avg_barometer: number;
+    total_percipitation: number;
+    avg_windspd: number;
+    avg_winddir: number;
+};

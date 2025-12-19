@@ -11,7 +11,8 @@ import {
     Assets,
     FthiotidaForecast,
     ClimateWeatherData,
-    FrostData
+    FrostData,
+    WeatherHistoricalData
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance, AxiosResponse } from "axios";
@@ -26,7 +27,8 @@ import {
     WeatherForecastDataResponsesSchema,
     AssetsSchema,
     HistoricalClimaDataResponse,
-    FrostinDataResponsesSchema
+    FrostinDataResponsesSchema,
+    HistoricalDataResponse
 } from "@/schemas";
 
 type HandleResponseParams<T> = {
@@ -100,6 +102,30 @@ export class DataService {
         });
     };
 
+    fetchStationHistoricalData = (weatherStationId: number): Promise<WeatherHistoricalData[]> => {
+        const HISTORICAL_DATA_PREFIX = "items/weather_data_aggregated_monthly";
+        const HISTORICAL_DATA_FILTER = `?fields=weather_station_id,year,month,avg_temperature,avg_humidity,avg_barometer,total_percipitation,avg_windspd,avg_winddir&filter[_and][0][_and][0][weather_station_id][_eq]=${weatherStationId}&sort=-year,-month`;
+        const HISTORICAL_DATA_PATH = `${HISTORICAL_DATA_PREFIX}${HISTORICAL_DATA_FILTER}`;
+
+        return new Promise<any>((resolve, reject) => {
+            return this.client
+                .get(`${HISTORICAL_DATA_PATH}`)
+                .then((response) => {
+                    const { res, error } = this.handleResponse({ 
+                        response, 
+                        schema: HistoricalDataResponse,
+                        reject,
+                    });
+                    if ( res && !error ) {
+                        resolve(res);
+                    }
+                })
+                .catch((error) => {
+                    reject(this.generateDataServiceError(error));
+                });
+        });
+    };
+
     // ZOD IS DISABLED
     fetchWeatherDataByStation = (station_id: number): Promise<WeatherDataResponse[]> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
@@ -158,7 +184,6 @@ export class DataService {
         });
     };
 
-    
     fetchWeatherStationsWithData = (): Promise<WeatherDataResponse[]> => {
         const WEATHER_DATA_FILTER_PREFIX = "items/weather_data";
         const DATE_FILTERS = {
