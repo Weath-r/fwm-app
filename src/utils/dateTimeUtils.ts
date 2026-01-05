@@ -57,3 +57,11 @@ export const dateWithMsToDay = (inputDate: number|string):string => {
 export const dateWithTime = (inputDate: Date | string): string => {
     return dayjs(inputDate).format("DD.MM.YY, HH:mm");
 };
+
+export const dateObjectWithMonthYear = (inputDate: string):dayjs.Dayjs => {
+    return dayjs(inputDate, ["M-YYYY"]);
+};
+
+export const dateOnlyMonthYear = (inputDate: Date | string | number): string => {
+    return dayjs(inputDate).format("MMM, YY");
+};

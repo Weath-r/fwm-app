@@ -16,6 +16,7 @@ export enum GraphVariablesSuffixes {
     percipitation = Measurements.MILLIMETER,
     rainrate = Measurements.MMHR,
     windspd = Measurements.SPEED,
+    windspdBft = Measurements.BFT,
 }
 
 export enum  TickIntervalPerVariable {
