@@ -83,6 +83,7 @@ export default async function StationPageView({ params }: StationPageProps) {
     });
 
     const stationForecast = await dataService.fetchForecastByStation(+params.id);
+    const stationHistoricalData = await dataService.fetchStationHistoricalData(+params.id);
 
     return (
         <>
@@ -92,6 +93,7 @@ export default async function StationPageView({ params }: StationPageProps) {
                 climateData={historicalClimateData}
                 currentWeather={currentWeather[0]}
                 forecast={stationForecast[0]}
+                historicalData={stationHistoricalData}
             />
         </>
     );

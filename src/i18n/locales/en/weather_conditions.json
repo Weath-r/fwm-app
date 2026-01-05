@@ -9,5 +9,15 @@
     "rainrate": "Rain rate",
     "wind direction": "Wind Direction",
     "barometer": "Pressure",
-    "sunny": "Sunny"
+    "sunny": "Sunny",
+    "windDir": {
+        "N": "N",
+        "NE": "NE",
+        "E": "E",
+        "SE": "SE",
+        "S": "S",
+        "SW": "SW",
+        "W": "W",
+        "NW": "NW"
+    }
 }

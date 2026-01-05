@@ -1,5 +1,5 @@
 "use client";
-import { WeatherDataResponse, ClimateWeatherData, WeatherForecastResponse } from "@/types";
+import { WeatherDataResponse, ClimateWeatherData, WeatherForecastResponse, WeatherHistoricalData } from "@/types";
 import useRedirectToHomeOnBack from "@/hooks/useRedirectToHomeOnBack";
 import { useT } from "@/i18n/client";
 
@@ -18,10 +18,11 @@ type StationPageProps = {
     weatherData: WeatherDataResponse[];
     climateData: ClimateWeatherData[];
     currentWeather: WeatherDataResponse;
-    forecast: WeatherForecastResponse
+    forecast: WeatherForecastResponse;
+    historicalData: WeatherHistoricalData[];
 };
 
-export default function StationPage({ weatherData, climateData, currentWeather, forecast }: StationPageProps) {
+export default function StationPage({ weatherData, climateData, currentWeather, forecast, historicalData }: StationPageProps) {
     useRedirectToHomeOnBack();
     const { i18n } = useT("stationModal");
     const DAYS_FOR_EXTREME_CALCULATION = 7;
@@ -66,6 +67,7 @@ export default function StationPage({ weatherData, climateData, currentWeather, 
                     stationForecast={forecast}
                     stationWeather={weatherData}
                     stationClimate={climateData}
+                    historicalData={historicalData}
                     stationName={currentWeather.weather_station_id.name}
                 />
             </div>
