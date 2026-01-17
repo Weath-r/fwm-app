@@ -10,6 +10,7 @@
         "noForecastData": "No clouds in sight — at least not in our data!",
         "weatherConditions": "Weather conditions",
         "winds": "Winds",
+        "snowfall": "Snowfall altitude",
         "locations": {
             "lamia": "Lamia",
             "mt_oiti": "Mt. Oiti",

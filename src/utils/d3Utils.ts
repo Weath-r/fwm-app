@@ -5,7 +5,12 @@ export const createColorGradient = ({ minTemp, maxTemp, colorsList }: {
     maxTemp: number;
     colorsList: string[];
 }) => {
-    return d3.scaleSequential()
+    return d3.scaleQuantize<string>()
         .domain([minTemp, maxTemp])
-        .interpolator(d3.interpolateRgbBasis(colorsList));
+        .range(colorsList);
+};
+
+export const ColorToRgb = (colorHex: string): string => {
+    const color = d3.rgb(colorHex).formatRgb();
+    return color;
 };

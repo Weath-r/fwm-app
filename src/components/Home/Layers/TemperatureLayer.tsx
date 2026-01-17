@@ -10,8 +10,7 @@ import {
 } from "@/utils/gisUtils";
 import { convertCelciusKelvin } from "@/utils/mathUtils";
 import { TemperatureColorList } from "@/constants/Colors";
-import { rgbToRgba } from "@/utils/colorManipulation";
-import { createColorGradient } from "@/utils/d3Utils";
+import { createColorGradient, ColorToRgb } from "@/utils/d3Utils";
 import { useForecastLayerStore } from "@/stores/forecastLayerStore";
 import { useMapStore } from "@/stores/mapStore";
 import { MapMarker, TemperatureLayerData, Station, Variogram } from "@/types";
@@ -113,21 +112,23 @@ export default function TemperatureLayer({ stationsList }: { stationsList: Stati
 
         const geojson: GeoJSON.FeatureCollection = {
             type: "FeatureCollection",
-            features: contours.map(contour => ({
-                type: "Feature",
-                geometry: {
-                    type: "MultiPolygon",
-                    coordinates: contour.coordinates.map(polygon => polygon.map(ring => ring.map(point => {
-                        const lon = BBOX.leftLongitude + point[0] * gridSize;
-                        const lat = BBOX.bottomLatitude + point[1] * gridSize;
-                        return [lon, lat];
-                    }))),
-                },
-                properties: {
-                    value: contour.value,
-                    color: colorGradient(contour.value),
-                },
-            })),
+            features: contours.map(contour => {
+                return {
+                    type: "Feature",
+                    geometry: {
+                        type: "MultiPolygon",
+                        coordinates: contour.coordinates.map(polygon => polygon.map(ring => ring.map(point => {
+                            const lon = BBOX.leftLongitude + point[0] * gridSize;
+                            const lat = BBOX.bottomLatitude + point[1] * gridSize;
+                            return [lon, lat];
+                        }))),
+                    },
+                    properties: {
+                        value: contour.value,
+                        color: ColorToRgb(colorGradient(contour.value)),
+                    },
+                };
+            }),
         };
 
         setGeojson(geojson);
@@ -138,11 +139,10 @@ export default function TemperatureLayer({ stationsList }: { stationsList: Stati
 
         const geojsonLayer  = L.geoJson(geojson, {
             style: feature => {
-                const alpha = 0.03;
-                const fillColor = rgbToRgba(colorGradient(feature?.properties.value), alpha);
+                const fillColor = ColorToRgb(colorGradient(feature?.properties.value));
                 return {
                     fillColor,
-                    fillOpacity: .9,
+                    fillOpacity: .04,
                     stroke: false,
                     color: "black",
                     weight: 0.2,
