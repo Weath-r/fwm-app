@@ -64,7 +64,9 @@ export default function FthiotidaForecastsIndividualCard(props: Readonly<Forecas
                             </div>
                             {props.forecast.snow && props.forecast.snow > 0 && 
                                 <p className="text-sm font-semibold">
-                                    <span className="text-md ml-2 inline-block lowercase">{props.forecast.snow} {Measurements.CM}</span>
+                                    {props.i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.snowfall")} 
+                                    <span className="text-md ml-1 inline-block">
+                                        {props.forecast.snow} {Measurements.METER}</span>
                                 </p>
                             }
                         </div>
