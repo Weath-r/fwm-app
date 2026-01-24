@@ -31,6 +31,7 @@ export const WeatherForecastData = z.object({
         accumulated_rain: z.optional(z.number()),
         windspd: z.optional(z.number()),
         winddir: z.optional(z.number()),
+        accumulated_snow: z.optional(z.number()),
         snow: z.optional(z.number()),
         cloudcover: z.optional(z.number()),
         percipitation: z.optional(z.number()),

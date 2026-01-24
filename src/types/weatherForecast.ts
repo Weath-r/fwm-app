@@ -7,6 +7,7 @@ export type ForecastData = {
     barometer?: number;
     percipitation?: number;
     accumulated_rain?: number;
+    accumulated_snow?: number;
     snow?: number;
     cloudcover?: number;
     time: number;
