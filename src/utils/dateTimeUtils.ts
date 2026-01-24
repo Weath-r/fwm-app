@@ -62,6 +62,10 @@ export const dateObjectWithMonthYear = (inputDate: string):dayjs.Dayjs => {
     return dayjs(inputDate, ["M-YYYY"]);
 };
 
+export const dateObjectInputDDMMYY = (inputDate: string):dayjs.Dayjs => {
+    return dayjs(inputDate, ["DD/MM/YYYY"]);
+};
+
 export const dateOnlyMonthYear = (inputDate: Date | string | number): string => {
     return dayjs(inputDate).format("MMM, YY");
 };

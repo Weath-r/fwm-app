@@ -4,13 +4,12 @@ import { useState } from "react";
 import { 
     timeOnlyUtil, 
     fullDateNoTime,
-    dayWithNameUtilWithCustom 
+    dayWithNameUtilWithCustom,
+    dateObjectInputDDMMYY
 } from "@/utils/dateTimeUtils";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import SvgInline from "@/components/Common/SvgInline";
 import CommonButton from "@/components/Common/CommonButton";
-import StationLink from "@/components/Common/StationLink";
-import { useConfigurationStore } from "@/stores/configurationStore";
 import { useT } from "@/i18n/client";
 
 type GroupedWeatherData = {
@@ -19,6 +18,13 @@ type GroupedWeatherData = {
 
 type handleDateSelectionBtn = {
     date: string;
+};
+
+type CalcPercipitationFn = {
+    snow: number;
+    percipitation: number;
+    temperature: number;
+    accumulated_snow: number;
 };
 
 const convertTimeStampToDate = (timestamp: number): string => {
@@ -30,12 +36,21 @@ const convertStringToDate = (date: string): string => {
     return dayWithNameUtilWithCustom(date);
 };
 
+const setCurrentDateActive = (dateNow: Date): string => {
+    if ((dateNow.getHours() === 23) && dateNow.getMinutes() > 10) {
+        dateNow.setDate(dateNow.getDate() + 1);
+    }
+    const activeDate = fullDateNoTime(dateNow);
+    return activeDate;
+};
+
 export function StationWeatherForecastDetails(elem: WeatherData) {
     const { i18n } = useT("stationModal");
     const selectedLanguage = i18n.language;
     const title = i18n.getFixedT(selectedLanguage, "stationModal")("nextDays");
     const dateNow = new Date();
-    const activeDate = fullDateNoTime(dateNow);
+    const activeDate = setCurrentDateActive(dateNow);
+
     const [activeBtn, setActiveBtn] = useState(activeDate);
     const [forecastDate, setForecastDate] = useState(activeDate);
 
@@ -65,21 +80,56 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
             min: Math.min(...valuesArr),
         };
     };
+    const SNOW_MODE_TEMP = 1.5;
 
-    const { featureFlags } = useConfigurationStore();
-    const isFullStationPageEnabled = featureFlags?.standalone_station?.moreDetailsModalUrl;
+    const calculatePercipitation = ({
+        snow,
+        percipitation,
+        temperature,
+        accumulated_snow,
+    }: CalcPercipitationFn) => {
+        const isCold = temperature <= SNOW_MODE_TEMP;
+        const hasAccumulatedSnow = accumulated_snow > 0;
+        const hasFreshSnow = snow > 0;
+
+        // Snow mode: cold + accumulated snow we need to show the proper suffix
+        if (isCold && hasAccumulatedSnow) {
+            return {
+                value: hasFreshSnow ? snow : percipitation,
+                suffix: Measurements.CM,
+            };
+        }
+
+        // Cold but no accumulated snow -> show fresh snow only
+        if (isCold && hasFreshSnow) {
+            return {
+                value: snow,
+                suffix: Measurements.CM,
+            };
+        }
+
+        // Warm weather -> rain
+        return {
+            value: percipitation,
+            suffix: Measurements.MILLIMETER,
+        };
+    };
+
 
     return (
-        <div className="p-1">
-            <h4 className="my-4 text-xs font-bold uppercase text-primary">
+        <div className="p-1 pt-0">
+            <h4 className="mb-4 text-sm font-bold uppercase text-primary">
                 {title}
             </h4>
             {elem.full_forecast.length > 0 && 
             <section>
                 <div className="flex gap-2 overflow-x-auto">
-                    {Object.keys(structuredForecast).map((item) => {
+                    {Object.keys(structuredForecast).map((item, index, datesArray) => {
                         const activeClass = activeBtn === item ? "!bg-info text-white" : "";
-                        return (
+                        const shouldRenderDate = index === datesArray.length - 1 
+                            ? true 
+                            : dateObjectInputDDMMYY(item).valueOf() >= dateObjectInputDDMMYY(activeDate).valueOf() ? true : false;
+                        return ( shouldRenderDate && 
                             <div 
                                 key={item}
                                 className="w-full"
@@ -111,12 +161,24 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                         );
                     })}
                 </div>
-                <div className="my-2 h-fit max-h-[190px] overflow-y-auto md:max-h-[240px]">
+                <div 
+                    className="my-2 h-fit max-h-[350px] overflow-y-auto md:max-h-[300px]"
+                    key={forecastDate}
+                >
                     {structuredForecast[forecastDate] && structuredForecast[forecastDate].map((forecast,index, forecastArray) => {
+
                         const forecastTime = new Date(forecast.time);
                         const shouldRenderForecast = index === forecastArray.length - 1 
                             ? true 
-                            : forecastTime.valueOf() > dateNow.valueOf() ? true : false;
+                            : forecastTime.valueOf() >= dateNow.valueOf() ? true : false;
+
+                        const precipitation = calculatePercipitation({
+                            snow: forecast.snow || 0,
+                            percipitation: forecast.percipitation || 0,
+                            temperature: forecast.temperature || 0,
+                            accumulated_snow: forecast.accumulated_snow || 0,
+                        });
+
                         return ( shouldRenderForecast && 
                         <div 
                             key={index}
@@ -156,28 +218,15 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                                 </p>
                             </div>
                             <p className="text-primary">
-                                { forecast.percipitation}
+                                { precipitation?.value}
                                 <span className="ml-1 text-sm">
-                                    {Measurements.MILLIMETER}
+                                    {precipitation?.suffix}
                                 </span>
                             </p>
                         </div>
                         );
                     })}
                 </div>
-                {isFullStationPageEnabled && (
-                    <div className="flex justify-center">
-                        <StationLink
-                            stationId={elem.station.id}
-                            stationName={elem.station.name}
-                            pageName="station"
-                            lang={selectedLanguage}
-                            className="text-sm font-bold uppercase text-primary"
-                        >
-                            {i18n.getFixedT(selectedLanguage, "stationModal")("moreDetails")}
-                        </StationLink>
-                    </div>
-                )}
             </section>
             }
             {elem.full_forecast.length === 0 && <p className="text-sm text-primary">

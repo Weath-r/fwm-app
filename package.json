@@ -1,6 +1,6 @@
 {
     "name": "fwm-app",
-    "version": "1.15.1",
+    "version": "1.15.2",
     "private": true,
     "scripts": {
         "dev": "next dev",
@@ -51,7 +51,7 @@
         "leaflet-velocity": "2.1.4",
         "next": "14.2.33",
         "postcss": "8.5.3",
-        "posthog-js": "1.231.0",
+        "posthog-js": "1.334.1",
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "react-i18next": "15.6.1",
