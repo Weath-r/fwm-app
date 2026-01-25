@@ -2,25 +2,23 @@ import { useState, useEffect, useRef } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 type OptionsProp = {
-  label: string;
-  value: string;
+    label: string;
+    value: string;
 };
 
 type DropdownMenuComponentProps = {
-  options: OptionsProp[];
-  handleChangeVal: (val: any) => void;
+    options: OptionsProp[];
+    handleChangeVal: (val: any) => void;
+    selectedValue: OptionsProp;
 };
 
-export default function DropdownMenu({ options, handleChangeVal }: Readonly<DropdownMenuComponentProps>) {
-    const [selected, setSelected] = useState<OptionsProp>({ label: "", value: "" });
+export default function DropdownMenu({
+    options,
+    handleChangeVal,
+    selectedValue,
+}: Readonly<DropdownMenuComponentProps>) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (options.length > 0) {
-            setSelected(options[0]);
-        }
-    }, [options]);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -35,8 +33,7 @@ export default function DropdownMenu({ options, handleChangeVal }: Readonly<Drop
     }, []);
 
     const handleOnChange = (value: OptionsProp) => {
-        setSelected(value);
-        handleChangeVal(value.value);
+        handleChangeVal(value);
         setIsOpen(false);
     };
 
@@ -47,7 +44,9 @@ export default function DropdownMenu({ options, handleChangeVal }: Readonly<Drop
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none sm:text-sm"
             >
-                <span className="block truncate font-bold capitalize text-primary">{selected.label}</span>
+                <span className="block truncate font-bold capitalize text-primary">
+                    {selectedValue.label}
+                </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                     <ChevronUpDownIcon className="size-5 text-primary" aria-hidden="true" />
                 </span>
@@ -62,16 +61,18 @@ export default function DropdownMenu({ options, handleChangeVal }: Readonly<Drop
                     <li
                         key={idx}
                         onClick={() => handleOnChange(option)}
-                        className={"relative cursor-pointer select-none py-2 pl-10 pr-4 text-primary hover:font-bold"}
+                        className={
+                            "relative cursor-pointer select-none py-2 pl-10 pr-4 text-primary hover:font-bold"
+                        }
                     >
                         <span
                             className={`block truncate capitalize ${
-                                selected.label === option.label ? "font-bold" : "font-normal"
+                                selectedValue.label === option.label ? "font-bold" : "font-normal"
                             }`}
                         >
                             {option.label}
                         </span>
-                        {selected.label === option.label && (
+                        {selectedValue.label === option.label && (
                             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-success">
                                 <CheckIcon className="size-5" aria-hidden="true" />
                             </span>

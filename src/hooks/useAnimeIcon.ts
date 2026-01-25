@@ -20,7 +20,7 @@ export function useAnimeIcon({ target, parameters }: useAnimeIconParams) {
             if (parameters.extraTarget) {
                 const elements: Element[][] = [];
                 if (target.current) {
-                    parameters.extraTarget.forEach(elem => {
+                    parameters.extraTarget.forEach((elem) => {
                         elements.push(Array.from(target.current!.querySelectorAll(elem)));
                     });
                 }
@@ -38,7 +38,7 @@ export function useAnimeIcon({ target, parameters }: useAnimeIconParams) {
             observer = new MutationObserver(() => {
                 const elements: Element[][] = [];
                 if (target.current) {
-                    parameters.extraTarget && parameters.extraTarget.forEach(elem => {
+                    parameters.extraTarget?.forEach((elem) => {
                         elements.push(Array.from(target.current!.querySelectorAll(elem)));
                     });
                 }

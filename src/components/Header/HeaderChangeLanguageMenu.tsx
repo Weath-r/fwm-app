@@ -8,6 +8,9 @@ export default function HeaderChangeLanguageMenu() {
     const { lng } = params;
     const changeLanguage = (newLanguage: string) => {
         const currentLng = Array.isArray(lng) ? lng[0] : lng;
+        if (!currentLng) {
+            return;
+        }
         const redirectionPath = pathname.replace(currentLng, newLanguage);
         router.push(redirectionPath);
     };

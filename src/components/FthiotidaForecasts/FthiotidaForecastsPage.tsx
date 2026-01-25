@@ -27,9 +27,15 @@ export default function FthiotidaForecastPage() {
                     const { dates } = forecast.forecast;
                     forecastDates.push({
                         created: dateValueOf(dayjs(dates.created, "DD-MM-YYYY").toDate()),
-                        forecast_date: dateValueOf(dayjs(dates.forecast_date, "DD-MM-YYYY").toDate()),
-                        forecast_end_hour: dateValueOf(dayjs(dates.forecast_end_hour, "DD-MM-YYYY").toDate()),
-                        forecast_start_hour: dateValueOf(dayjs(dates.forecast_start_hour, "DD-MM-YYYY").toDate()),
+                        forecast_date: dateValueOf(
+                            dayjs(dates.forecast_date, "DD-MM-YYYY").toDate()
+                        ),
+                        forecast_end_hour: dateValueOf(
+                            dayjs(dates.forecast_end_hour, "DD-MM-YYYY").toDate()
+                        ),
+                        forecast_start_hour: dateValueOf(
+                            dayjs(dates.forecast_start_hour, "DD-MM-YYYY").toDate()
+                        ),
                     });
                 });
                 setForecasts(response);
@@ -42,30 +48,33 @@ export default function FthiotidaForecastPage() {
             });
     };
 
-    const [selectedDate, setSelectedDate] = useState<number>(0);
-    const [selectedForecastIndex, setselectedForecastIndex] = useState<number>(-1);
+    const today = dayjs();
+    const [selectedDate, setSelectedDate] = useState<number>(dateValueOf(today.toDate()));
+    const [selectedForecastIndex, setselectedForecastIndex] = useState<number>(
+        forecasts.findLastIndex((forecast) => forecast)
+    );
     const [showLoading, setShowLoading] = useState<boolean>(false);
-    
-    const handleDateClick = (date: number): void => {
-        setSelectedDate(date);
+
+    const handleDateClick = (selectedDate: number): void => {
+        setSelectedDate(selectedDate);
         setShowLoading(true);
-    };
-
-    useEffect(() => {
-        getFthiotidaForecasts();
-        const today = dayjs();
-        setSelectedDate(dateValueOf(today.toDate()));
-    }, []);
-
-    useEffect(() => {
         if (selectedDate) {
-            const indexOfForecast = forecasts.findIndex(forecast => {
-                return isTheSame({ firstDate: dateValueOf(dayjs(forecast.forecast.dates.forecast_date, "DD-MM-YYYY").toDate()), secondDate: selectedDate });
+            const indexOfForecast = forecasts.findIndex((forecast) => {
+                return isTheSame({
+                    firstDate: dateValueOf(
+                        dayjs(forecast.forecast.dates.forecast_date, "DD-MM-YYYY").toDate()
+                    ),
+                    secondDate: selectedDate,
+                });
             });
             setselectedForecastIndex(indexOfForecast);
             setTimeout(() => setShowLoading(false), 700);
         }
-    }, [forecasts, selectedDate]);
+    };
+
+    useEffect(() => {
+        getFthiotidaForecasts();
+    }, []);
 
     return (
         <div className="mx-4 mt-4 md:container md:mx-auto">
@@ -78,7 +87,19 @@ export default function FthiotidaForecastPage() {
             <div className="relative my-4 w-full rounded-xl bg-white drop-shadow-md">
                 <div className="rounded-t-lg bg-primary p-4 text-sm font-bold text-white">
                     <p>
-                        {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.providedBy")} <a href="https://fthiotida-meteogroup.gr/" target="_blank" className="decoration-dashed" title="Fthiotida Meteogroup - Local forecasts for Fthiotida" rel="noreferrer">Fthiotida-Meteogroup</a>
+                        {i18n.getFixedT(
+                            selectedLanguage,
+                            "forecasts"
+                        )("FthiotidaForecasts.providedBy")}{" "}
+                        <a
+                            href="https://fthiotida-meteogroup.gr/"
+                            target="_blank"
+                            className="decoration-dashed"
+                            title="Fthiotida Meteogroup - Local forecasts for Fthiotida"
+                            rel="noreferrer"
+                        >
+                            Fthiotida-Meteogroup
+                        </a>
                     </p>
                 </div>
                 <section className="flex flex-col px-4 pb-2">
@@ -87,7 +108,7 @@ export default function FthiotidaForecastPage() {
                         selectedDate={selectedDate}
                         forecastDates={forecastDates}
                     ></CalendarSection>
-                    
+
                     {forecasts[selectedForecastIndex] && !showLoading && (
                         <FthiotidaForecastsSection
                             key={selectedForecastIndex}
@@ -95,15 +116,37 @@ export default function FthiotidaForecastPage() {
                             i18n={i18n}
                         />
                     )}
-                    {!forecasts[selectedForecastIndex] && !showLoading && <NoForecastSection i18n={i18n}></NoForecastSection>}
+                    {!forecasts[selectedForecastIndex] && !showLoading && (
+                        <NoForecastSection i18n={i18n}></NoForecastSection>
+                    )}
                     {showLoading && <LoadingForecastData i18n={i18n}></LoadingForecastData>}
 
                     <div className="my-4 w-full border-t-2 border-primary/10 pt-2">
                         <p className="text-sm text-primary">
-                            {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.footerNote_1")} <a href="https://fthiotida-meteogroup.gr/" target="_blank" className="font-bold" rel="noreferrer">Fthiotida-Meteogroup</a>. {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.footerNote_2")}
+                            {i18n.getFixedT(
+                                selectedLanguage,
+                                "forecasts"
+                            )("FthiotidaForecasts.footerNote_1")}{" "}
+                            <a
+                                href="https://fthiotida-meteogroup.gr/"
+                                target="_blank"
+                                className="font-bold"
+                                rel="noreferrer"
+                            >
+                                Fthiotida-Meteogroup
+                            </a>
+                            .{" "}
+                            {i18n.getFixedT(
+                                selectedLanguage,
+                                "forecasts"
+                            )("FthiotidaForecasts.footerNote_2")}
                         </p>
                         <p className="mt-2 text-xs text-primary">
-                            <span className="font-bold">Disclaimer:</span> {i18n.getFixedT(selectedLanguage, "forecasts")("FthiotidaForecasts.disclaimer")}
+                            <span className="font-bold">Disclaimer:</span>{" "}
+                            {i18n.getFixedT(
+                                selectedLanguage,
+                                "forecasts"
+                            )("FthiotidaForecasts.disclaimer")}
                         </p>
                     </div>
                 </section>

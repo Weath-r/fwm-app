@@ -31,7 +31,10 @@ export default function ForecastLayer() {
     const assetsFolder = useAssetsFromFolder(folderId);
     const dataService = new DataService();
 
-    const createProperTimestampLabel = ({ inputDate, hoursAdd }: CreateProperTimestampLabel): string => {
+    const createProperTimestampLabel = ({
+        inputDate,
+        hoursAdd,
+    }: CreateProperTimestampLabel): string => {
         return addTimeToDate({
             inputDate,
             numberAdd: hoursAdd,
@@ -42,10 +45,10 @@ export default function ForecastLayer() {
         await dataService
             .fetchAsset(fileId)
             .then((response) => {
-                const hours = Object.keys(response.data).map(elem => {
+                const hours = Object.keys(response.data).map((elem) => {
                     const label = elem.split("_")[0];
-                    const baseHour = label.slice(8,10);
-                    const inputDate = `${label.slice(0,8)} ${baseHour}:00`;
+                    const baseHour = label.slice(8, 10);
+                    const inputDate = `${label.slice(0, 8)} ${baseHour}:00`;
                     setForecastDate(inputDate);
                     const hour = parseInt(elem.split("_")[1]);
                     const forecastDate = createProperTimestampLabel({ inputDate, hoursAdd: hour });
@@ -63,7 +66,7 @@ export default function ForecastLayer() {
                         ...acc,
                         [currentValue.hour]: createMarkLabels(currentValue, currentIndex),
                     };
-                },{});
+                }, {});
 
                 function createMarkLabels(label: ForecastHours, currentIndex: number) {
                     if (label.labelHour === "00:00" || currentIndex === 0) {
@@ -76,8 +79,10 @@ export default function ForecastLayer() {
                 const setInitialActiveForecastHour = (hoursArray: ForecastHours[]) => {
                     const date = new Date();
                     const labelDay = dayWithNameNoMonthUtil(date);
-                    const labelHour = timeOnlyUtil(date).slice(0,2);
-                    const valueHoursIndex = hoursArray.findIndex(elem => elem.labelDay === labelDay && elem.labelHour === `${labelHour}:00`);
+                    const labelHour = timeOnlyUtil(date).slice(0, 2);
+                    const valueHoursIndex = hoursArray.findIndex(
+                        (elem) => elem.labelDay === labelDay && elem.labelHour === `${labelHour}:00`
+                    );
                     setSliderDefaultValue(hoursArray[valueHoursIndex].hour);
                     return hoursArray[valueHoursIndex].value;
                 };
@@ -94,29 +99,31 @@ export default function ForecastLayer() {
     };
 
     const handleSliderEvent = (ev: number | number[]) => {
-        const activeForecast = forecastHours.find(elem => elem.hour === ev)?.value;
+        console.log("testing", ev);
+        const activeForecast = forecastHours.find((elem) => elem.hour === ev)?.value;
         if (activeForecast) {
             setActiveForecastHour(activeForecast);
-        } 
+            setSliderDefaultValue(ev as number);
+        }
     };
 
-    const createSliderTooltipLabel = ( tooltipValue: number ):string => {
+    const createSliderTooltipLabel = (tooltipValue: number): string => {
         const date = createProperTimestampLabel({
             inputDate: forecastDate,
             hoursAdd: tooltipValue,
         });
         return forecastDate && `${timeOnlyUtil(date)}`;
     };
-    
+
     useEffect(() => {
-        if(assetsFolder.length > 0) {
+        if (assetsFolder.length > 0) {
             fetchForecastAsset(assetsFolder[0].id);
         }
-    },[assetsFolder]);
+    }, [assetsFolder]);
 
     const createGradient = () => {
         const colors: string[] = [];
-        TemperatureColorList.forEach(color => colors.push(hexToRgba(color, .6)));
+        TemperatureColorList.forEach((color) => colors.push(hexToRgba(color, 0.6)));
         return `linear-gradient(to right, ${colors.join(", ")})`;
     };
 
@@ -128,24 +135,21 @@ export default function ForecastLayer() {
                         marks={sliderMarks}
                         max={48}
                         step={1}
-                        defaultValue={sliderDefaultValue}
-                        onChange={ value => handleSliderEvent(value) }
+                        value={sliderDefaultValue}
+                        onChange={(value) => handleSliderEvent(value)}
                         createTooltipLabel={createSliderTooltipLabel}
                     />
                 </div>
             </div>
             <div className="mr-4 w-full rounded lg:w-2/12 lg:translate-y-1/2">
-                <div 
-                    style={{ background: createGradient() }} 
+                <div
+                    style={{ background: createGradient() }}
                     className="pointer-events-none flex w-full justify-between rounded-lg p-1 text-xs text-white"
                 >
-                    <span style={{ width:"12.5%" }}>
-                     °C
-                    </span>
+                    <span style={{ width: "12.5%" }}>°C</span>
                     {[-20, -10, 0, 10, 20, 30, 40].map((temp) => {
                         return (
-                            <span style={{ width:"12.5%" }}
-                                key={temp}>
+                            <span style={{ width: "12.5%" }} key={temp}>
                                 {temp}
                             </span>
                         );

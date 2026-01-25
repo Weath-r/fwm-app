@@ -6,6 +6,7 @@ import { translatedContent } from "@/utils/transformTranslations";
 import { buildStation } from "@/utils/weatherDataFormatUtils";
 import { useParams } from "next/navigation";
 import { createContext, ReactElement, useContext, useEffect, useMemo, useState } from "react";
+import configuration from "@/app/appConfig";
 
 interface CurrentStationContextType {
     stations: Station[];
@@ -26,7 +27,7 @@ const WarningsContext = createContext<WarningsContextType>({
 });
 
 type StationsProviderProps = {
-    children: ReactElement;
+    children: ReactElement<any>;
 };
 
 function getTodayAtMidnight(): string {
@@ -43,7 +44,9 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
     const { featureFlags } = useConfigurationStore();
     const areWarningsEnabled = featureFlags.warnings?.showWarningsPanel;
     const params = useParams();
-    const currentLanguage = Array.isArray(params.lng) ? params.lng[0] : params.lng;
+    const currentLanguage = Array.isArray(params.lng)
+        ? params.lng[0]
+        : (params.lng ?? configuration.defaultLocale);
 
     const fetchStationsData = async () => {
         await dataService
@@ -107,8 +110,9 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
                         ...warning,
                         hazard_id: { ...warning.hazard_id, ...translatedHazard[0] },
                     };
-
+                    console.log("new warning", newWarning);
                     const indexOfAcc = acc.findIndex((elem) => elem.assetName === location);
+                    console.log("indexOfAcc", indexOfAcc);
                     if (indexOfAcc < 0) {
                         acc.push({
                             assetName: location,
@@ -120,9 +124,6 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
                         });
                     } else {
                         acc[indexOfAcc].warnings.push(warning);
-                        acc[indexOfAcc].warningLevel.id < warning.level_id.id
-                            ? (acc[indexOfAcc].warningLevel = warning.level_id)
-                            : "";
                     }
                     return acc;
                 }, [] as GroupedWarnings[]);
@@ -147,7 +148,9 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
     }, []);
 
     useEffect(() => {
-        areWarningsEnabled && fetchWarnings();
+        if (areWarningsEnabled) {
+            fetchWarnings();
+        }
     }, [areWarningsEnabled]);
 
     const stationValue = useMemo(() => ({ stations }), [stations]);
@@ -157,7 +160,7 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
             warnings,
             shouldRenderWarnings,
         }),
-        [warnings]
+        [warnings, shouldRenderWarnings]
     );
 
     return (
