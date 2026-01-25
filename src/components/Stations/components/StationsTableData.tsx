@@ -6,7 +6,7 @@ import {
     getCoreRowModel,
     getSortedRowModel,
     SortingState,
-    useReactTable
+    useReactTable,
 } from "@tanstack/react-table";
 
 import { useState } from "react";
@@ -25,6 +25,7 @@ export default function StationsTableData(props: Readonly<TableDataProps>) {
     const { data, columns } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
 
+    // eslint-disable-next-line react-hooks/incompatible-library
     const table = useReactTable({
         data,
         columns,
@@ -60,8 +61,8 @@ export default function StationsTableData(props: Readonly<TableDataProps>) {
                                                 ? header.column.getNextSortingOrder() === "asc"
                                                     ? "Sort ascending"
                                                     : header.column.getNextSortingOrder() === "desc"
-                                                        ? "Sort descending"
-                                                        : "Clear sort"
+                                                      ? "Sort descending"
+                                                      : "Clear sort"
                                                 : undefined
                                         }
                                     >

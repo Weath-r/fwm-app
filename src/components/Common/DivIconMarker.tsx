@@ -21,7 +21,7 @@ export type DivIconLeafletMarker = {
 type DivIconMarkerProps = {
     leafletMarker: DivIconLeafletMarker;
     container: DivIconContainer;
-    children: ReactElement;
+    children: ReactElement<any>;
 };
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/6e724310e0ed089cf4b8b261b8badf71206ad9e8/types/leaflet/index.d.ts#L75

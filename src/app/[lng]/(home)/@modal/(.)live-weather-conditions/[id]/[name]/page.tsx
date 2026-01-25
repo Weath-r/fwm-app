@@ -4,19 +4,20 @@ import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/
 import { unstable_noStore as noStore } from "next/cache";
 
 type StationPageProps = {
-    params: {
+    params: Promise<{
         id: string;
         name: string;
         lng: string;
-    },
+    }>,
     searchParams: StationParamsUrlProp
 };
 
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 
-
-export default async function LiveWeatherConditionsModal({ params, searchParams }: StationPageProps) {
+export default async function LiveWeatherConditionsModal(props: StationPageProps) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
     noStore();
     const { id, lng } = params;
     const isForecastEnabled = !!searchParams.isForecastEnabled || false;

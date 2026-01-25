@@ -1,9 +1,9 @@
 import { getT } from "@/i18n";
 
 type AboutUsParams = {
-    params: {
+    params: Promise<{
         lng: string;
-    }
+    }>
 };
 
 export async function generateMetadata() {
@@ -14,7 +14,8 @@ export async function generateMetadata() {
     };
 };
 
-export default async function Stations({ params }: AboutUsParams) {
+export default async function Stations(props: AboutUsParams) {
+    const params = await props.params;
     const { lng } = params;
 
     const englishVersion = (<main className="relative flex flex-1 flex-col">
@@ -182,6 +183,6 @@ export default async function Stations({ params }: AboutUsParams) {
             </div>
         </div>
     </main>);
-    
+
     return lng === "el" ? greekVersion : englishVersion;
 }

@@ -2,7 +2,7 @@ import "../globals.css";
 import { Commissioner } from "next/font/google";
 import { ClientProvider } from "@/providers/clientProvider";
 import Header from "@/components/Header/Header";
-import dynamic from "next/dynamic";
+import PostHogPageView from "./PostHogPageView";
 
 import { Suspense } from "react";
 import DayjsLocaleProvider from "@/providers/DayjsLocaleProvider";
@@ -11,9 +11,6 @@ import { dir } from "i18next";
 import { AppLanguages as languages } from "@/app/appConfig";
 import { getT } from "@/i18n";
 
-const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
-    ssr: false,
-});
 
 const fontFamily = Commissioner({
     subsets: ["greek"],

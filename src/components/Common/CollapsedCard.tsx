@@ -2,8 +2,8 @@ import { ReactElement, useState, CSSProperties } from "react";
 import SvgInline from "./SvgInline";
 
 type CollapsedCardProps = {
-    children: ReactElement;
-    title: ReactElement;
+    children: ReactElement<any>;
+    title: ReactElement<any>;
     theme: string;
     style?: CSSProperties;
     class?: string;

@@ -5,15 +5,16 @@ import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/
 import { StationParamsUrlProp } from "@/types";
 
 type LiveWeatherConditionsProps = {
-    params: {
+    params: Promise<{
         id: string;
         name: string;
         lng: string;
-    },
+    }>,
     searchParams: StationParamsUrlProp
 };
 
-export async function generateMetadata({ params }: LiveWeatherConditionsProps) {
+export async function generateMetadata(props: LiveWeatherConditionsProps) {
+    const params = await props.params;
     const stationName = decodeURI(properStationName(params.name));
     const { t, i18n } = await getT("pages");
 
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: LiveWeatherConditionsProps) {
         "μετεωρολογικά δεδομένα",
         `σταθμός καιρού ${stationName}`
     ];
-    
+
     return {
         title: t("stationIndividual.title", { station: stationName }),
         description: t("stationIndividual.description", { station: stationName }),
@@ -44,7 +45,9 @@ export async function generateMetadata({ params }: LiveWeatherConditionsProps) {
     };
 }
 
-export default async function StationPageView({ params, searchParams }: LiveWeatherConditionsProps) {
+export default async function StationPageView(props: LiveWeatherConditionsProps) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
     const isForecastEnabled = !!searchParams.isForecastEnabled || false;
     const { lng, id } = params;
 
