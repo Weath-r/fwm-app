@@ -40,7 +40,7 @@ export default function WindCombinedGraph(props: WindGraphDateTimeProps) {
             },
         },
         chart: {
-            spacing: [10,0,10,0],
+            spacing: [10, 0, 10, 0],
         },
         legend: {
             enabled: false,
@@ -73,6 +73,7 @@ export default function WindCombinedGraph(props: WindGraphDateTimeProps) {
             },
         },
         tooltip: {
+            // eslint-disable-next-line react-hooks/unsupported-syntax
             formatter: function (this: Highcharts.TooltipFormatterContextObject): string {
                 if (!this.points || !this.key) {
                     return "";
@@ -82,7 +83,7 @@ export default function WindCombinedGraph(props: WindGraphDateTimeProps) {
 
                 tooltipText.push(`${dateOnlyMonthYear(this.key)}`);
 
-                this.points.forEach(point => {
+                this.points.forEach((point) => {
                     if (typeof point.y === "number") {
                         tooltipText.push(
                             `<br/>${point.series.name}: <b>${point.y} ${(point.series as any).tooltipOptions?.valueSuffix ?? ""}</b>`
@@ -119,52 +120,49 @@ export default function WindCombinedGraph(props: WindGraphDateTimeProps) {
     });
 
     useEffect(() => {
-        setChartOptions(prevOptions => ({
+        setChartOptions((prevOptions) => ({
             ...prevOptions,
-            series: [{
-                type: "area",
-                keys: ["x", "y"],
-                data: props.graphData,
-                fillColor: {
-                    linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
-                    stops: [
-                        [0, "var(--highcharts-color-0, #2c72fe)"],
-                        [
-                            1,
-                            `color-mix(
+            series: [
+                {
+                    type: "area",
+                    keys: ["x", "y"],
+                    data: props.graphData,
+                    fillColor: {
+                        linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+                        stops: [
+                            [0, "var(--highcharts-color-0, #2c72fe)"],
+                            [
+                                1,
+                                `color-mix(
                         in srgb,
                         var(--highcharts-color-0, #2caffe) 25%,
                         transparent
-                    )`
-                        ]
-                    ],
-                },
-                name: i18n.getFixedT(selectedLanguage, "weather_conditions")("windspd"),
-                tooltip: {
-                    valueSuffix: GraphVariablesSuffixes.windspd,
-                },
-                states: {
-                    inactive: {
-                        opacity: 1,
+                    )`,
+                            ],
+                        ],
+                    },
+                    name: i18n.getFixedT(selectedLanguage, "weather_conditions")("windspd"),
+                    tooltip: {
+                        valueSuffix: GraphVariablesSuffixes.windspd,
+                    },
+                    states: {
+                        inactive: {
+                            opacity: 1,
+                        },
                     },
                 },
-            }, {
-                type: "windbarb",
-                data: props.graphData,
-                name: i18n.getFixedT(selectedLanguage, "weather_conditions")("wind direction"),
-                showInLegend: false,
-                tooltip: {
-                    valueSuffix: GraphVariablesSuffixes.windspd,
-                    
+                {
+                    type: "windbarb",
+                    data: props.graphData,
+                    name: i18n.getFixedT(selectedLanguage, "weather_conditions")("wind direction"),
+                    showInLegend: false,
+                    tooltip: {
+                        valueSuffix: GraphVariablesSuffixes.windspd,
+                    },
                 },
-            }],
+            ],
         }));
     }, [props.graphData]);
 
-    return (
-        <HighchartsReact
-            highcharts={Highcharts}
-            options={chartOptions}
-        />
-    );
+    return <HighchartsReact highcharts={Highcharts} options={chartOptions} />;
 }

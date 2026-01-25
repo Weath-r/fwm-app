@@ -39,25 +39,37 @@ const getStationsTable = (
 export default function StationsPage() {
     const dataService = new DataService();
     const [weatherTableData, setWeatherTableData] = useState<WeatherDataResponse[]>([]);
-    const { favouriteStations, isStationFavourite, handleFavouriteStationButton } = useAppStore();
+    const { favouriteStations, isStationFavourite, handleFavouriteStationButton } = useAppStore(
+        (state) => ({
+            favouriteStations: state.favouriteStations,
+            isStationFavourite: state.isStationFavourite,
+            handleFavouriteStationButton: state.handleFavouriteStationButton,
+        })
+    );
     const { i18n } = useT("common");
-    const { i18n:i18nConditions } = useT("weather_conditions");
+    const { i18n: i18nConditions } = useT("weather_conditions");
     const selectedLanguage = i18n.language;
 
     const getWeatherData = async () => {
         await dataService
             .fetchWeatherStationsWithData()
             .then((response) => {
-                const translatedResponse = response.map(station => {
+                const translatedResponse = response.map((station) => {
                     if (selectedLanguage && station.weather_station_id.translations) {
-                        const translatedStationName = station.weather_station_id.translations.find(t => t.languages_code === selectedLanguage);
-                        const translatedPrefectureName = station.weather_station_id.prefecture_id.translations.find(t => t.languages_code === selectedLanguage);
+                        const translatedStationName = station.weather_station_id.translations.find(
+                            (t) => t.languages_code === selectedLanguage
+                        );
+                        const translatedPrefectureName =
+                            station.weather_station_id.prefecture_id.translations.find(
+                                (t) => t.languages_code === selectedLanguage
+                            );
 
                         if (translatedStationName) {
                             station.weather_station_id.name = translatedStationName.name;
                         }
                         if (translatedPrefectureName) {
-                            station.weather_station_id.prefecture_id.label = translatedPrefectureName.name;
+                            station.weather_station_id.prefecture_id.label =
+                                translatedPrefectureName.name;
                         }
                     }
                     return station;
@@ -88,27 +100,37 @@ export default function StationsPage() {
     });
 
     const columns = useMemo(
-        () => getColumns("Stations list",
-            handleFavouriteStationButton,
-            isStationFavourite,
-            i18n,
-            i18nConditions,
-            selectedLanguage
-        ),
-        [selectedLanguage]
+        () =>
+            getColumns(
+                "Stations list",
+                handleFavouriteStationButton,
+                isStationFavourite,
+                i18n,
+                i18nConditions,
+                selectedLanguage
+            ),
+        [handleFavouriteStationButton, isStationFavourite, i18n, i18nConditions, selectedLanguage]
     );
     const favColumns = useMemo(
-        () => getColumns("My Favourite list",
-            handleFavouriteStationButton,
-            isStationFavourite,
-            i18n,
-            i18nConditions,
-            selectedLanguage
-        ),
-        [selectedLanguage]
+        () =>
+            getColumns(
+                "My Favourite list",
+                handleFavouriteStationButton,
+                isStationFavourite,
+                i18n,
+                i18nConditions,
+                selectedLanguage
+            ),
+        [handleFavouriteStationButton, isStationFavourite, i18n, i18nConditions, selectedLanguage]
     );
-    const favStationsTitle = i18n.getFixedT(selectedLanguage, "common")("StationsPage.favoriteStationsTitle");
-    const stationsListTitle = i18n.getFixedT(selectedLanguage, "common")("StationsPage.stationsListTitle");
+    const favStationsTitle = i18n.getFixedT(
+        selectedLanguage,
+        "common"
+    )("StationsPage.favoriteStationsTitle");
+    const stationsListTitle = i18n.getFixedT(
+        selectedLanguage,
+        "common"
+    )("StationsPage.stationsListTitle");
     const activeText = i18n.getFixedT(selectedLanguage, "common")("StationsPage.active");
     return (
         <>
