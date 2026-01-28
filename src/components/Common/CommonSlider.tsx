@@ -35,13 +35,13 @@ export default function CommonSlider(props: SliderProps) {
                 />
             </Slider.Root>
 
-            <div className="flex h-fit flex-row items-center justify-between text-primary">
+            <div className="flex mt-2 flex-row items-center justify-between text-primary pb-1">
                 {Object.values(props.marks).map((elm, index) => {
-                    const styling = elm && index > 0 ? "border-l border-primary/10 pl-2" : "";
+                    const styling = elm && index > 0 ? "border-l-2 border-primary/70 pl-2" : "";
                     return (
                         <span
                             key={`column-${index}`}
-                            className={`${styling} py-2 text-xs font-light`}
+                            className={`${styling} text-xs font-light`}
                             role="presentation"
                         >
                             {elm}
