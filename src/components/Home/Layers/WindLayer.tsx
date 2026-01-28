@@ -5,14 +5,7 @@ import "leaflet-velocity";
 import { useForecastLayerStore } from "@/stores/forecastLayerStore";
 import { useMap } from "react-leaflet/hooks";
 
-const colorScale = [
-    "#005246",
-    "#c5fcef",
-    "#e9c4c3",
-    "#ffe3f3",
-    "#fe85ab",
-    "#ff9aff"
-];
+const colorScale = ["#005246", "#c5fcef", "#e9c4c3", "#ffe3f3", "#fe85ab", "#ff9aff"];
 
 const FORECAST_PANE = "windForecastGfs";
 const myFeaturesMap = new L.FeatureGroup();
@@ -43,10 +36,10 @@ export default function WindLayer() {
     useEffect(() => {
         if (forecastData) {
             const mapPanes = map.getPanes();
-            if (myFeaturesMap.getLayers().length > 0 ) {
-                velocityLayer.setData(forecastData[activeForecastHour]);
+            if (myFeaturesMap.getLayers().length > 0) {
+                velocityLayer?.setData(forecastData[activeForecastHour]);
             } else {
-                velocityLayer.setData(forecastData[activeForecastHour]);
+                velocityLayer?.setData(forecastData[activeForecastHour]);
                 myFeaturesMap.addLayer(velocityLayer);
             }
             if (map && !map.hasLayer(myFeaturesMap)) {

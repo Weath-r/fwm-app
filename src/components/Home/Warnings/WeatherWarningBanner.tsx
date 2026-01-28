@@ -9,7 +9,7 @@ type WeatherWarningBannerProps = {
     warnings: GroupedWarnings[];
 };
 
-export default function WeatherWarningsBanner({ warnings } : Readonly<WeatherWarningBannerProps>) {
+export default function WeatherWarningsBanner({ warnings }: Readonly<WeatherWarningBannerProps>) {
     const { i18n } = useT("warnings");
     const selectedLanguage = i18n.language;
     return (
@@ -25,21 +25,18 @@ export default function WeatherWarningsBanner({ warnings } : Readonly<WeatherWar
                 </section>
             </DialogTrigger>
             <DialogContent
+                scrollable={true}
                 dialogTitle={
                     <span className="flex items-center gap-2">
                         <span className="text-primary font-bold">
                             {i18n.getFixedT(selectedLanguage, "warnings")("warningsPageTitle")}
-                        </span> 
+                        </span>
                         <WarningsInformationModal i18n={i18n} />
                     </span>
                 }
-            >  
-                <WarningsPanel 
-                    warnings={warnings}
-                    i18n={i18n}
-                />
+            >
+                <WarningsPanel warnings={warnings} i18n={i18n} />
             </DialogContent>
         </Dialog>
-        
     );
 }
