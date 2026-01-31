@@ -110,9 +110,8 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
                         ...warning,
                         hazard_id: { ...warning.hazard_id, ...translatedHazard[0] },
                     };
-                    console.log("new warning", newWarning);
                     const indexOfAcc = acc.findIndex((elem) => elem.assetName === location);
-                    console.log("indexOfAcc", indexOfAcc);
+
                     if (indexOfAcc < 0) {
                         acc.push({
                             assetName: location,
@@ -123,7 +122,7 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
                             order,
                         });
                     } else {
-                        acc[indexOfAcc].warnings.push(warning);
+                        acc[indexOfAcc].warnings.push(newWarning);
                     }
                     return acc;
                 }, [] as GroupedWarnings[]);
@@ -139,7 +138,7 @@ export const StationsProvider = ({ children }: StationsProviderProps) => {
             .catch((error) => {
                 // TO-DO handle error properly
                 console.log(error);
-                setStations([]);
+                setWarnings([]);
             });
     };
 
