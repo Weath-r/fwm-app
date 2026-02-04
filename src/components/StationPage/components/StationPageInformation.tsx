@@ -2,6 +2,7 @@ import { Measurements, WeatherStation } from "@/types";
 import { calculateWindToBft } from "@/utils/weatherConvertUnits";
 import { MapPinIcon, IdentificationIcon, MapIcon } from "@heroicons/react/24/solid";
 import StationTypeLabel from "@/components/Common/General/StationTypeLabel";
+import StationPageMapModal from "./StationPageMapModal";
 
 type ExtremeValues = {
     maxValue: number;
@@ -12,12 +13,12 @@ type ExtremeValues = {
 type StationPageInformationProps = {
     extremeTemperatureValues: ExtremeValues;
     extremeWindSpeedValues: ExtremeValues;
-    stationMetadata: WeatherStation
+    stationMetadata: WeatherStation;
     rainyDays: number;
     i18n: any;
 };
 
-export default function StationPageInformation({ 
+export default function StationPageInformation({
     extremeTemperatureValues,
     extremeWindSpeedValues,
     stationMetadata,
@@ -25,31 +26,36 @@ export default function StationPageInformation({
     i18n,
 }: StationPageInformationProps) {
     const lang = i18n.language;
-    
+
     return (
         <section>
             <h2 className="mb-2 text-lg font-bold text-primary">
                 {i18n.getFixedT(lang, "station")("information.title")}
             </h2>
-            <div className="flex items-center gap-4 text-primary pb-2 border-b-2 border-secondary">
-                <div className="flex items-center gap-1">
-                    <MapIcon className="size-4 fill-primary"></MapIcon> 
-                    <p>
-                        {stationMetadata.prefecture_id.label}
-                    </p>
-                </div>
-                <a href={stationMetadata.website_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+            <div className="flex items-center gap-3 text-primary pb-2 border-b-2 border-secondary">
+                <StationPageMapModal
+                    coordinates={stationMetadata.location?.coordinates || [0, 0]}
+                    modalTitle={stationMetadata.name}
+                >
+                    <div className="flex items-center gap-1 cursor-pointer">
+                        <MapIcon className="size-4 fill-primary"></MapIcon>
+                        <p>{stationMetadata.prefecture_id.label}</p>
+                    </div>
+                </StationPageMapModal>
+
+                <a
+                    href={stationMetadata.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-1"
                 >
                     <IdentificationIcon className="size-4 fill-primary"></IdentificationIcon>
-                    <StationTypeLabel 
+                    <StationTypeLabel
                         stationTypeLabel={stationMetadata.station_type.value}
                     ></StationTypeLabel>
                 </a>
                 <div className="flex items-center gap-1">
-                    <MapPinIcon className="size-4 fill-primary"></MapPinIcon> 
+                    <MapPinIcon className="size-4 fill-primary"></MapPinIcon>
                     <p>
                         {stationMetadata.elevation} {Measurements.METER}
                     </p>
@@ -66,7 +72,8 @@ export default function StationPageInformation({
                     <p>
                         <span className="font-bold">
                             {extremeTemperatureValues.maxValue} {Measurements.CELCIUS}
-                        </span> / {extremeTemperatureValues.minValue} {Measurements.CELCIUS}
+                        </span>{" "}
+                        / {extremeTemperatureValues.minValue} {Measurements.CELCIUS}
                     </p>
                 </div>
                 <div className="text-primary">
@@ -84,9 +91,7 @@ export default function StationPageInformation({
                         {i18n.getFixedT(lang, "station")("information.rainyDaysTitle")}
                     </h4>
                     <p>
-                        <span className="font-bold">
-                            {rainyDays}
-                        </span>
+                        <span className="font-bold">{rainyDays}</span>
                     </p>
                 </div>
                 <div className="text-primary">
@@ -95,7 +100,8 @@ export default function StationPageInformation({
                     </h4>
                     <p>
                         <span className="font-bold">
-                            {extremeWindSpeedValues.maxValue} {Measurements.SPEED} ~ {calculateWindToBft(extremeWindSpeedValues.maxValue)} {Measurements.BFT}
+                            {extremeWindSpeedValues.maxValue} {Measurements.SPEED} ~{" "}
+                            {calculateWindToBft(extremeWindSpeedValues.maxValue)} {Measurements.BFT}
                         </span>
                     </p>
                 </div>
