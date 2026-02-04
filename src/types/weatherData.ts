@@ -24,6 +24,10 @@ export type WeatherStation = {
         name: string;
     }[];
     municipality_id: number;
+    location?: {
+        type: "Point";
+        coordinates: [number, number];
+    };
 };
 
 export type WeatherData = CommonWeatherData & {
