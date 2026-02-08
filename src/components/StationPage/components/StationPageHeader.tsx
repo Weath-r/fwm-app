@@ -1,11 +1,13 @@
 "use client";
-import SvgInline from "@/components/Common/SvgInline";
 import Image from "next/image";
+import { useT } from "@/i18n/client";
 import { Measurements, WeatherDataResponse, WeatherConditions } from "@/types";
 import { timeFromNowUtil } from "@/utils/dateTimeUtils";
+import { assetUrl } from "@/helpers/assetsHandling";
+
 import { BackButton } from "@/components/StationPage/components/BackButton";
+import SvgInline from "@/components/Common/SvgInline";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
-import { useT } from "@/i18n/client";
 
 type StationPageHeaderProps = {
     stationCurrentWeather: WeatherDataResponse;
@@ -16,15 +18,17 @@ export default function StationPageHeader({ stationCurrentWeather }: StationPage
     const { i18n: i18n_icons } = useT("weather_icons");
     const { i18n: i18n_conditions } = useT("weather_conditions");
     const selectedLanguage = i18n.language;
-
+    console.log(assetUrl(stationCurrentWeather.weather_station_id.header_bg));
+    const imagePath = assetUrl(stationCurrentWeather.weather_station_id.header_bg);
     return (
         <div className="w-full h-52 md:rounded-t-lg drop-shadow-md">
             <div className="flex items-center justify-center h-full">
                 <Image
-                    src="/assets/bg/mountain.webp"
+                    src={imagePath}
                     alt="Mountain"
                     fill
                     priority
+                    unoptimized
                     className="object-cover object-center md:rounded-t-lg"
                 />
             </div>
