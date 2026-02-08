@@ -28,6 +28,7 @@ export type WeatherStation = {
         type: "Point";
         coordinates: [number, number];
     };
+    header_bg: string;
 };
 
 export type WeatherData = CommonWeatherData & {
