@@ -30,14 +30,14 @@
         }
     },
     "windDirectionsForecast": {
-        "N": "northern ",
-        "NE": "northeastern ",
-        "E": "eastern ",
-        "SE": "southeastern ",
-        "S": "southern ",
-        "SW": "southwestern ",
-        "W": "western ",
-        "NW": "northwestern "
+        "N": "north ",
+        "NE": "northeast ",
+        "E": "east ",
+        "SE": "southeast ",
+        "S": "south ",
+        "SW": "southwest ",
+        "W": "west ",
+        "NW": "northwest "
     },
     "forecastPeriods": {
         "morning": "Morning",

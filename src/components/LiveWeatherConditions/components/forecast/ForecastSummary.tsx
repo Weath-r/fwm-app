@@ -1,5 +1,6 @@
 "use client";
 import { ForecastData, BaseSignal, BasePayload, ForecastPeriod } from "@/types";
+import { useT } from "@/i18n/client";
 
 import { detectTemperatureSignals } from "@/helpers/forecastSignals/temperatureSignalCalculations";
 import { detectWindSignals } from "@/helpers/forecastSignals/windSignalCalculations";
@@ -75,10 +76,14 @@ export function ForecastSummary({ forecast, activeDate }: ForecastSummaryProps) 
         daySummary.set(date, daySummaryForDate);
         periodSummaries.set(date, periodSummaryForDate);
     }
+    const { i18n } = useT("stationModal");
+    const selectedLanguage = i18n.language;
 
     return (
         <div>
-            <h2 className="text-primary font-bold text-sm">Περιγραφή ημέρας</h2>
+            <h2 className="text-primary font-bold text-sm">
+                {i18n.getFixedT(selectedLanguage, "stationModal")("daySummary")}
+            </h2>
             <p className="text-primary text-sm">
                 {daySummary.get(activeDate)?.map((signal, index) => {
                     return (
@@ -95,7 +100,7 @@ export function ForecastSummary({ forecast, activeDate }: ForecastSummaryProps) 
                     {activeDate === dateToday && (
                         <>
                             <h2 className="text-primary font-bold text-sm">
-                                Για τις επόμενες ώρες
+                                {i18n.getFixedT(selectedLanguage, "stationModal")("nextFewHours")}
                             </h2>
                             <p className="text-primary text-sm">
                                 {Array.from(periodSummaries.get(activeDate)!.entries())

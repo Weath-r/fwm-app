@@ -4,5 +4,7 @@
     "nextDays": "Επόμενες ημέρες",
     "moreDetails": "Περισσοτερα",
     "forecastNotAvailable": "Δυστυχώς, η πρόγνωση δεν είναι διαθέσιμη!",
-    "availableStations": "Διαθέσιμοι σταθμοί"
+    "availableStations": "Διαθέσιμοι σταθμοί",
+    "daySummary": "Περιγραφή ημέρας",
+    "nextFewHours": "Για τις επόμενες ώρες"
 }
