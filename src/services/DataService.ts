@@ -500,7 +500,7 @@ export class DataService {
             };
         } catch (error) {
             if (error instanceof z.ZodError) {
-                console.error("Validation error! API message does not comply!", error.errors);
+                console.error("Validation error! API message does not comply!", error.issues);
             } else {
                 reject(this.generateDataServiceError(error));
             }
