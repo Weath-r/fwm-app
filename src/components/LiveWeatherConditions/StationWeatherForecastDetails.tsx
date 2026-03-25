@@ -1,5 +1,5 @@
 "use client";
-import { WeatherData, ForecastData, Measurements } from "@/types";
+import { WeatherData, Measurements } from "@/types";
 import { useState } from "react";
 import {
     timeOnlyUtil,
@@ -7,14 +7,13 @@ import {
     dayWithNameUtilWithCustom,
     dateObjectInputDDMMYY,
 } from "@/utils/dateTimeUtils";
+import { useT } from "@/i18n/client";
+import { useConfigurationStore } from "@/stores/configurationStore";
+
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import SvgInline from "@/components/Common/SvgInline";
 import CommonButton from "@/components/Common/CommonButton";
-import { useT } from "@/i18n/client";
-
-type GroupedWeatherData = {
-    [key: string]: ForecastData[];
-};
+import { ForecastSummary } from "./components/forecast/ForecastSummary";
 
 type handleDateSelectionBtn = {
     date: string;
@@ -50,20 +49,17 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
     const title = i18n.getFixedT(selectedLanguage, "stationModal")("nextDays");
     const dateNow = new Date();
     const activeDate = setCurrentDateActive(dateNow);
+    const { featureFlags } = useConfigurationStore();
+    const isForecastSummaryEnabled = featureFlags?.forecasts?.forecastSummary;
 
     const [activeBtn, setActiveBtn] = useState(activeDate);
     const [forecastDate, setForecastDate] = useState(activeDate);
 
-    const structuredForecast = elem.full_forecast.reduce((acc: GroupedWeatherData, currentItem) => {
-        const currentForecastTime = new Date(currentItem.time);
+    const structuredForecast = Object.groupBy(elem.full_forecast, (forecast) => {
+        const currentForecastTime = new Date(forecast.time);
         const date = fullDateNoTime(currentForecastTime);
-        if (!acc[date]) {
-            acc[date] = [];
-        }
-
-        acc[date].push(currentItem);
-        return acc;
-    }, {});
+        return date;
+    });
 
     const handleDateSelectionBtn = ({ date }: handleDateSelectionBtn) => {
         setActiveBtn(date);
@@ -72,6 +68,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
 
     const getExtremeDayValues = (date: string) => {
         const valuesArr = [];
+        if (!structuredForecast[date]) return {};
         for (const value of structuredForecast[date]) {
             if (value.temperature) {
                 valuesArr.push(value.temperature);
@@ -82,6 +79,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
             min: Math.min(...valuesArr),
         };
     };
+
     const SNOW_MODE_TEMP = 1.5;
 
     const calculatePercipitation = ({
@@ -165,6 +163,17 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                         className="my-2 h-fit max-h-[350px] overflow-y-auto md:max-h-[300px]"
                         key={forecastDate}
                     >
+                        {isForecastSummaryEnabled && (
+                            <div className="bg-white p-2 rounded-md">
+                                {structuredForecast[forecastDate] && (
+                                    <ForecastSummary
+                                        forecast={structuredForecast}
+                                        activeDate={forecastDate}
+                                    />
+                                )}
+                            </div>
+                        )}
+
                         {structuredForecast[forecastDate] &&
                             structuredForecast[forecastDate].map(
                                 (forecast, index, forecastArray) => {

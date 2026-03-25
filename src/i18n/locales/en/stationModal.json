@@ -4,5 +4,7 @@
     "nextDays": "Next days",
     "moreDetails": "More details",
     "forecastNotAvailable": "Unfortunately, forecast is not available!",
-    "availableStations": "Available stations"
+    "availableStations": "Available stations",
+    "daySummary": "Day summary",
+    "nextFewHours": "Next few hours"
 }
