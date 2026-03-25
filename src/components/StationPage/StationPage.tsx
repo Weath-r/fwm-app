@@ -1,5 +1,10 @@
 "use client";
-import { WeatherDataResponse, ClimateWeatherData, WeatherForecastResponse, WeatherHistoricalData } from "@/types";
+import {
+    WeatherDataResponse,
+    ClimateWeatherData,
+    WeatherForecastResponse,
+    WeatherHistoricalData,
+} from "@/types";
 import useRedirectToHomeOnBack from "@/hooks/useRedirectToHomeOnBack";
 import { useT } from "@/i18n/client";
 
@@ -8,13 +13,16 @@ import StationPageInformation from "@/components/StationPage/components/StationP
 import StationPageMainContent from "@/components/StationPage/components/StationPageMainContent";
 import LastDayGraph from "@/components/StationPage/LastDayGraph";
 
-import { extremeValuesLastNDaysPerVariable, calculateRainyDays } from "@/helpers/stationPage/getExtremeValues";
+import {
+    extremeValuesLastNDaysPerVariable,
+    calculateRainyDays,
+} from "@/helpers/stationPage/getExtremeValues";
 
 type StationPageProps = {
     params: {
         id: string;
         name: string;
-    },
+    };
     weatherData: WeatherDataResponse[];
     climateData: ClimateWeatherData[];
     currentWeather: WeatherDataResponse;
@@ -22,7 +30,13 @@ type StationPageProps = {
     historicalData: WeatherHistoricalData[];
 };
 
-export default function StationPage({ weatherData, climateData, currentWeather, forecast, historicalData }: StationPageProps) {
+export default function StationPage({
+    weatherData,
+    climateData,
+    currentWeather,
+    forecast,
+    historicalData,
+}: StationPageProps) {
     useRedirectToHomeOnBack();
     const { i18n } = useT("stationModal");
     const DAYS_FOR_EXTREME_CALCULATION = 7;
@@ -45,11 +59,9 @@ export default function StationPage({ weatherData, climateData, currentWeather, 
     });
 
     return (
-        <main className="mx-4 mt-4 md:container md:mx-auto">
-            <StationPageHeader
-                stationCurrentWeather={currentWeather}
-            ></StationPageHeader>
-            <div className="flex flex-wrap gap-2">
+        <main className="mt-4 md:container md:mx-auto">
+            <StationPageHeader stationCurrentWeather={currentWeather}></StationPageHeader>
+            <div className="flex flex-wrap gap-2 mx-2 md:mx-0">
                 <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md lg:w-[calc(33.333%-0.5rem)]">
                     <StationPageInformation
                         i18n={i18n}
@@ -62,8 +74,8 @@ export default function StationPage({ weatherData, climateData, currentWeather, 
                 <div className="my-2 rounded-xl bg-white p-4 drop-shadow-md w-full lg:w-[calc(66.666%-0.5rem)]">
                     <LastDayGraph weatherData={weatherData}></LastDayGraph>
                 </div>
-                <StationPageMainContent 
-                    i18n={i18n} 
+                <StationPageMainContent
+                    i18n={i18n}
                     stationForecast={forecast}
                     stationWeather={weatherData}
                     stationClimate={climateData}

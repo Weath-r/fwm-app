@@ -71,7 +71,10 @@ export default function LiveWeatherConditionsModalPage({ params, weatherData }: 
                                             lang={selectedLanguage}
                                             className="text-sm font-bold uppercase text-primary"
                                         >
-                                            {i18n.getFixedT(selectedLanguage, "stationModal")("moreDetails")}
+                                            {i18n.getFixedT(
+                                                selectedLanguage,
+                                                "stationModal"
+                                            )("moreDetails")}
                                         </StationLink>
                                     </div>
                                 )}

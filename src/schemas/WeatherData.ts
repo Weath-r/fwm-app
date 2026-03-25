@@ -25,18 +25,20 @@ export const WeatherForecastData = z.object({
     id: z.number().min(1),
     date_created: z.string().datetime(),
     station_id: z.number().positive(),
-    full_forecast: z.array(z.object({
-        time: z.number(),
-        temperature: z.optional(z.number()),
-        accumulated_rain: z.optional(z.number()),
-        windspd: z.optional(z.number()),
-        winddir: z.optional(z.number()),
-        accumulated_snow: z.optional(z.number()),
-        snow: z.optional(z.number()),
-        cloudcover: z.optional(z.number()),
-        percipitation: z.optional(z.number()),
-        forecastIcon: z.string().min(1),
-    })),
+    full_forecast: z.array(
+        z.object({
+            time: z.number(),
+            temperature: z.number(),
+            accumulated_rain: z.number(),
+            windspd: z.number(),
+            winddir: z.number(),
+            accumulated_snow: z.number(),
+            snow: z.number(),
+            cloudcover: z.number(),
+            percipitation: z.number(),
+            forecastIcon: z.string().min(1),
+        })
+    ),
 });
 
 const FrostData = z.object({
