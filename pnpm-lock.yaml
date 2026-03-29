@@ -196,7 +196,7 @@ importers:
         specifier: 9.5.0
         version: 9.5.0
       typescript-eslint:
-        specifier: ^8.57.2
+        specifier: 8.57.2
         version: 8.57.2(eslint@9.39.2(jiti@1.21.6))(typescript@5.8.2)
 
 packages:
