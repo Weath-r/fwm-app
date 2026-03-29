@@ -1,7 +1,7 @@
 import ClientPageLiveWeatherConditions from "./page.client";
 import { getT } from "@/i18n";
 import { properStationName } from "@/helpers/createStationName";
-import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/helpers/fetchWeatherDara";
+import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/helpers/fetchWeatherData";
 import { StationParamsUrlProp } from "@/types";
 
 type LiveWeatherConditionsProps = {
@@ -9,8 +9,8 @@ type LiveWeatherConditionsProps = {
         id: string;
         name: string;
         lng: string;
-    }>,
-    searchParams: StationParamsUrlProp
+    }>;
+    searchParams: StationParamsUrlProp;
 };
 
 export async function generateMetadata(props: LiveWeatherConditionsProps) {
@@ -19,23 +19,23 @@ export async function generateMetadata(props: LiveWeatherConditionsProps) {
     const { t, i18n } = await getT("pages");
 
     const keywords_en = [
-        `${stationName} weather`, 
+        `${stationName} weather`,
         `${stationName} weather station`,
         `live weather ${stationName}`,
-        `real-time weather ${stationName}`, 
+        `real-time weather ${stationName}`,
         "personal weather station",
         "weather station",
         "weather data",
-        `weather station ${stationName}`
+        `weather station ${stationName}`,
     ];
     const keywords_el = [
-        `${stationName} καιρός`, 
+        `${stationName} καιρός`,
         `${stationName} μετεωρολογικός σταθμός`,
         `καιρικές συνθήκες ${stationName}`,
         `καιρός αύριο ${stationName}`,
         "προσωπικός μετεωρολογικός σταθμός",
         "μετεωρολογικά δεδομένα",
-        `σταθμός καιρού ${stationName}`
+        `σταθμός καιρού ${stationName}`,
     ];
 
     return {
@@ -56,8 +56,10 @@ export default async function StationPageView(props: LiveWeatherConditionsProps)
         stationId: +id,
         isForecastEnabled,
     });
-    return <ClientPageLiveWeatherConditions 
-        params={params}
-        weatherData={weatherData}
-    ></ClientPageLiveWeatherConditions>;
+    return (
+        <ClientPageLiveWeatherConditions
+            params={params}
+            weatherData={weatherData}
+        ></ClientPageLiveWeatherConditions>
+    );
 }
