@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const WeatherData = z.object({
-    date_created: z.string().datetime(),
+    date_created: z.string(),
     temperature: z.number(),
     barometer: z.number().min(1),
     humidity: z.number().min(1),
@@ -19,24 +19,25 @@ export const WeatherData = z.object({
             label: z.string().min(1),
         }),
     }),
+    assetId: z.string(),
 });
 
 export const WeatherForecastData = z.object({
     id: z.number().min(1),
-    date_created: z.string().datetime(),
+    date_created: z.string(),
     station_id: z.number().positive(),
     full_forecast: z.array(
         z.object({
-            time: z.number(),
-            temperature: z.number(),
-            accumulated_rain: z.number(),
-            windspd: z.number(),
-            winddir: z.number(),
-            accumulated_snow: z.number(),
-            snow: z.number(),
-            cloudcover: z.number(),
-            percipitation: z.number(),
-            forecastIcon: z.string().min(1),
+            time: z.optional(z.number()),
+            temperature: z.optional(z.number()),
+            accumulated_rain: z.optional(z.number()),
+            windspd: z.optional(z.number()),
+            winddir: z.optional(z.number()),
+            accumulated_snow: z.optional(z.number()),
+            snow: z.optional(z.number()),
+            cloudcover: z.optional(z.number()),
+            percipitation: z.optional(z.number()),
+            forecastIcon: z.optional(z.string().min(1)),
         })
     ),
 });
