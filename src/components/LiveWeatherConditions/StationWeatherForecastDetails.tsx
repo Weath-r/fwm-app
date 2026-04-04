@@ -1,5 +1,5 @@
 "use client";
-import { WeatherData, Measurements } from "@/types";
+import { Measurements, StationPageForecastData } from "@/types";
 import { useState } from "react";
 import {
     timeOnlyUtil,
@@ -43,7 +43,7 @@ const setCurrentDateActive = (dateNow: Date): string => {
     return activeDate;
 };
 
-export function StationWeatherForecastDetails(elem: WeatherData) {
+export function StationWeatherForecastDetails(elem: StationPageForecastData) {
     const { i18n } = useT("stationModal");
     const selectedLanguage = i18n.language;
     const title = i18n.getFixedT(selectedLanguage, "stationModal")("nextDays");
@@ -55,7 +55,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
     const [activeBtn, setActiveBtn] = useState(activeDate);
     const [forecastDate, setForecastDate] = useState(activeDate);
 
-    const structuredForecast = Object.groupBy(elem.full_forecast, (forecast) => {
+    const structuredForecast = Object.groupBy(elem.forecast, (forecast) => {
         const currentForecastTime = new Date(forecast.time);
         const date = fullDateNoTime(currentForecastTime);
         return date;
@@ -118,7 +118,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
     return (
         <div className="p-1 pt-0">
             <h4 className="mb-4 text-sm font-bold uppercase text-primary">{title}</h4>
-            {elem.full_forecast.length > 0 && (
+            {elem.forecast.length > 0 && (
                 <section>
                     <div className="flex gap-2 overflow-x-auto">
                         {Object.keys(structuredForecast).map((item, index, datesArray) => {
@@ -204,7 +204,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                                                 <div className="size-10">
                                                     <BaseWeatherIcon
                                                         assetId={forecast.forecastIcon}
-                                                        weatherDescriptionText={elem.station.name}
+                                                        weatherDescriptionText={elem.station}
                                                     ></BaseWeatherIcon>
                                                 </div>
                                                 <p className="text-primary">
@@ -245,7 +245,7 @@ export function StationWeatherForecastDetails(elem: WeatherData) {
                     </div>
                 </section>
             )}
-            {elem.full_forecast.length === 0 && (
+            {elem.forecast.length === 0 && (
                 <p className="text-sm text-primary">
                     {i18n.getFixedT(selectedLanguage, "stationModal")("forecastNotAvailable")}
                 </p>

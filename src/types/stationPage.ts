@@ -1,4 +1,4 @@
-import { GraphVariablesSuffixes } from "@/types";
+import { ForecastData, GraphVariablesSuffixes } from "@/types";
 
 export type FetchStationDataPaginated = {
     station_id: number;
@@ -28,4 +28,9 @@ export type StationPageCombinedGraph = {
     tooltip: {
         valueSuffix: GraphVariablesSuffixes;
     };
+};
+
+export type StationPageForecastData = {
+    forecast: ForecastData[];
+    station: string;
 };

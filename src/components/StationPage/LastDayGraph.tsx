@@ -27,19 +27,23 @@ export default function LastDayGraph({ weatherData }: { weatherData: WeatherData
         GraphVariables.temperature
     );
 
-    const pastTwoDaysArray = manipulateGraphDataLastNDays({
-        weatherData,
-        variable: selectedFilter,
-        numberOfDays: 2,
-    }).filter((v): v is number[] => v !== undefined);
+    const pastTwoDaysArray = (
+        manipulateGraphDataLastNDays({
+            weatherData,
+            variable: selectedFilter,
+            numberOfDays: 2,
+        }) ?? []
+    ).filter((v): v is number[] => v !== undefined);
     const [graphData, setGraphData] = useState<GraphData>(pastTwoDaysArray);
 
     const handleUserSelection = (opt: OptionsProp) => {
-        const updateGraphData = manipulateGraphDataLastNDays({
-            weatherData,
-            variable: opt.value,
-            numberOfDays: 2,
-        }).filter((v): v is number[] => v !== undefined);
+        const updateGraphData = (
+            manipulateGraphDataLastNDays({
+                weatherData,
+                variable: opt.value,
+                numberOfDays: 2,
+            }) ?? []
+        ).filter((v): v is number[] => v !== undefined);
         setGraphData(updateGraphData);
         setSelectedFilter(opt.value);
     };

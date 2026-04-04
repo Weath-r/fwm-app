@@ -97,9 +97,9 @@ describe("getExtremeValues", () => {
     });
 
     describe("extremeValuesLastNDaysPerVariable", () => {
-        it("should return empty object for empty data", () => {
+        it("should return null for empty data", () => {
             const result = extremeValuesLastNDaysPerVariable({ weatherData: [], numberOfDays: 7 });
-            expect(result).toEqual({});
+            expect(result).toBeNull();
         });
 
         it("should calculate min/max for temperature", () => {
@@ -110,8 +110,8 @@ describe("getExtremeValues", () => {
                 variable: "temperature",
             });
             expect(result).toBeDefined();
-            expect(typeof result.maxValue).toBe("number");
-            expect(typeof result.minValue).toBe("number");
+            expect(typeof result?.maxValue).toBe("number");
+            expect(typeof result?.minValue).toBe("number");
         });
 
         it("should filter to last N days", () => {
@@ -125,23 +125,50 @@ describe("getExtremeValues", () => {
     });
 
     describe("calculateRainyDays", () => {
-        it("should return 0 for empty data", () => {
+        it("should return null for empty data", () => {
             const result = calculateRainyDays({ weatherData: [], numberOfDays: 7 });
-            expect(result.rainyDays).toBe(0);
+            expect(result).toBeNull();
         });
 
         it("should count days with precipitation", () => {
             const data = createMockWeatherData();
             const result = calculateRainyDays({ weatherData: data, numberOfDays: 5 });
-            expect(result.rainyDays).toBeGreaterThanOrEqual(0);
-            expect(typeof result.rainyDays).toBe("number");
+            expect(result).not.toBeNull();
+            expect(result?.rainyDays).toBeGreaterThanOrEqual(0);
+            expect(typeof result?.rainyDays).toBe("number");
+        });
+
+        it("should return null when no data within N days", () => {
+            const data = createMockWeatherData();
+            const result = calculateRainyDays({ weatherData: data, numberOfDays: 0 });
+            expect(result).toBeNull();
+        });
+
+        it("should return null when no rainy days found", () => {
+            const dryData: WeatherDataResponse[] = [
+                {
+                    date_created: new Date().toISOString(),
+                    temperature: 20,
+                    percipitation: 0,
+                    windspd: 5,
+                    humidity: 60,
+                    barometer: 1013,
+                    winddir: 180,
+                    rainrate: 0,
+                    weather_condition: "Clear",
+                    weather_condition_icon: "sun",
+                    weather_station_id: {} as any,
+                },
+            ];
+            const result = calculateRainyDays({ weatherData: dryData, numberOfDays: 5 });
+            expect(result).toBeNull();
         });
     });
 
     describe("manipulateGraphDataLastNDays", () => {
-        it("should return empty array for empty data", () => {
+        it("should return null for empty data", () => {
             const result = manipulateGraphDataLastNDays({ weatherData: [], numberOfDays: 7 });
-            expect(result).toEqual([]);
+            expect(result).toBeNull();
         });
 
         it("should format data for graphing", () => {
@@ -151,6 +178,7 @@ describe("getExtremeValues", () => {
                 numberOfDays: 5,
                 variable: "temperature",
             });
+            expect(result).not.toBeNull();
             expect(Array.isArray(result)).toBe(true);
         });
 
@@ -166,7 +194,19 @@ describe("getExtremeValues", () => {
                 numberOfDays: 5,
                 variable: "temperature",
             });
-            expect(result3Days.length).toBeLessThanOrEqual(result5Days.length);
+            expect(result3Days).not.toBeNull();
+            expect(result5Days).not.toBeNull();
+            expect(result3Days!.length).toBeLessThanOrEqual(result5Days!.length);
+        });
+
+        it("should return null when no data within N days", () => {
+            const data = createMockWeatherData();
+            const result = manipulateGraphDataLastNDays({
+                weatherData: data,
+                numberOfDays: 0,
+                variable: "temperature",
+            });
+            expect(result).toBeNull();
         });
     });
 
@@ -181,7 +221,7 @@ describe("getExtremeValues", () => {
             });
             const rainyDays = calculateRainyDays({ weatherData: filtered, numberOfDays: 5 });
             expect(Array.isArray(graphData)).toBe(true);
-            expect(typeof rainyDays.rainyDays).toBe("number");
+            expect(typeof rainyDays?.rainyDays).toBe("number");
         });
     });
 });
