@@ -27,10 +27,22 @@ export const extremeValuesLastNDaysPerVariable = ({
     variable = "temperature",
 }: filterWeatherDataLastNDaysParams) => {
     if (weatherData.length === 0) {
-        return {};
+        return null;
     }
     const filteredData = filterWeatherDataLastNDays({ weatherData, numberOfDays });
-    const values = filteredData.map((data) => Number((data as any)[variable]));
+
+    if (filteredData.length === 0) {
+        return null;
+    }
+
+    const values = filteredData
+        .map((data) => Number((data as any)[variable]))
+        .filter((value) => !isNaN(value));
+
+    if (values.length === 0) {
+        return null;
+    }
+
     const maxValue = Math.max(...values);
     const minValue = Math.min(...values);
     const meanValue = Math.floor((values.reduce((a, b) => a + b, 0) / values.length) * 10) / 10;
@@ -45,7 +57,14 @@ export const calculateRainyDays = ({
     weatherData,
     numberOfDays = 2,
 }: filterWeatherDataLastNDaysParams) => {
+    if (weatherData.length === 0) {
+        return null;
+    }
     const filteredData = filterWeatherDataLastNDays({ weatherData, numberOfDays });
+
+    if (filteredData.length === 0) {
+        return null;
+    }
     const rainyDays = new Set<string>();
     const values = filteredData
         .map((data) => {
@@ -55,6 +74,10 @@ export const calculateRainyDays = ({
             };
         })
         .filter((value) => value.precipitation > 0);
+
+    if (values.length === 0) {
+        return null;
+    }
 
     values.forEach((value) => {
         const date = dayjs.utc(value.date);
@@ -71,7 +94,14 @@ export const manipulateGraphDataLastNDays = ({
     numberOfDays = 2,
     variable,
 }: filterWeatherDataLastNDaysParams) => {
+    if (weatherData.length === 0) {
+        return null;
+    }
     const filteredData = filterWeatherDataLastNDays({ weatherData, numberOfDays });
+
+    if (filteredData.length === 0) {
+        return null;
+    }
     const graphData = filteredData
         .map((data) => {
             if (variable) {

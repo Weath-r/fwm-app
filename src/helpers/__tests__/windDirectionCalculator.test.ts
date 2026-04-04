@@ -87,14 +87,14 @@ describe("windDirectionCalculator", () => {
             expect(typeof result).toBe("string");
             expect(result.length).toBeGreaterThan(0);
         });
-        // to handle this, temp skip test
-        it.skip("should handle negative degrees (wrapping)", () => {
+
+        it("should handle negative degrees (wrapping)", () => {
             const result = windDirectionCalc(-45);
             expect(typeof result).toBe("string");
             expect(result.length).toBeGreaterThan(0);
         });
-        // to handle this, temp skip test
-        it.skip("should handle degrees greater than 360 (wrapping)", () => {
+
+        it("should handle degrees greater than 360 (wrapping)", () => {
             const result = windDirectionCalc(405);
             expect(result).toBe("NE");
         });

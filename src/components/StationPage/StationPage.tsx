@@ -50,7 +50,7 @@ export default function StationPage({
     const { rainyDays } = calculateRainyDays({
         weatherData,
         numberOfDays: DAYS_FOR_EXTREME_CALCULATION,
-    });
+    }) ?? { rainyDays: 0 };
 
     const extremeWindSpeedValues = extremeValuesLastNDaysPerVariable({
         weatherData,
@@ -65,8 +65,8 @@ export default function StationPage({
                 <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md lg:w-[calc(33.333%-0.5rem)]">
                     <StationPageInformation
                         i18n={i18n}
-                        extremeTemperatureValues={extremeTemperatureValues}
-                        extremeWindSpeedValues={extremeWindSpeedValues}
+                        extremeTemperatureValues={extremeTemperatureValues!}
+                        extremeWindSpeedValues={extremeWindSpeedValues!}
                         rainyDays={rainyDays}
                         stationMetadata={currentWeather.weather_station_id}
                     ></StationPageInformation>

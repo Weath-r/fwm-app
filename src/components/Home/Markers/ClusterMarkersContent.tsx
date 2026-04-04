@@ -1,4 +1,4 @@
-import L, {  MarkerCluster } from "leaflet";
+import L from "leaflet";
 import { assetUrl } from "@/helpers/assetsHandling";
 
 type MarkerCustomAttrs = {
@@ -18,7 +18,7 @@ type ClusterImageReducer = {
     sum: number;
 };
 
-export const createClusterCustomIcon = function (cluster: MarkerCluster) {
+export const createClusterCustomIcon = function (cluster: any) {
     const markersInCluster: L.Marker[] = cluster.getAllChildMarkers();
     const iconsOfCluster: ClusterImage[] = [];
     markersInCluster.forEach((element) => {
@@ -32,20 +32,22 @@ export const createClusterCustomIcon = function (cluster: MarkerCluster) {
         }
     });
 
-    const summarizedIcons = iconsOfCluster.reduce((acc, curr) => {
-        const foundIndex = acc.findIndex((icon) => icon.imgUrl === curr.imgUrl);
-        
-        if (foundIndex !== -1) {
-            acc[foundIndex].sum += 1;
-        } else {
-            acc.push({
-                ...curr,
-                sum: 1,
-            });
-        }
-        
-        return acc;
-    }, [] as ClusterImageReducer[]).sort((a, b) => b.sum - a.sum);
+    const summarizedIcons = iconsOfCluster
+        .reduce((acc, curr) => {
+            const foundIndex = acc.findIndex((icon) => icon.imgUrl === curr.imgUrl);
+
+            if (foundIndex !== -1) {
+                acc[foundIndex].sum += 1;
+            } else {
+                acc.push({
+                    ...curr,
+                    sum: 1,
+                });
+            }
+
+            return acc;
+        }, [] as ClusterImageReducer[])
+        .sort((a, b) => b.sum - a.sum);
 
     return L.divIcon({
         html: `<div class="flex justify-center items-center">

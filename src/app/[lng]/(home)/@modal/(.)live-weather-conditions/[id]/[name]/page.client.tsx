@@ -41,6 +41,11 @@ export default function LiveWeatherConditionsModalPage({ params, weatherData }: 
         setOpen(value);
     };
 
+    const fullForecastData = {
+        forecast: weatherData[0].full_forecast || [],
+        station: weatherData[0].station.name,
+    };
+
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger className="sr-only">Dialog trigger</DialogTrigger>
@@ -61,7 +66,7 @@ export default function LiveWeatherConditionsModalPage({ params, weatherData }: 
                             >
                                 <StationModalHeading {...elem} />
                                 <StationModalBody {...elem} />
-                                <StationWeatherForecastDetails {...elem} />
+                                <StationWeatherForecastDetails {...fullForecastData} />
                                 {isFullStationPageEnabled && (
                                     <div className="flex justify-center">
                                         <StationLink

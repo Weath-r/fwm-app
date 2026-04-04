@@ -11,10 +11,8 @@ describe("internationalization", () => {
             expect(typeof result).toBe("boolean");
         });
 
-        // this has to be revisited
-        it.skip("should return true for matching pathnames", () => {
+        it("should return true for matching pathnames", () => {
             const result = calculateActiveClass("/en", "/en", "en");
-            console.debug(result);
             expect(result).toBe(true);
         });
 
