@@ -11,7 +11,7 @@ type CommonMapSettings = {
 
 export type MapMarker = {
     coordinates: L.LatLng;
-    value: number;
+    value: any;
 };
 
 export type MapLeafletType = CommonMapSettings & {
@@ -28,7 +28,7 @@ export const MAP_CONFIG: MapConfig = {
     zoom: 10,
     maxBounds: [
         [37.146723, 20.728039],
-        [40.105765, 25.448018]
+        [40.105765, 25.448018],
     ],
     minZoom: 9,
     maxZoom: 12,
