@@ -4,8 +4,9 @@ on:
     push:
         branches:
             - main
+
 jobs:
-    deploy:
+    ci:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Code
@@ -28,6 +29,10 @@ jobs:
             - name: Run Tests
               run: pnpm test
 
+    deploy:
+        needs: ci
+        runs-on: ubuntu-latest
+        steps:
             - name: Deploy to the server
               uses: appleboy/ssh-action@master
               with:
