@@ -1,7 +1,8 @@
 import ClientPageWarnings from "./page.client";
 import { getT } from "@/i18n";
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: { params: Promise<{ lng: string }> }) {
+    const { lng } = await params;
     const { t, i18n } = await getT("pages");
     const keywords_en = [
         "weather warnings Greece", 
@@ -29,6 +30,20 @@ export async function generateMetadata() {
         title: t("warnings.title"),
         description: t("warnings.description"),
         keywords: i18n.language === "en" ? keywords_en : keywords_el,
+        alternates: {
+            canonical: `/${lng}/warnings`,
+            languages: {
+                en: "/en/warnings",
+                el: "/el/warnings",
+                "x-default": "/en/warnings",
+            },
+        },
+        openGraph: {
+            title: t("warnings.title"),
+            description: t("warnings.description"),
+            url: `https://myweathr.com/${lng}/warnings`,
+            type: "website",
+        },
     };
 };
 

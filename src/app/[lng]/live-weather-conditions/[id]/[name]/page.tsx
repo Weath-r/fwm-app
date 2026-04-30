@@ -42,6 +42,13 @@ export async function generateMetadata(props: LiveWeatherConditionsProps) {
         title: t("stationIndividual.title", { station: stationName }),
         description: t("stationIndividual.description", { station: stationName }),
         keywords: i18n.language === "en" ? keywords_en : keywords_el,
+        alternates: {
+            canonical: `/${params.lng}/live-weather-conditions/${params.id}/${params.name}`,
+            languages: {
+                en: `/en/live-weather-conditions/${params.id}/${params.name}`,
+                el: `/el/live-weather-conditions/${params.id}/${params.name}`,
+            },
+        },
         openGraph: {
             title: t("stationIndividual.title", { station: stationName }),
             description: t("stationIndividual.description", { station: stationName }),

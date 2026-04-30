@@ -10,12 +10,18 @@ import DayjsLocaleProvider from "@/providers/DayjsLocaleProvider";
 import { dir } from "i18next";
 import { AppLanguages as languages } from "@/app/appConfig";
 import { getT } from "@/i18n";
-
+import type { Viewport } from "next";
 
 const fontFamily = Commissioner({
     subsets: ["greek"],
     weight: ["100", "300", "400", "600"],
 });
+
+export const viewport: Viewport = {
+    width: "device-width",
+    initialScale: 1,
+    themeColor: "#3D5361",
+};
 
 export async function generateStaticParams() {
     return languages.map((lng) => ({ lng }));
@@ -24,7 +30,7 @@ export async function generateStaticParams() {
 export async function generateMetadata() {
     const { t, i18n } = await getT("pages");
     const keywords_en = [
-        "weather app Greece", 
+        "weather app Greece",
         "local weather forecast Greece",
         "real-time weather Greece",
         "interactive weather map Greece",
@@ -41,7 +47,7 @@ export async function generateMetadata() {
         "Karpenisi weather app",
         "Stylida weather forecast",
         "Thessaly weather forecast",
-        "Sterea Ellada weather app"
+        "Sterea Ellada weather app",
     ];
     const keywords_el = [
         "εφαρμογή καιρού Ελλάδα",
@@ -61,34 +67,44 @@ export async function generateMetadata() {
         "εφαρμογή καιρού Δομοκός",
         "καιρός Στυλίδα",
         "πρόγνωση καιρού Θεσσαλία",
-        "εφαρμογή καιρού Στερεά Ελλάδα"
+        "εφαρμογή καιρού Στερεά Ελλάδα",
     ];
     return {
+        metadataBase: new URL("https://myweathr.com"),
         title: {
             template: `%s | ${t("homepage.title")}`,
             default: t("homepage.title"),
         },
-        content: t("homepage.description"),
+        description: t("homepage.description"),
         keywords: i18n.language === "en" ? keywords_en : keywords_el,
         alternates: {
-            canonical: "/",
+            canonical: "/en",
             languages: {
-                "en": "/en",
-                "el": "/el",
+                en: "/en",
+                el: "/el",
+                "x-default": "/en",
             },
         },
         openGraph: {
             title: t("homepage.title"),
             description: t("homepage.description"),
-            url: "https://myweather.com",
+            url: "https://myweathr.com",
             siteName: t("homepage.title"),
-            images: [{
-                url: "https://myweather.com/assets/myweathr.png",
-                width: 800,
-                height: 600,
-            }],
+            images: [
+                {
+                    url: "https://myweathr.com/assets/myweathr.png",
+                    width: 1200,
+                    height: 630,
+                },
+            ],
             locale: i18n.language,
             type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: t("homepage.title"),
+            description: t("homepage.description"),
+            images: ["https://myweathr.com/assets/myweathr.png"],
         },
         robots: {
             index: true,
@@ -98,7 +114,7 @@ export async function generateMetadata() {
         verification: {
             google: "ckL2sSissjkQt1lxgjAeaCPd8uAH9jR00l57zdcd8BU",
         },
-        manifest: "https://myweathr.com/site.webmanifest",
+        manifest: "/site.webmanifest",
         category: "weather",
         icons: {
             icon: "/favicon-32x32.png",
@@ -106,18 +122,17 @@ export async function generateMetadata() {
             apple: "/apple-touch-icon.png",
         },
     };
-};
+}
 
 type RootLayoutProps = {
     children: React.ReactNode;
-    params: Promise<{ lng: string; }>;
+    params: Promise<{ lng: string }>;
 };
 
 export default async function RootLayout({ children, params }: Readonly<RootLayoutProps>) {
     const { lng } = await params;
     return (
         <html lang={lng} dir={dir(lng)}>
-            <link rel="icon" type="image/x-icon" href="/favicon.ico" />
             <body className={fontFamily.className}>
                 <ClientProvider>
                     <DayjsLocaleProvider locale={lng} />
