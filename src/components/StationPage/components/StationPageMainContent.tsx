@@ -51,7 +51,7 @@ export default function StationPageMainContent({
     ];
 
     const stationPageForecastData = {
-        forecast: stationForecast.full_forecast,
+        forecast: stationForecast?.full_forecast,
         station: stationName,
     };
     return (
@@ -82,7 +82,9 @@ export default function StationPageMainContent({
                 value="forecast"
             >
                 <div className="w-full rounded-xl bg-white p-4 drop-shadow-md">
-                    <StationWeatherForecastDetails {...stationPageForecastData} />
+                    {stationPageForecastData.forecast && (
+                        <StationWeatherForecastDetails {...stationPageForecastData} />
+                    )}
                 </div>
             </Tabs.Content>
             <Tabs.Content className="grow outline-none w-full" value="graphs">
