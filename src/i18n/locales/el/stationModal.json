@@ -6,5 +6,9 @@
     "forecastNotAvailable": "Δυστυχώς, η πρόγνωση δεν είναι διαθέσιμη!",
     "availableStations": "Διαθέσιμοι σταθμοί",
     "daySummary": "Περιγραφή ημέρας",
-    "nextFewHours": "Για τις επόμενες ώρες"
+    "nextFewHours": "Για τις επόμενες ώρες",
+    "shareStationData": {
+        "title": "Καιρός τώρα για {{stationName}}",
+        "text": "{{stationName}}: Αυτή τη στιγμή επικρατεί {{condition}}, με θερμοκρασία {{temp}}°C. Η υγρασία βρίσκεται στο {{humidity}}%, ενώ οι άνεμοι πνέουν από {{windDir}} με ένταση {{windSpeed}} km/h. Υετός: {{precip}} mm"
+    }
 }

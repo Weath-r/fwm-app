@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: "standalone",
+    allowedDevOrigins: ["192.168.68.105"],
     images: {
         dangerouslyAllowSVG: true,
         remotePatterns: [
@@ -31,6 +32,14 @@ const nextConfig = {
                 port: "3000",
                 pathname: "/assets/*",
                 search: `?v=${process.env.NEXT_PUBLIC_ASSETS_VERSION}`,
+            },
+        ],
+        localPatterns: [
+            {
+                pathname: "/api/**",
+            },
+            {
+                pathname: "/assets/**",
             },
         ],
     },

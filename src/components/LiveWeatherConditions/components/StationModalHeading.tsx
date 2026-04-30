@@ -1,26 +1,58 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { WeatherData } from "@/types";
 import { timeFromNowUtil } from "@/utils/dateTimeUtils";
 import { useT } from "@/i18n/client";
-import { MapPinIcon, ClockIcon } from "@heroicons/react/24/solid";
+import { MapPinIcon, ClockIcon, ShareIcon } from "@heroicons/react/24/solid";
 import { FavoriteStationButton } from "@/components/Common/Favorite/favoriteStationButton";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import { FrostWarning } from "./FrostWarning";
+import { Share } from "@/components/Common/Share/";
+import { windDirectionCalc } from "@/helpers/windDirectionCalculator";
 
 export function StationModalHeading(elem: Readonly<WeatherData>) {
-    const headerElemement = elem.station.website_url.includes("http") ?
-        <a
-            href={elem.station.website_url}
-            target="_blank"
-            rel="noreferrer"
-        >
+    const headerElemement = elem.station.website_url.includes("http") ? (
+        <a href={elem.station.website_url} target="_blank" rel="noreferrer">
             {elem.station.name}
-        </a> : 
-        <span>{elem.station.name}</span>;
+        </a>
+    ) : (
+        <span>{elem.station.name}</span>
+    );
 
     const { i18n } = useT("stationModal");
     const { i18n: i18n_icons } = useT("weather_icons");
+    const { i18n: i18n_conditions } = useT("weather_conditions");
     const selectedLanguage = i18n.language;
+    const pathname = usePathname();
+
+    const shareData: ShareData = {
+        title: i18n.getFixedT(
+            selectedLanguage,
+            "stationModal",
+            "shareStationData"
+        )("title", { stationName: elem.station.name }),
+        text: i18n.getFixedT(
+            selectedLanguage,
+            "stationModal",
+            "shareStationData"
+        )("text", {
+            stationName: elem.station.name,
+            condition: i18n_icons.getFixedT(
+                selectedLanguage,
+                "weather_icons"
+            )(elem.weatherDescription),
+            temp: elem.temperature,
+            humidity: elem.humidity,
+            windDir: i18n_conditions.getFixedT(
+                selectedLanguage,
+                "weather_conditions",
+                "windDir"
+            )(windDirectionCalc(elem.winddir)),
+            windSpeed: elem.windspd,
+            precip: elem.percipitation,
+        }),
+        url: `https://myweathr.com${pathname}`,
+    };
 
     return (
         <div className="flex items-center gap-2">
@@ -32,14 +64,15 @@ export function StationModalHeading(elem: Readonly<WeatherData>) {
                     />
                 </div>
                 <p className="mx-auto mb-2 text-base font-bold capitalize text-primary">
-                    {i18n_icons.getFixedT(selectedLanguage, "weather_icons")(elem.weatherDescription)}
+                    {i18n_icons.getFixedT(
+                        selectedLanguage,
+                        "weather_icons"
+                    )(elem.weatherDescription)}
                 </p>
             </div>
             <div className="flex flex-col">
                 <div className="flex items-center max-w-[200px] line-clamp-1">
-                    <h2 className="text-2xl font-bold text-primary truncate">
-                        {headerElemement}
-                    </h2>
+                    <h2 className="text-2xl font-bold text-primary truncate">{headerElemement}</h2>
                 </div>
                 <div className="my-2 flex items-center gap-1">
                     <div className="flex items-center gap-1">
@@ -49,14 +82,22 @@ export function StationModalHeading(elem: Readonly<WeatherData>) {
                         </p>
                     </div>
                     <div className="flex items-center gap-1 ml-auto">
-                        { elem.frost_data && elem.frost_data.frost_level > 0 && <FrostWarning warningLevel={elem.frost_data?.frost_level} />}
-                        <FavoriteStationButton activeStation={elem.station.id}></FavoriteStationButton>
+                        {elem.frost_data && elem.frost_data.frost_level > 0 && (
+                            <FrostWarning warningLevel={elem.frost_data?.frost_level} />
+                        )}
+                        <FavoriteStationButton
+                            activeStation={elem.station.id}
+                        ></FavoriteStationButton>
+                        <Share shareData={shareData}>
+                            <ShareIcon className="size-3 fill-primary" />
+                        </Share>
                     </div>
                 </div>
                 <div className="flex items-center gap-1">
                     <ClockIcon className="size-4 fill-primary/70"></ClockIcon>
                     <p className="text-xs text-primary/70">
-                        {i18n.getFixedT(selectedLanguage, "stationModal")("lastUpdated")} {timeFromNowUtil(elem.dateCreated)}
+                        {i18n.getFixedT(selectedLanguage, "stationModal")("lastUpdated")}{" "}
+                        {timeFromNowUtil(elem.dateCreated)}
                     </p>
                 </div>
             </div>

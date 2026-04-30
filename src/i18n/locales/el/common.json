@@ -34,5 +34,10 @@
         "Wunderground": "Wunderground",
         "WeatherCloud": "WeatherCloud",
         "WeatherLink": "WeatherLink"
+    },
+    "SharePopup": {
+        "popupTitle": "Μοιράσου το!",
+        "iconAlt": "Αντιγραφή συνδέσμου",
+        "shareOnSocial": "Κοινωνικά δίκτυα"
     }
 }
