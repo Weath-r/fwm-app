@@ -1,7 +1,8 @@
 import FthiotidaForecastClientPage from "./page.client";
 import { getT } from "@/i18n";
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: { params: Promise<{ lng: string }> }) {
+    const { lng } = await params;
     const { t, i18n } = await getT("pages");
     const keywords_en = [
         "Fthiotida weather forecast",
@@ -50,6 +51,20 @@ export async function generateMetadata() {
         title: t("fthiotidaForecast.title"),
         description: t("fthiotidaForecast.description"),
         keywords: i18n.language === "en" ? keywords_en : keywords_el,
+        alternates: {
+            canonical: `/${lng}/fthiotida-forecast`,
+            languages: {
+                en: "/en/fthiotida-forecast",
+                el: "/el/fthiotida-forecast",
+                "x-default": "/en/fthiotida-forecast",
+            },
+        },
+        openGraph: {
+            title: t("fthiotidaForecast.title"),
+            description: t("fthiotidaForecast.description"),
+            url: `https://myweathr.com/${lng}/fthiotida-forecast`,
+            type: "website",
+        },
     };
 };
 

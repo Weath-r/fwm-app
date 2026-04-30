@@ -72,12 +72,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.8,
             alternates: {
                 languages: {
-                    el: `${BASE_URL}/en/station/${station.id}/${urlStationName(station.name)}`,
+                    el: `${BASE_URL}/el/station/${station.id}/${urlStationName(station.name)}`,
+                },
+            },
+        }));
+
+        const liveWeatherEntries: MetadataRoute.Sitemap = response.map((station) => ({
+            url: `${BASE_URL}/en/live-weather-conditions/${station.id}/${urlStationName(station.name)}`,
+            lastModified: new Date(),
+            changeFrequency: "hourly",
+            priority: 0.8,
+            alternates: {
+                languages: {
+                    el: `${BASE_URL}/el/live-weather-conditions/${station.id}/${urlStationName(station.name)}`,
                 },
             },
         }));
 
         routes.push(...sitemapEntries);
+        routes.push(...liveWeatherEntries);
     } catch (error) {
         console.error("Failed to fetch weather stations:", error);
     }

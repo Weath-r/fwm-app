@@ -6,11 +6,26 @@ type AboutUsParams = {
     }>
 };
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: { params: Promise<{ lng: string }> }) {
+    const { lng } = await params;
     const { t } = await getT("pages");
     return {
         title: t("aboutUs.title"),
         description: t("aboutUs.description"),
+        alternates: {
+            canonical: `/${lng}/about-us`,
+            languages: {
+                en: "/en/about-us",
+                el: "/el/about-us",
+                "x-default": "/en/about-us",
+            },
+        },
+        openGraph: {
+            title: t("aboutUs.title"),
+            description: t("aboutUs.description"),
+            url: `https://myweathr.com/${lng}/about-us`,
+            type: "website",
+        },
     };
 };
 
