@@ -17,17 +17,17 @@ const configuration: AppConfig = {
     forecastJsonFolder: process.env.NEXT_PUBLIC_FORECAST_JSON_FOLDER ?? "",
     assetsVersion: process.env.NEXT_PUBLIC_ASSETS_VERSION ?? "1",
     languages: [
-        { 
-            id: "el", 
-            name: "ΕΛ", 
+        {
+            id: "el",
+            name: "ΕΛ",
         },
         {
             id: "en",
             name: "ΕΝ",
-        }
+        },
     ],
     defaultLocale: "en",
 };
 
-export const AppLanguages = configuration.languages.map(lang => lang.id);
+export const AppLanguages = configuration.languages.map((lang) => lang.id);
 export default configuration;

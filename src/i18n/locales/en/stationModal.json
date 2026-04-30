@@ -6,5 +6,9 @@
     "forecastNotAvailable": "Unfortunately, forecast is not available!",
     "availableStations": "Available stations",
     "daySummary": "Day summary",
-    "nextFewHours": "Next few hours"
+    "nextFewHours": "Next few hours",
+    "shareStationData": {
+        "title": "Weather update from  {{stationName}}",
+        "text": "{{stationName}}: Currently {{condition}}, with a temperature of  {{temp}}°C. Humidity is at  {{humidity}}%, while winds are blowing from the {{windDir}} at {{windSpeed}} km/h. Precipitation: {{precip}} mm"
+    }
 }
