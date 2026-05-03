@@ -35,8 +35,9 @@ declare module "leaflet" {
 
 const renderStationInCluster = ({ station, selectedLanguage }: RenderStationInClusterProps) => {
     if (!station.options.customAttr) return null;
-    const { assetId, weatherDescription, stationName, stationId }: MarkerCustomAttrs = station.options.customAttr;
-    const queryParams: StationParamsUrlProp[] = [{ "isForecastEnabled": "true" }];
+    const { assetId, weatherDescription, stationName, stationId }: MarkerCustomAttrs =
+        station.options.customAttr;
+    const queryParams: StationParamsUrlProp[] = [{ isForecastEnabled: "true" }];
 
     const triggerStationModal = (
         <StationLink
@@ -46,10 +47,7 @@ const renderStationInCluster = ({ station, selectedLanguage }: RenderStationInCl
             stationName={stationName || ""}
             paramsQuery={queryParams}
         >
-            <section
-                className="flex cursor-pointer items-center gap-3"
-            >
-
+            <section className="flex cursor-pointer items-center gap-3">
                 <div className="size-[32px]">
                     <BaseWeatherIcon
                         weatherDescriptionText={weatherDescription}
@@ -57,19 +55,15 @@ const renderStationInCluster = ({ station, selectedLanguage }: RenderStationInCl
                         className="size-full"
                     />
                 </div>
-                <div 
-                    className="text-sm font-medium text-primary hover:text-primary/80"
-                >
+                <div className="text-sm font-medium text-primary hover:text-primary/80">
                     {stationName}
                 </div>
                 <ChevronRightIcon className="ml-auto mr-2 size-3"></ChevronRightIcon>
             </section>
         </StationLink>
-
     );
-    return (triggerStationModal);
+    return triggerStationModal;
 };
-
 
 export default function ClusterGroupLayer({ markers }: { markers: React.ReactNode[] }) {
     const [clusterData, setClusterData] = useState<L.Marker[]>([]);
@@ -87,9 +81,11 @@ export default function ClusterGroupLayer({ markers }: { markers: React.ReactNod
         setIsModalOpen(true);
     };
 
-    const dialogTitle = (<span className="text-sm font-bold uppercase text-primary">
-        {i18n.getFixedT(selectedLanguage, "stationModal")("availableStations")}
-    </span>);
+    const dialogTitle = (
+        <span className="text-sm font-bold uppercase text-primary">
+            {i18n.getFixedT(selectedLanguage, "stationModal")("availableStations")}
+        </span>
+    );
 
     return (
         <>
@@ -110,22 +106,17 @@ export default function ClusterGroupLayer({ markers }: { markers: React.ReactNod
             >
                 {markers}
             </MarkerClusterGroup>
-            <Dialog
-                open={isModalOpen}
-                onOpenChange={setIsModalOpen}
-            >
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <DialogTrigger className="sr-only">Dialog trigger</DialogTrigger>
-                <DialogContent
-                    dialogTitle={dialogTitle}
-                    closeModalButton={false}
-                >
+                <DialogContent dialogTitle={dialogTitle} closeModalButton={false}>
                     <div className="mt-4 max-h-60 overflow-auto">
                         <div className="flex flex-col gap-2">
                             {clusterData.map((marker, index) => (
-                                <div 
-                                    key={index} 
-                                    className="border-b border-secondary/90 py-1 text-primary">
-                                    {renderStationInCluster({ 
+                                <div
+                                    key={index}
+                                    className="border-b border-secondary/90 py-1 text-primary"
+                                >
+                                    {renderStationInCluster({
                                         station: marker,
                                         selectedLanguage,
                                     })}
