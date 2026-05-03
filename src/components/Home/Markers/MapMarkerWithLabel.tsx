@@ -18,7 +18,6 @@ export default function MapMarketWithLabel({
     assetId,
     stationName,
 }: Readonly<MapMarkerProps>) {
-
     const marker: DivIconLeafletMarker = {
         position,
         weatherDescription,
@@ -37,20 +36,16 @@ export default function MapMarketWithLabel({
         className: "w-[100px]",
     };
 
-
     return (
         <DivIconMarker leafletMarker={marker} container={container}>
-            <div 
-                className="relative flex h-8 items-center gap-1 rounded-lg bg-primary/80 p-1">
+            <div className="relative flex h-8 items-center gap-1 rounded-lg bg-primary/80 p-1">
                 <div className="w-8 p-1 shrink-0">
                     <BaseWeatherIcon
                         weatherDescriptionText={weatherDescription}
                         assetId={assetId}
                     />
                 </div>
-                <p className="truncate font-semibold text-white">
-                    {stationName}
-                </p>
+                <h1 className="truncate font-semibold text-white">{stationName}</h1>
             </div>
         </DivIconMarker>
     );
