@@ -9,14 +9,19 @@ type CommonMapSettings = {
     zoom: number;
 };
 
+type RenderMapSettings = {
+    className: string;
+};
+
 export type MapMarker = {
     coordinates: L.LatLng;
     value: any;
 };
 
-export type MapLeafletType = CommonMapSettings & {
-    children: JSX.Element | JSX.Element[] | ReactNode;
-};
+export type MapLeafletType = CommonMapSettings &
+    RenderMapSettings & {
+        children: JSX.Element | JSX.Element[] | ReactNode;
+    };
 
 export type MapConfig = CommonMapSettings & {
     default_language: string;

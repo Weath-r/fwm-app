@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         "Central Greece alerts",
         "weather warnings Central Greece",
         "severe weather Central Greece",
-        "storm alerts Cental Greece",
+        "storm alerts Central Greece",
         "extreme weather warnings Central Greece",
         "alerts MyWeathr"
     ];

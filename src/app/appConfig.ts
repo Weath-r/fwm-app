@@ -8,6 +8,7 @@ type AppConfig = {
     languages: { id: string; name: string }[];
     defaultLocale: string;
     assetsVersion: string;
+    baseMapToken: string;
 };
 
 const configuration: AppConfig = {
@@ -16,6 +17,7 @@ const configuration: AppConfig = {
     appVersion: process.env.NEXT_PUBLIC_APP_VERSION ?? "0.0.1",
     forecastJsonFolder: process.env.NEXT_PUBLIC_FORECAST_JSON_FOLDER ?? "",
     assetsVersion: process.env.NEXT_PUBLIC_ASSETS_VERSION ?? "1",
+    baseMapToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "",
     languages: [
         {
             id: "el",
