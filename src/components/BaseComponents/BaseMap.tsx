@@ -2,6 +2,7 @@ import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { MapLeafletType } from "@/types";
 import { useEffect } from "react";
 import { useMapStore } from "@/stores/mapStore";
+import configuration from "@/app/appConfig";
 
 function MapInitializer() {
     const map = useMap();
@@ -15,7 +16,6 @@ function MapInitializer() {
 }
 
 export default function BaseMap(props: Readonly<MapLeafletType>) {
-    
     return (
         <MapContainer
             center={props.center}
@@ -27,12 +27,14 @@ export default function BaseMap(props: Readonly<MapLeafletType>) {
             maxZoom={props.maxZoom}
             wheelDebounceTime={100}
             zoomControl={false}
-            className="map h-screen w-full"
+            className={props.className}
         >
             <MapInitializer></MapInitializer>
             <TileLayer
-                attribution={"&copy; <a href=\"https://www.openstreetmap.org/copyright\">Mapbox</a> contributors"}
-                url="https://api.mapbox.com/styles/v1/virtuosofriend/clobmjbzm013j01qmbjlof6g0/tiles/512/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmlydHVvc29mcmllbmQiLCJhIjoiY2lwY2lvc3ZjMDAyNnZobm5haDZ1M2VrcSJ9.IGVbY93V5cF7KvEVJnmUTQ"
+                attribution={
+                    '&copy; <a href="https://www.openstreetmap.org/copyright">Mapbox</a> contributors'
+                }
+                url={`https://api.mapbox.com/styles/v1/virtuosofriend/clobmjbzm013j01qmbjlof6g0/tiles/512/{z}/{x}/{y}?access_token=${configuration.baseMapToken}`}
                 detectRetina
             />
             {props.children}

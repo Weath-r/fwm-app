@@ -3,9 +3,13 @@
         "title": "myWEATHR - Live weather conditions in Central Greece",
         "description": "MyWeathr is the ultimate weather app for Central Greece, delivering accurate local forecasts updated every 30 minutes. View real-time conditions, interactive maps, and detailed 5-day predictions. Stay safe with instant weather alerts and warnings tailored to your region."
     },
+    "weathermap": {
+        "title": "Interactive Weather Map - Live Conditions | Central Greece",
+        "description": "Explore the interactive live weather map of MyWeathr for Central Greece. Track real-time conditions, wind patterns, forecasts, and alerts for extreme weather events across the region."
+    },
     "stations": {
-        "title": "Stations list",
-        "description": "Explore MyWeathr weather stations across Central Greece. View real-time local data, regional conditions, and live measurements from Central Greece."
+        "title": "Weather Stations - Central Greece",
+        "description": "Explore all MyWeathr weather stations across Central Greece. View real-time local data, live measurements, and current conditions from personal and professional stations in the region."
     },
     "warnings": {
         "title": "Weather warnings",

@@ -6,7 +6,7 @@ import { useT } from "@/i18n/client";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { StationParamsUrlProp } from "@/types";
 
-import { createClusterCustomIcon } from "@/components/Home/Markers/ClusterMarkersContent";
+import { createClusterCustomIcon } from "@/components/WeatherMap/Markers/ClusterMarkersContent";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/Common/CommonDialog";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import StationLink from "@/components/Common/StationLink";

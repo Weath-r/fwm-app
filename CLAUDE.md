@@ -307,6 +307,7 @@ src/
 - Path alias: `@/*` → `src/*`
 - No explicit `any` (rule disabled but avoid it anyway)
 - Zod schemas validate all external data; infer types from schemas
+- **Variable names:** always use full, descriptive names — avoid one or two-letter variables (e.g. `st`, `c`, `w`, `acc`). The only accepted short names are `t` (i18next translate function), `lng` (language code, established convention throughout the codebase), and `prev` (React setState callback convention)
 
 ### ESLint
 - 4-space indent enforced
@@ -318,7 +319,9 @@ src/
 - Server components by default; use `"use client"` only when needed
 - All API calls go through `DataService` — do not make raw Axios calls in components
 - Zustand stores for UI/map state; React providers for heavier shared state
-- Translations live in `src/i18n/locales/{en,el}/*.json`
+- Translations live in `src/i18n/locales/{en,el}/*.json`; namespaces are loaded on-demand by filename — adding a new `*.json` file is sufficient, no config change needed
+- **Units:** always use the `Measurements` enum from `src/types/measurements.ts` for unit strings (`°C`, `Bft`, `mm`, `hPa`, `%`, etc.) — never hardcode them inline
+- **Weather condition labels** (Wind, Rain, Temperature, etc.): use `useT("weather_conditions")` — translations already exist in both locales
 
 ## Testing
 

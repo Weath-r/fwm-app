@@ -17,6 +17,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             },
         },
         {
+            url: `${BASE_URL}/en/weather-map`,
+            lastModified: new Date(),
+            changeFrequency: "hourly",
+            priority: 0.9,
+            alternates: {
+                languages: {
+                    el: `${BASE_URL}/el/weather-map`,
+                },
+            },
+        },
+        {
             url: `${BASE_URL}/en/stations`,
             lastModified: new Date(),
             changeFrequency: "hourly",

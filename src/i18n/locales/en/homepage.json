@@ -1,0 +1,19 @@
+{
+    "h1": "Live weather conditions – Central Greece",
+    "majorCities": {
+        "heading": "Live weather – Major Cities",
+        "subheading": "Current conditions & forecast for the major cities of the region."
+    },
+    "warnings": {
+        "heading": "Weather warnings",
+        "viewAll": "View all",
+        "noWarnings": "No active warnings",
+        "allClear": "All areas are clear for the next hours."
+    },
+    "liveNetwork": {
+        "heading": "Weather station network",
+        "activeStations": "{{count}} active stations",
+        "showAll": "Show all {{count}} stations",
+        "showLess": "Show less"
+    }
+}

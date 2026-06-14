@@ -19,21 +19,21 @@ export async function generateMetadata(props: StationPageProps) {
     const keywords_en = [
         `${stationName} weather`,
         `${stationName} weather station`,
-        `live weather ${stationName}`,
-        `real-time weather ${stationName}`,
+        `${stationName} weather history`,
+        `historical weather data ${stationName}`,
+        `weather graphs ${stationName}`,
+        `weather measurements ${stationName}`,
         "personal weather station",
-        "weather station",
-        "weather data",
-        `weather station ${stationName}`,
+        "historical weather Greece",
     ];
     const keywords_el = [
         `${stationName} καιρός`,
         `${stationName} μετεωρολογικός σταθμός`,
-        `καιρικές συνθήκες ${stationName}`,
-        `καιρός αύριο ${stationName}`,
+        `ιστορικά δεδομένα καιρού ${stationName}`,
+        `γραφήματα καιρού ${stationName}`,
+        `μετρήσεις καιρού ${stationName}`,
+        "ιστορικά μετεωρολογικά δεδομένα",
         "προσωπικός μετεωρολογικός σταθμός",
-        "μετεωρολογικά δεδομένα",
-        `σταθμός καιρού ${stationName}`,
     ];
 
     return {
