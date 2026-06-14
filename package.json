@@ -1,6 +1,6 @@
 {
     "name": "fwm-app",
-    "version": "1.17.0",
+    "version": "1.17.1",
     "private": true,
     "scripts": {
         "preinstall": "npx only-allow pnpm",
@@ -105,5 +105,13 @@
     "overrides": {
         "@types/react": "19.2.9",
         "@types/react-dom": "19.2.3"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "core-js",
+            "protobufjs",
+            "sharp",
+            "unrs-resolver"
+        ]
     }
 }
