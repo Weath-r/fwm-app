@@ -15,14 +15,14 @@ import MapMarketWithLabel from "./Markers/MapMarkerWithLabel";
 const BaseMap = dynamic(() => import("@/components/BaseComponents/BaseMap"), {
     ssr: false,
 });
-const TemperatureLayer = dynamic(() => import("@/components/Home/Layers/TemperatureLayer"), {
+const TemperatureLayer = dynamic(() => import("@/components/WeatherMap/Layers/TemperatureLayer"), {
     ssr: false,
 });
-const WindLayer = dynamic(() => import("@/components/Home/Layers/WindLayer"), {
+const WindLayer = dynamic(() => import("@/components/WeatherMap/Layers/WindLayer"), {
     ssr: false,
 });
 const ClusterStationsLayer = dynamic(
-    () => import("@/components/Home/Layers/ClusterStationsLayer"),
+    () => import("@/components/WeatherMap/Layers/ClusterStationsLayer"),
     {
         ssr: false,
     }
@@ -53,7 +53,7 @@ const getStationsMarkers = function (stations: Station[], selectedLanguage: stri
     });
 };
 
-export default function HomepageMap() {
+export default function StationsMap() {
     const map = useMapStore((state) => state.map);
     const { stations } = useStationsProvider();
     const { warnings, shouldRenderWarnings } = useWarningsProvider();
@@ -92,6 +92,7 @@ export default function HomepageMap() {
             maxBounds={MAP_CONFIG.maxBounds}
             minZoom={MAP_CONFIG.minZoom}
             maxZoom={MAP_CONFIG.maxZoom}
+            className="map"
         >
             <ClusterStationsLayer markers={markers}></ClusterStationsLayer>
             <MapWarningsGeojsonGroup

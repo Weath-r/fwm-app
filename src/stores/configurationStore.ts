@@ -7,30 +7,29 @@ type ConfiguratorStore = {
     addFeatureFlags: (config: FeatureFlags) => void;
     setFeatureFlags: (featureFlags: FeatureFlags) => void;
     setMenu: (menu: MenuLink[]) => void;
-  };
+};
 
 const initialMenu: MenuLink[] = [
     {
         pathName: "",
+        text: "Homepage",
+        value: "homepage",
+    },
+    {
+        pathName: "weather-map",
         text: "Weather Map",
         value: "map",
-    },{
-        pathName: "stations",
-        text: "Stations",
-        value: "stationslist",
-    },{
-        pathName: "warnings",
-        text: "Warnings",
-        value: "warnings",
-    },{
+    },
+    {
         pathName: "fthiotida-forecast",
         text: "Fthiotida Forecast",
         value: "fthiotidaforecast",
-    },{
+    },
+    {
         pathName: "about-us",
         text: "About Us",
         value: "aboutus",
-    }
+    },
 ];
 
 export const useConfigurationStore = create<ConfiguratorStore>((set) => ({

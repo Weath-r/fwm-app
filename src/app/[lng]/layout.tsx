@@ -27,7 +27,8 @@ export async function generateStaticParams() {
     return languages.map((lng) => ({ lng }));
 }
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: { params: Promise<{ lng: string }> }) {
+    const { lng } = await params;
     const { t, i18n } = await getT("pages");
     const keywords_en = [
         "weather app Greece",
@@ -67,18 +68,17 @@ export async function generateMetadata() {
         "εφαρμογή καιρού Δομοκός",
         "καιρός Στυλίδα",
         "πρόγνωση καιρού Θεσσαλία",
-        "εφαρμογή καιρού Στερεά Ελλάδα",
     ];
     return {
         metadataBase: new URL("https://myweathr.com"),
         title: {
-            template: `%s | ${t("homepage.title")}`,
+            template: "%s | myWEATHR",
             default: t("homepage.title"),
         },
         description: t("homepage.description"),
         keywords: i18n.language === "en" ? keywords_en : keywords_el,
         alternates: {
-            canonical: "/en",
+            canonical: `/${lng}`,
             languages: {
                 en: "/en",
                 el: "/el",

@@ -1,4 +1,5 @@
 import { useAppStore } from "@/hooks/useAppStore";
+import { useShallow } from "zustand/shallow";
 import { DataService } from "@/services/DataService";
 import { WeatherDataResponse, WeatherStation } from "@/types";
 import { AccessorFnColumnDef } from "@tanstack/react-table";
@@ -40,11 +41,11 @@ export default function StationsPage() {
     const dataService = new DataService();
     const [weatherTableData, setWeatherTableData] = useState<WeatherDataResponse[]>([]);
     const { favouriteStations, isStationFavourite, handleFavouriteStationButton } = useAppStore(
-        (state) => ({
+        useShallow((state) => ({
             favouriteStations: state.favouriteStations,
             isStationFavourite: state.isStationFavourite,
             handleFavouriteStationButton: state.handleFavouriteStationButton,
-        })
+        }))
     );
     const { i18n } = useT("common");
     const { i18n: i18nConditions } = useT("weather_conditions");

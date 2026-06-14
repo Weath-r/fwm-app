@@ -9,21 +9,21 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         "Lamia weather",
         "Lamia weather forecast",
         "Lamia weather app",
-        "weather tommorow Lamia",
+        "weather tomorrow Lamia",
         "Central Greece weather forecast",
-        "weather tommorow Fthiotis region",
+        "weather tomorrow Fthiotis region",
         "Stylida weather",
         "Stylida weather app",
         "Stylida weather forecast",
-        "weather tommorow Stylida",
+        "weather tomorrow Stylida",
         "Atalanti weather",
         "Atalanti weather app",
         "Atalanti weather forecast",
-        "weather tommorow Atalanti",
+        "weather tomorrow Atalanti",
         "Parnassos weather",
         "Parnassos weather app",
         "Parnassos weather forecast",
-        "weather tommorow Parnassos"
+        "weather tomorrow Parnassos"
     ];
     const keywords_el = [
         "καιρός Φθιώτιδα",

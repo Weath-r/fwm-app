@@ -8,10 +8,29 @@ type AboutUsParams = {
 
 export async function generateMetadata({ params }: { params: Promise<{ lng: string }> }) {
     const { lng } = await params;
-    const { t } = await getT("pages");
+    const { t, i18n } = await getT("pages");
+    const keywords_en = [
+        "MyWeathr weather app",
+        "about MyWeathr",
+        "Central Greece weather app",
+        "weather app Lamia",
+        "Fthiotida meteorology",
+        "amateur meteorologists Greece",
+        "weather data sources Greece",
+    ];
+    const keywords_el = [
+        "MyWeathr εφαρμογή καιρού",
+        "σχετικά με MyWeathr",
+        "εφαρμογή καιρού Στερεά Ελλάδα",
+        "εφαρμογή καιρού Λαμία",
+        "μετεωρολογία Φθιώτιδα",
+        "ερασιτέχνες μετεωρολόγοι Ελλάδα",
+        "πηγές καιρικών δεδομένων",
+    ];
     return {
         title: t("aboutUs.title"),
         description: t("aboutUs.description"),
+        keywords: i18n.language === "en" ? keywords_en : keywords_el,
         alternates: {
             canonical: `/${lng}/about-us`,
             languages: {
