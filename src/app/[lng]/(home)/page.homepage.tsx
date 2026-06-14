@@ -15,18 +15,31 @@ type HomepageProps = { lng: string };
 
 function pickForecastSlots(forecast: ForecastData[]): CityWeatherCardProps["forecast"] {
     if (!forecast.length) return [];
+
     const now = new Date();
+    const nowMs = now.getTime();
     const todayStartMs = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
-    return [0, 6, 12, 18].map((hour) => {
-        const targetMs = todayStartMs + hour * 3600 * 1000;
-        const slot = forecast.reduce((best, f) =>
-            Math.abs(f.time - targetMs) < Math.abs(best.time - targetMs) ? f : best
+    const nextCanonicalMs =
+        [0, 6, 12, 18]
+            .map((hour) => todayStartMs + hour * 3600 * 1000)
+            .find((slotMs) => slotMs > nowMs) ?? todayStartMs + 24 * 3600 * 1000;
+
+    return Array.from({ length: 4 }, (_item, slotIndex) => {
+        const targetMs = nextCanonicalMs + slotIndex * 6 * 3600 * 1000;
+        const closest = forecast.reduce((best, entry) =>
+            Math.abs(entry.time - targetMs) < Math.abs(best.time - targetMs) ? entry : best
         );
+        const slotDate = new Date(targetMs);
+        const hour = slotDate.getHours();
+        const isTomorrow = targetMs >= todayStartMs + 24 * 3600 * 1000;
+        const timeLabel = isTomorrow
+            ? `+1 ${String(hour).padStart(2, "0")}:00`
+            : `${String(hour).padStart(2, "0")}:00`;
         return {
-            time: `${String(hour).padStart(2, "0")}:00`,
-            temp: Math.round(slot.temperature),
-            assetId: slot.forecastIcon ?? "",
+            time: timeLabel,
+            temp: Math.round(closest.temperature),
+            assetId: closest.forecastIcon ?? "",
             description: `${String(hour).padStart(2, "0")}:00 forecast`,
         };
     });

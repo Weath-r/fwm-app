@@ -35,18 +35,26 @@ src/
 ├── app/
 │   ├── appConfig.ts                        # Centralized app config
 │   ├── sitemap.ts
+│   ├── robots.ts
 │   ├── globals.css
+│   ├── api/
+│   │   └── [lng]/share-card/
+│   │       └── route.tsx                   # OG share-card image generation
 │   └── [lng]/                              # Dynamic language routing
 │       ├── layout.tsx
 │       ├── PostHogPageView.tsx
 │       ├── (home)/                         # Home route group
 │       │   ├── layout.tsx
 │       │   ├── page.tsx
-│       │   ├── page.homepage.tsx
+│       │   └── page.homepage.tsx
+│       ├── weather-map/                    # Interactive map page
+│       │   ├── layout.tsx
+│       │   ├── page.tsx
+│       │   ├── page.weathermap.tsx
 │       │   └── @modal/                     # Parallel modal slot
 │       │       ├── default.tsx
 │       │       ├── error.tsx
-│       │       └── (.)live-weather-conditions/[id]/[name]/  # Intercepted route
+│       │       └── (..)live-weather-conditions/[id]/[name]/  # Intercepted route
 │       │           ├── page.tsx
 │       │           ├── page.client.tsx
 │       │           └── loading.tsx
@@ -55,10 +63,12 @@ src/
 │       │   └── page.client.tsx
 │       ├── station/[id]/[name]/
 │       │   ├── page.tsx
-│       │   └── loading.tsx
+│       │   ├── loading.tsx
+│       │   └── opengraph-image.tsx
 │       ├── live-weather-conditions/[id]/[name]/
 │       │   ├── page.tsx
-│       │   └── page.client.tsx
+│       │   ├── page.client.tsx
+│       │   └── opengraph-image.tsx
 │       ├── fthiotida-forecast/
 │       │   ├── page.tsx
 │       │   └── page.client.tsx
@@ -79,6 +89,7 @@ src/
 │   ├── Common/                             # Shared UI components
 │   │   ├── CommonButton.tsx
 │   │   ├── CommonDialog.tsx
+│   │   ├── CommonPopover.tsx
 │   │   ├── CommonSelect.tsx
 │   │   ├── CommonSlider.tsx
 │   │   ├── StationLink.tsx
@@ -92,10 +103,22 @@ src/
 │   │   │   └── favoriteStationButton.tsx
 │   │   ├── General/
 │   │   │   └── StationTypeLabel.tsx
-│   │   └── LibreMap/
-│   │       └── LibreMapMarker.tsx
-│   ├── Home/
-│   │   ├── HomepageMap.tsx
+│   │   ├── LibreMap/
+│   │   │   └── LibreMapMarker.tsx
+│   │   └── Share/                          # Social share popover
+│   │       ├── Share.tsx
+│   │       ├── ShareController.tsx
+│   │       ├── SharePopup.tsx
+│   │       └── index.tsx
+│   ├── Home/                               # Homepage-only sections
+│   │   ├── CityWeatherCard.tsx
+│   │   ├── HomepageWarningsSection.tsx
+│   │   └── HomepageStationsSection.tsx
+│   ├── ShareableCards/                     # OG / share card templates
+│   │   ├── CurrentWeatherShareableCard.tsx
+│   │   └── createImageTemplates.ts
+│   ├── WeatherMap/                         # Interactive map page components
+│   │   ├── StationsMap.tsx
 │   │   ├── LayersMenu.tsx
 │   │   ├── ForecastLayer.tsx
 │   │   ├── MapWarningsGeojsonGroup.tsx
