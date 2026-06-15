@@ -6,6 +6,7 @@ import { calculateWindToBft } from "@/utils/weatherConvertUnits";
 import { urlStationName } from "@/helpers/createStationName";
 import { WeatherDataResponse, WeatherForecastResponse, ForecastData } from "@/types";
 import CityWeatherCard, { type CityWeatherCardProps } from "@/components/Home/CityWeatherCard";
+import HomepageAboutSection from "@/components/Home/HomepageAboutSection";
 import HomepageWarningsSection from "@/components/Home/HomepageWarningsSection";
 import HomepageStationsSection from "@/components/Home/HomepageStationsSection";
 import { useT } from "@/i18n/client";
@@ -173,6 +174,7 @@ export default function Homepage({ lng }: HomepageProps) {
 
             <HomepageWarningsSection />
             <HomepageStationsSection lng={lng} />
+            <HomepageAboutSection />
         </main>
     );
 }
