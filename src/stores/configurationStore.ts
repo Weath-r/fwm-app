@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { FeatureFlags, MenuLink } from "@/types";
+import { BASE_MENU } from "@/constants/navigation";
 
 type ConfiguratorStore = {
     featureFlags: FeatureFlags;
@@ -9,34 +10,11 @@ type ConfiguratorStore = {
     setMenu: (menu: MenuLink[]) => void;
 };
 
-const initialMenu: MenuLink[] = [
-    {
-        pathName: "",
-        text: "Homepage",
-        value: "homepage",
-    },
-    {
-        pathName: "weather-map",
-        text: "Weather Map",
-        value: "map",
-    },
-    {
-        pathName: "fthiotida-forecast",
-        text: "Fthiotida Forecast",
-        value: "fthiotidaforecast",
-    },
-    {
-        pathName: "about-us",
-        text: "About Us",
-        value: "aboutus",
-    },
-];
-
 export const useConfigurationStore = create<ConfiguratorStore>((set) => ({
     featureFlags: {},
     addFeatureFlags: (config: FeatureFlags) =>
         set((state) => ({ featureFlags: { ...state.featureFlags, ...config } })),
     setFeatureFlags: (featureFlags: FeatureFlags) => set({ featureFlags }),
-    menu: initialMenu,
+    menu: BASE_MENU,
     setMenu: (menu: MenuLink[]) => set({ menu }),
 }));
