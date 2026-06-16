@@ -1,78 +1,30 @@
 "use client";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ClockIcon, ShieldCheckIcon } from "@heroicons/react/24/solid";
-import { DataService } from "@/services/DataService";
 import { WeatherWarnings } from "@/types";
 import { useT } from "@/i18n/client";
-import { translatedContent } from "@/utils/transformTranslations";
 import { timeOnlyUtil } from "@/utils/dateTimeUtils";
 import HazardIcon from "@/components/Warnings/components/HazardIcon";
 
-function normalizeWarnings(warnings: WeatherWarnings[], language: string): WeatherWarnings[] {
-    return warnings.map((w) => {
-        const [hazard] = translatedContent({ data: [w.hazard_id], selectedLanguage: language });
-        const [level] = translatedContent({ data: [w.level_id], selectedLanguage: language });
-        const [location] = translatedContent({
-            data: [w.warning_location_id],
-            selectedLanguage: language,
-        });
-        return {
-            ...w,
-            hazard_id: { ...w.hazard_id, asset: hazard.asset || "", label: hazard.label },
-            level_id: {
-                ...w.level_id,
-                color: level.color || "",
-                label: level.label,
-                id: level.id ?? w.level_id.id,
-            },
-            warning_location_id: { ...w.warning_location_id, label: location.label },
-        };
-    });
-}
-
-type LocationSummary = {
+export type LocationSummary = {
     label: string;
     color: string;
     level: string;
     levelId: number;
 };
 
-export default function HomepageWarningsSection() {
-    const [warnings, setWarnings] = useState<WeatherWarnings[]>([]);
-    const [loading, setLoading] = useState(true);
-    const { t, i18n } = useT("homepage");
-    const lng = i18n.language;
+type HomepageWarningsSectionViewProps = {
+    lng: string;
+    activeWarnings: WeatherWarnings[];
+    locationSummaries: LocationSummary[];
+};
 
-    useEffect(() => {
-        const dataService = new DataService();
-        dataService
-            .fetchWeatherWarningsByCreatedDate("")
-            .then((data) => setWarnings(normalizeWarnings(data, lng)))
-            .catch(() => setWarnings([]))
-            .finally(() => setLoading(false));
-    }, [lng]);
-
-    const activeWarnings = warnings.filter((w) => w.level_id.id > 1);
-
-    const locationSummaries = activeWarnings.reduce<Record<string, LocationSummary>>(
-        (locationMap, warning) => {
-            const locationLabel = warning.warning_location_id.label;
-            if (
-                !locationMap[locationLabel] ||
-                warning.level_id.id > locationMap[locationLabel].levelId
-            ) {
-                locationMap[locationLabel] = {
-                    label: locationLabel,
-                    color: warning.level_id.color,
-                    level: warning.level_id.label,
-                    levelId: warning.level_id.id,
-                };
-            }
-            return locationMap;
-        },
-        {}
-    );
+export default function HomepageWarningsSectionView({
+    lng,
+    activeWarnings,
+    locationSummaries,
+}: HomepageWarningsSectionViewProps) {
+    const { t } = useT("homepage");
 
     return (
         <div className="bg-white rounded-lg p-4 w-full">
@@ -86,12 +38,7 @@ export default function HomepageWarningsSection() {
                 </Link>
             </div>
 
-            {loading ? (
-                <div className="flex flex-col gap-2">
-                    <div className="h-10 animate-pulse rounded-lg bg-secondary" />
-                    <div className="h-10 animate-pulse rounded-lg bg-secondary" />
-                </div>
-            ) : activeWarnings.length === 0 ? (
+            {activeWarnings.length === 0 ? (
                 <div className="flex items-center gap-3 rounded-lg border border-success/25 bg-success/10 p-4">
                     <ShieldCheckIcon className="size-6 shrink-0 text-success" />
                     <div>
@@ -104,23 +51,23 @@ export default function HomepageWarningsSection() {
             ) : (
                 <div className="flex flex-col gap-3">
                     <div className="flex flex-wrap gap-2">
-                        {Object.values(locationSummaries).map((loc) => (
+                        {locationSummaries.map((location) => (
                             <div
-                                key={loc.label}
+                                key={location.label}
                                 className="flex items-center gap-2 rounded-full border px-3 py-1.5"
                                 style={{
-                                    borderColor: `${loc.color}50`,
-                                    backgroundColor: `${loc.color}18`,
+                                    borderColor: `${location.color}50`,
+                                    backgroundColor: `${location.color}18`,
                                 }}
                             >
                                 <span
                                     className="size-2 shrink-0 rounded-full"
-                                    style={{ backgroundColor: loc.color }}
+                                    style={{ backgroundColor: location.color }}
                                 />
                                 <span className="text-xs font-semibold text-primary">
-                                    {loc.label}
+                                    {location.label}
                                 </span>
-                                <span className="text-xs text-primary/60">{loc.level}</span>
+                                <span className="text-xs text-primary/60">{location.level}</span>
                             </div>
                         ))}
                     </div>

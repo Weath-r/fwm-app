@@ -6,6 +6,8 @@ import PostHogPageView from "./PostHogPageView";
 
 import { Suspense } from "react";
 import DayjsLocaleProvider from "@/providers/DayjsLocaleProvider";
+import { ConfigStoreHydrator } from "@/providers/ConfigStoreHydrator";
+import { getConfiguration, getMenu } from "@/services/getConfiguration";
 
 import { dir } from "i18next";
 import { AppLanguages as languages } from "@/app/appConfig";
@@ -131,10 +133,12 @@ type RootLayoutProps = {
 
 export default async function RootLayout({ children, params }: Readonly<RootLayoutProps>) {
     const { lng } = await params;
+    const [featureFlags, menu] = await Promise.all([getConfiguration(), getMenu()]);
     return (
         <html lang={lng} dir={dir(lng)}>
             <body className={fontFamily.className}>
                 <ClientProvider>
+                    <ConfigStoreHydrator featureFlags={featureFlags} menu={menu} />
                     <DayjsLocaleProvider locale={lng} />
                     <Suspense fallback={<div>Loading...</div>}>
                         <PostHogPageView />
