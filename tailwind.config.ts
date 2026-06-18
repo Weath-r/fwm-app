@@ -8,13 +8,20 @@ const config: Config = {
                 transparent: "transparent",
                 current: "currentColor",
                 secondary: "#F5F0ED",
-                primary: "#3D5361",
-                accent: "#D6B7B5",
-                gray: "#D4C6BD",
+                primary: "#2B3D49",
+                accent: "#3FB6C4",
+                gray: "#9FB3BF",
                 danger: "#BE3144",
                 success: "#00c9b0",
                 info: "#61B4BD",
                 light_white: "#f7f7f7",
+                // myweathr brand palette (see src/assets/brand/BRAND.md)
+                brand: {
+                    slate: "#2B3D49", // primary / structure, text, dark surfaces
+                    cream: "#F5F0ED", // surfaces, light backgrounds
+                    cyan: "#3FB6C4", // accent — sun, dot, active states (use sparingly)
+                    steel: "#9FB3BF", // muted labels, secondary text, dividers
+                },
             },
             backgroundImage: {
                 "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
