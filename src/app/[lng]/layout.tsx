@@ -22,7 +22,7 @@ const fontFamily = Commissioner({
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
-    themeColor: "#3D5361",
+    themeColor: "#2B3D49",
 };
 
 export async function generateStaticParams() {
@@ -94,9 +94,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
             siteName: t("homepage.title"),
             images: [
                 {
-                    url: "https://myweathr.com/assets/myweathr.png",
+                    url: "/assets/metadata/og-card.png",
                     width: 1200,
                     height: 630,
+                    alt: "myweathr",
                 },
             ],
             locale: i18n.language,
@@ -106,7 +107,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
             card: "summary_large_image",
             title: t("homepage.title"),
             description: t("homepage.description"),
-            images: ["https://myweathr.com/assets/myweathr.png"],
+            images: ["/assets/metadata/og-card.png"],
         },
         robots: {
             index: true,
@@ -116,12 +117,16 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         verification: {
             google: "ckL2sSissjkQt1lxgjAeaCPd8uAH9jR00l57zdcd8BU",
         },
-        manifest: "/site.webmanifest",
+        manifest: "/assets/metadata/site.webmanifest",
         category: "weather",
         icons: {
-            icon: "/favicon-32x32.png",
-            shortcut: "/favicon-16x16.png",
-            apple: "/apple-touch-icon.png",
+            icon: [
+                { url: "/assets/metadata/favicon.svg", type: "image/svg+xml" },
+                { url: "/assets/metadata/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+                { url: "/assets/metadata/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+            ],
+            shortcut: "/assets/metadata/favicon.ico",
+            apple: "/assets/metadata/apple-touch-icon.png",
         },
     };
 }
