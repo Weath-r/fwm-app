@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePostHog } from "posthog-js/react";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import { useT } from "@/i18n/client";
 import { Measurements } from "@/types/measurements";
@@ -36,10 +37,17 @@ export default function CityWeatherCard({
     href,
 }: Readonly<CityWeatherCardProps>) {
     const { t } = useT("weather_conditions");
+    const posthog = usePostHog();
 
     return (
         <Link
             href={href}
+            onClick={() =>
+                posthog?.capture("homepage_city_card_clicked", {
+                    city,
+                    href,
+                })
+            }
             className="group flex flex-col rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 h-full"
         >
             <div className="relative h-52 overflow-hidden">

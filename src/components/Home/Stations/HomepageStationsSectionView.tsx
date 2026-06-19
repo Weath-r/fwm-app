@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { usePostHog } from "posthog-js/react";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import { useT } from "@/i18n/client";
 import { Measurements } from "@/types/measurements";
@@ -26,9 +27,19 @@ type HomepageStationsSectionViewProps = {
 };
 
 function StationCard({ card }: { card: StationCardData }) {
+    const posthog = usePostHog();
+
     return (
         <Link
             href={card.href}
+            onClick={() =>
+                posthog?.capture("homepage_station_card_clicked", {
+                    stationId: card.id,
+                    stationName: card.translatedName,
+                    prefecture: card.prefectureKey,
+                    href: card.href,
+                })
+            }
             className="group bg-primary rounded-xl p-3 flex flex-col gap-2 shadow-sm hover:shadow-lg transition-shadow duration-200"
         >
             <div className="flex items-center gap-2">
