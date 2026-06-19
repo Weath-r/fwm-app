@@ -1,6 +1,7 @@
 import { useConfigurationStore } from "@/stores/configurationStore";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 import { useT } from "@/i18n/client";
 import { calculateActiveClass } from "@/helpers/internationalization";
 import HeaderChangeLanguageMenu from "./HeaderChangeLanguageMenu";
@@ -10,6 +11,7 @@ export default function HeaderMenu() {
     const { menu } = useConfigurationStore();
     const { i18n } = useT("common");
     const selectedLanguage = i18n.language;
+    const posthog = usePostHog();
 
     return (
         <section className="flex items-center">
@@ -22,6 +24,12 @@ export default function HeaderMenu() {
                     }`}
                     href={`/${selectedLanguage}/${element.pathName}`}
                     key={element.text}
+                    onClick={() =>
+                        posthog?.capture("header_menu_nav_clicked", {
+                            pathName: element.pathName,
+                            text: element.text,
+                        })
+                    }
                 >
                     {i18n.getFixedT(selectedLanguage, "common")(element.value)}
                 </Link>

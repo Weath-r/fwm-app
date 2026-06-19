@@ -2,6 +2,7 @@ import { useConfigurationStore } from "@/stores/configurationStore";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 import SvgInline from "../Common/SvgInline";
 import { useT } from "@/i18n/client";
 import { calculateActiveClass } from "@/helpers/internationalization";
@@ -10,9 +11,10 @@ import HeaderChangeLanguageMenu from "./HeaderChangeLanguageMenu";
 export default function MobileHeaderMenu() {
     const pathname = usePathname();
     const { menu } = useConfigurationStore();
-    
+
     const { i18n } = useT("common");
     const selectedLanguage = i18n.language;
+    const posthog = usePostHog();
 
     return (
         <NavigationMenu.Root className="relative z-10 flex w-full justify-end pr-4">
@@ -37,6 +39,15 @@ export default function MobileHeaderMenu() {
                                                 calculateActiveClass(pathname, elem.pathName, selectedLanguage) ? "font-bold text-success" : ""
                                             }`}
                                             href={`/${selectedLanguage}/${elem.pathName}`}
+                                            onClick={() =>
+                                                posthog?.capture(
+                                                    "mobile_header_menu_nav_clicked",
+                                                    {
+                                                        pathName: elem.pathName,
+                                                        text: elem.text,
+                                                    }
+                                                )
+                                            }
                                         >
                                             {i18n.getFixedT(selectedLanguage, "common")(elem.value)}
                                         </Link>
