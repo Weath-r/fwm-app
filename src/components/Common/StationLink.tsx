@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { urlStationName } from "@/helpers/createStationName";
-import { StationParamsUrlProp } from "@/types";
 
 type StationLinkProp = {
     pageName: string;
@@ -9,7 +8,7 @@ type StationLinkProp = {
     className?: string;
     children?: React.ReactNode;
     lang: string;
-    paramsQuery?: StationParamsUrlProp[];
+    paramsQuery?: Record<string, string>[];
 };
 
 export default function StationsLink(props: Readonly<StationLinkProp>) {

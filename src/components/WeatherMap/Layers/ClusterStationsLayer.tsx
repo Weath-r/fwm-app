@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useT } from "@/i18n/client";
 
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
-import { StationParamsUrlProp } from "@/types";
 
 import { createClusterCustomIcon } from "@/components/WeatherMap/Markers/ClusterMarkersContent";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/Common/CommonDialog";
@@ -37,15 +36,12 @@ const renderStationInCluster = ({ station, selectedLanguage }: RenderStationInCl
     if (!station.options.customAttr) return null;
     const { assetId, weatherDescription, stationName, stationId }: MarkerCustomAttrs =
         station.options.customAttr;
-    const queryParams: StationParamsUrlProp[] = [{ isForecastEnabled: "true" }];
-
     const triggerStationModal = (
         <StationLink
             pageName="live-weather-conditions"
             lang={selectedLanguage}
             stationId={stationId}
             stationName={stationName || ""}
-            paramsQuery={queryParams}
         >
             <section className="flex cursor-pointer items-center gap-3">
                 <div className="size-[32px]">
