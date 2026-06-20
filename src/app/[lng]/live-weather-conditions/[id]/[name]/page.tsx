@@ -2,7 +2,7 @@ import ClientPageLiveWeatherConditions from "./page.client";
 import { getT } from "@/i18n";
 import { properStationName } from "@/helpers/createStationName";
 import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/helpers/fetchWeatherData";
-import { StationParamsUrlProp } from "@/types";
+import { getConfiguration } from "@/services/getConfiguration";
 
 type LiveWeatherConditionsProps = {
     params: Promise<{
@@ -10,7 +10,6 @@ type LiveWeatherConditionsProps = {
         name: string;
         lng: string;
     }>;
-    searchParams: StationParamsUrlProp;
 };
 
 export async function generateMetadata(props: LiveWeatherConditionsProps) {
@@ -61,9 +60,9 @@ export async function generateMetadata(props: LiveWeatherConditionsProps) {
 }
 
 export default async function StationPageView(props: LiveWeatherConditionsProps) {
-    const searchParams = await props.searchParams;
     const params = await props.params;
-    const isForecastEnabled = !!searchParams.isForecastEnabled || false;
+    const featureFlags = await getConfiguration();
+    const isForecastEnabled = featureFlags.forecasts.modalForecast || false;
     const { lng, id } = params;
 
     const { weatherData } = await FetchLiveWeatherStationData({

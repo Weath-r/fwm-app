@@ -8,14 +8,6 @@ export type FetchStationDataPaginated = {
     limit?: number;
 };
 
-enum StationPageQueryParameters {
-    IS_FORECAST_ENABLED = "isForecastEnabled",
-}
-
-export type StationParamsUrlProp = {
-    [K in StationPageQueryParameters]: string;
-};
-
 export type StationPageCombinedGraph = {
     name: string;
     type: "area" | "spline" | "column";

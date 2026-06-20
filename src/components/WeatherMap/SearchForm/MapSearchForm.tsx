@@ -1,6 +1,6 @@
 "use client";
 import { useStationsProvider } from "@/providers/StationsProvider";
-import { Station, StationParamsUrlProp } from "@/types";
+import { Station } from "@/types";
 import { useT } from "@/i18n/client";
 import { Select, SelectItem } from "@/components/Common/CommonSelect";
 import { useRouter } from "next/navigation";
@@ -9,15 +9,14 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 export default function MapSearchForm() {
     const { stations } = useStationsProvider();
     const router = useRouter();
-    const queryParams: StationParamsUrlProp = { isForecastEnabled: "true" };
     const sortedStations = stations.toSorted((a, b) => a.name.localeCompare(b.name));
 
     const { i18n } = useT("common");
     const selectedLanguage = i18n.language;
 
     const handleOnChange = (selectedStation: string) => {
-        const { name } = stations.find((station) => station.id.toString() === selectedStation) as Station; 
-        router.push(`/${selectedLanguage}/live-weather-conditions/${selectedStation}/${name}?${queryParams.isForecastEnabled}=true`);
+        const { name } = stations.find((station) => station.id.toString() === selectedStation) as Station;
+        router.push(`/${selectedLanguage}/live-weather-conditions/${selectedStation}/${name}`);
     };
 
     return (

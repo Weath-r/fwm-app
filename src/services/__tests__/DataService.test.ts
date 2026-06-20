@@ -19,9 +19,6 @@ jest.mock("@/schemas", () => ({
     WarningLevelsResponsesSchema: {
         parse: jest.fn((data) => data),
     },
-    ConfigurationSchema: {
-        parse: jest.fn((data) => data),
-    },
     WeatherForecastDataResponsesSchema: {
         parse: jest.fn((data) => data),
     },
@@ -514,41 +511,6 @@ describe("DataService", () => {
         });
     });
 
-    describe("Configuration", () => {
-        describe("fetchConfiguration", () => {
-            it("should fetch frontend configurations", async () => {
-                const mockConfig = [
-                    {
-                        id: 1,
-                        value: "some_value",
-                        config: { key: "setting" },
-                    },
-                ];
-
-                mockAxiosInstance.get.mockResolvedValue({
-                    data: { data: mockConfig },
-                });
-
-                const result = await dataService.fetchConfiguration();
-
-                expect(result).toEqual(mockConfig);
-            });
-
-            it("should filter for frontend configurations only", async () => {
-                mockAxiosInstance.get.mockResolvedValue({
-                    data: { data: [] },
-                });
-
-                await dataService.fetchConfiguration();
-
-                const callArg = mockAxiosInstance.get.mock.calls[0][0];
-                expect(callArg).toContain("frontend");
-                expect(callArg).toContain("_eq");
-                expect(callArg).toContain("true");
-            });
-        });
-    });
-
     describe("Assets", () => {
         describe("fetchAssetsFromFolder", () => {
             it("should fetch assets from folder", async () => {
@@ -689,9 +651,8 @@ describe("DataService", () => {
             });
 
             dataService.fetchWeatherStations();
-            dataService.fetchConfiguration();
 
-            expect(mockAxiosInstance.get).toHaveBeenCalledTimes(2);
+            expect(mockAxiosInstance.get).toHaveBeenCalledTimes(1);
         });
     });
 });
