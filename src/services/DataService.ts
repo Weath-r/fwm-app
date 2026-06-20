@@ -5,7 +5,6 @@ import {
     WarningHazard,
     WarningLevel,
     WarningsWithPages,
-    Configurations,
     WeatherForecastResponse,
     FetchStationDataPaginated,
     Assets,
@@ -23,7 +22,6 @@ import {
     WarningsResponsesSchema,
     HazardLevelsResponsesSchema,
     WarningLevelsResponsesSchema,
-    ConfigurationSchema,
     WeatherForecastDataResponsesSchema,
     AssetsSchema,
     HistoricalClimaDataResponse,
@@ -60,7 +58,6 @@ export class DataService {
         WEATHER_FORECASTS: "items/weather_forecasts",
         FTHIOTIDA_FORECASTS: "items/fthiotida_forecasts",
         FROST_DATA: "items/frost_data",
-        CONFIGURATIONS: "items/configurations",
         FILES: "files",
         ASSETS: "assets",
     };
@@ -339,20 +336,6 @@ export class DataService {
 
     private buildFthiotidaForecastsFilter = (): string => {
         return `${this.ENDPOINTS.FTHIOTIDA_FORECASTS}?fields=forecast&sort=-id&limit=10`;
-    };
-
-    // ============================================
-    // CONFIGURATION DOMAIN
-    // ============================================
-    fetchConfiguration = (): Promise<Configurations[]> => {
-        const filter = this.buildConfigurationFilter();
-        return this.fetchWithValidation<Configurations[]>(filter, ConfigurationSchema as any);
-    };
-
-    private buildConfigurationFilter = (): string => {
-        const fields = "id,value,config";
-        const filter = "filter[_and][0][frontend][_eq]=true";
-        return `${this.ENDPOINTS.CONFIGURATIONS}?${filter}&fields=${fields}`;
     };
 
     // ============================================

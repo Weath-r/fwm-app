@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import StationLink from "@/components/Common/StationLink";
 import { useAppStore } from "@/hooks/useAppStore";
 import { useMapStore } from "@/stores/mapStore";
-import { MAP_CONFIG, Station, StationParamsUrlProp } from "@/types";
+import { MAP_CONFIG, Station } from "@/types";
 import { getReversedCoordinates } from "@/utils/weatherDataFormatUtils";
 import MapWarningsGeojsonGroup from "./MapWarningsGeojsonGroup";
 import MapMarketWithLabel from "./Markers/MapMarkerWithLabel";
@@ -29,8 +29,6 @@ const ClusterStationsLayer = dynamic(
 );
 
 const getStationsMarkers = function (stations: Station[], selectedLanguage: string) {
-    const queryParams: StationParamsUrlProp[] = [{ isForecastEnabled: "true" }];
-
     return stations.map((station) => {
         return (
             <StationLink
@@ -39,7 +37,6 @@ const getStationsMarkers = function (stations: Station[], selectedLanguage: stri
                 lang={selectedLanguage}
                 stationId={station.id}
                 stationName={station.name}
-                paramsQuery={queryParams}
             >
                 <MapMarketWithLabel
                     position={getReversedCoordinates(station.location.coordinates)}
