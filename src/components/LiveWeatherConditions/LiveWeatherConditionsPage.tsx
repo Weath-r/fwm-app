@@ -3,7 +3,6 @@ import { WeatherData } from "@/types";
 import { StationModalHeading } from "@/components/LiveWeatherConditions/components/StationModalHeading";
 import { StationModalBody } from "@/components/LiveWeatherConditions/components/StationModalBody";
 import { StationWeatherForecastDetails } from "./StationWeatherForecastDetails";
-import { BackToHomepageButton } from "./buttons/BackToHomepageButton";
 import StationLink from "@/components/Common/StationLink";
 
 import { useConfigurationStore } from "@/stores/configurationStore";
@@ -30,14 +29,12 @@ export default function LiveWeatherConditionsPage({ weatherData, params }: Stati
 
     return weatherData.map((elem: WeatherData) => {
         return (
-            <div className="relative flex h-full flex-col gap-2 text-black" key={elem.station.id}>
-                <BackToHomepageButton language={params.lng} />
-                <StationModalHeading {...elem} />
-
-                <StationModalBody {...elem} />
-                <StationWeatherForecastDetails {...fullForecastData} />
+            <div className="relative flex h-full flex-col" key={elem.station.id}>
+                <StationModalHeading {...elem} variant="page" language={params.lng} />
+                <StationModalBody {...elem} variant="page" />
+                <StationWeatherForecastDetails {...fullForecastData} variant="page" />
                 {isFullStationPageEnabled && (
-                    <div className="flex justify-center">
+                    <div className="flex justify-center px-4 pb-6 pt-1">
                         <StationLink
                             stationId={elem.station.id}
                             stationName={elem.station.name}
