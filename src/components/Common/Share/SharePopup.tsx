@@ -38,8 +38,8 @@ export default function SharePopup({ shareData, onClose, onError }: SharePopupPr
 
     return (
         <Popover open={true} onOpenChange={(open) => !open && onClose()}>
-            <PopoverTrigger></PopoverTrigger>
-            <PopoverContent className="PopoverContent bg-white p-2 border-primary border shadow-2xl rounded mr-4">
+            <PopoverTrigger className="sr-only" aria-hidden tabIndex={-1} />
+            <PopoverContent className="PopoverContent z-20 bg-white p-2 border-primary border shadow-2xl rounded mr-4">
                 <div className="flex flex-col p-4 pt-0 gap-4">
                     <h3 className="font-bold text-lg text-primary mt-2">
                         {i18n.getFixedT(selectedLanguage, "common", "SharePopup")("popupTitle")}
