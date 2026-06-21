@@ -17,7 +17,7 @@ export default  function StationPageView({ params, weatherData }: LiveWeatherCon
     return (
         <main className="flex flex-1 flex-col">
             <div className="mx-2 md:container md:mx-auto">
-                <div className="my-4 w-full overflow-x-scroll rounded-xl bg-white p-4 drop-shadow-md md:overflow-x-auto">
+                <div className="my-4 w-full overflow-hidden rounded-xl bg-white drop-shadow-md">
                     <LiveWeatherConditionsPage params={params} weatherData={weatherData} />
                 </div>
             </div>

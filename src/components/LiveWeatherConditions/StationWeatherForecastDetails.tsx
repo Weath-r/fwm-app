@@ -43,7 +43,10 @@ const setCurrentDateActive = (dateNow: Date): string => {
     return activeDate;
 };
 
-export function StationWeatherForecastDetails(elem: StationPageForecastData) {
+export function StationWeatherForecastDetails({
+    variant = "page",
+    ...elem
+}: StationPageForecastData & { variant?: "page" | "modal" }) {
     const { i18n } = useT("stationModal");
     const selectedLanguage = i18n.language;
     const title = i18n.getFixedT(selectedLanguage, "stationModal")("nextDays");
@@ -116,13 +119,15 @@ export function StationWeatherForecastDetails(elem: StationPageForecastData) {
     };
 
     return (
-        <div className="p-1 pt-0">
-            <h4 className="mb-4 text-sm font-bold uppercase text-primary">{title}</h4>
+        <div className="px-4 pb-6 pt-5">
+            <h4 className="mb-3 text-xs font-extrabold uppercase tracking-wide text-primary">
+                {title}
+            </h4>
             {elem.forecast.length > 0 && (
                 <section>
-                    <div className="flex gap-2 overflow-x-auto">
+                    <div className="flex gap-2 overflow-x-auto pb-1.5">
                         {Object.keys(structuredForecast).map((item, index, datesArray) => {
-                            const activeClass = activeBtn === item ? "!bg-info text-white" : "";
+                            const isActive = activeBtn === item;
                             const shouldRenderDate =
                                 index === datesArray.length - 1
                                     ? true
@@ -132,10 +137,14 @@ export function StationWeatherForecastDetails(elem: StationPageForecastData) {
                                       : false;
                             return (
                                 shouldRenderDate && (
-                                    <div key={item} className="w-full">
+                                    <div key={item} className="relative w-full min-w-[76px]">
                                         <CommonButton
                                             color="primary"
-                                            className={`w-full rounded-lg bg-light_white p-2 text-sm ${activeClass}`}
+                                            className={`w-full rounded-xl p-2 text-sm ${
+                                                isActive
+                                                    ? "!bg-primary !text-white"
+                                                    : "bg-light_white"
+                                            }`}
                                             handleClick={() =>
                                                 handleDateSelectionBtn({
                                                     date: item,
@@ -154,17 +163,24 @@ export function StationWeatherForecastDetails(elem: StationPageForecastData) {
                                                 </div>
                                             </div>
                                         </CommonButton>
+                                        {isActive && (
+                                            <span className="pointer-events-none absolute inset-x-[22%] bottom-[-5px] h-[3px] rounded bg-accent shadow-[0_0_12px_#3FB6C4]" />
+                                        )}
                                     </div>
                                 )
                             );
                         })}
                     </div>
                     <div
-                        className="my-2 h-fit max-h-[350px] overflow-y-auto md:max-h-[300px]"
+                        className={`my-2 h-fit ${
+                            variant === "modal"
+                                ? ""
+                                : "max-h-[350px] overflow-y-auto md:max-h-[300px]"
+                        }`}
                         key={forecastDate}
                     >
                         {isForecastSummaryEnabled && (
-                            <div className="bg-white p-2 rounded-md">
+                            <div className="mb-3 rounded-xl border border-accent/20 bg-secondary/60 p-3">
                                 {structuredForecast[forecastDate] && (
                                     <ForecastSummary
                                         forecast={structuredForecast}
@@ -196,9 +212,9 @@ export function StationWeatherForecastDetails(elem: StationPageForecastData) {
                                         shouldRenderForecast && (
                                             <div
                                                 key={index}
-                                                className="my-4 flex items-center justify-between gap-2 rounded-lg p-2 shadow"
+                                                className="flex items-center justify-between gap-2 border-b border-[#eef1f2] py-3 last:border-b-0"
                                             >
-                                                <p className="text-primary opacity-60">
+                                                <p className="text-primary/60">
                                                     {convertTimeStampToDate(forecast.time)}
                                                 </p>
                                                 <div className="size-10">

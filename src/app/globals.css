@@ -59,6 +59,59 @@ textarea::placeholder {
     opacity: 0.5;
 }
 
+/* ===== Live Weather Conditions — hero & metric pills ===== */
+/* Round translucent control buttons over the hero photo. The Share trigger
+   renders its own <button>, so target it here too. */
+.lw-icon-btn,
+.lw-share > button {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9999px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(6px);
+    transition:
+        background 0.16s ease,
+        transform 0.16s ease;
+}
+.lw-icon-btn:hover,
+.lw-share > button:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateY(-1px);
+}
+
+/* Neutral-slate duotone tile holding each metric icon. */
+.lw-metric-tile {
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(43, 61, 73, 0.12), rgba(43, 61, 73, 0.04));
+    box-shadow: inset 0 0 0 1px rgba(43, 61, 73, 0.05);
+}
+
+/* Staggered rise for the metric pills (delay set inline per pill). */
+.lw-pill {
+    animation: lwRise 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+@keyframes lwRise {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .lw-pill {
+        animation: none;
+    }
+}
+
 .AccordionChevron {
     transition: transform 300ms;
 }

@@ -50,6 +50,8 @@ export default function LiveWeatherConditionsModalPage({ params, weatherData }: 
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger className="sr-only">Dialog trigger</DialogTrigger>
             <DialogContent
+                flush
+                scrollable
                 dialogTitle={dialogTitle}
                 closeModalButton={<CloseModalButton />}
                 onClose={() => {
@@ -60,15 +62,12 @@ export default function LiveWeatherConditionsModalPage({ params, weatherData }: 
                 {weatherData &&
                     weatherData.map((elem: WeatherData) => {
                         return (
-                            <div
-                                className="relative flex h-screen flex-col gap-2 text-black"
-                                key={elem.station.id}
-                            >
-                                <StationModalHeading {...elem} />
-                                <StationModalBody {...elem} />
-                                <StationWeatherForecastDetails {...fullForecastData} />
+                            <div className="relative flex flex-col" key={elem.station.id}>
+                                <StationModalHeading {...elem} variant="modal" language={params.lng} />
+                                <StationModalBody {...elem} variant="modal" />
+                                <StationWeatherForecastDetails {...fullForecastData} variant="modal" />
                                 {isFullStationPageEnabled && (
-                                    <div className="flex justify-center">
+                                    <div className="flex justify-center px-4 pb-6 pt-1">
                                         <StationLink
                                             stationId={elem.station.id}
                                             stationName={elem.station.name}
