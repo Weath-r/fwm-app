@@ -3,18 +3,17 @@ import acceptLanguage from "accept-language";
 import { fallbackLng, cookieName, headerName } from "@/i18n/settings";
 import configuration from "@/app/appConfig";
 
-const languages = configuration.languages.map(lang => lang.id);
+const languages = configuration.languages.map((lang) => lang.id);
 acceptLanguage.languages(languages);
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|sitemap|assets|favicon.ico|sw.js).*)"],
+    matcher: ["/((?!api|_next/static|_next/image|sitemap|robots.txt|assets|favicon.ico|sw.js).*)"],
 };
 
 export function proxy(req: NextRequest) {
-
     if (req.nextUrl.pathname.indexOf("icon") > -1 || req.nextUrl.pathname.indexOf("chrome") > -1) {
         return NextResponse.next();
-    } 
+    }
     let lng: string | undefined | null;
     if (req.cookies.has(cookieName)) {
         lng = acceptLanguage.get(req.cookies.get(cookieName)?.value);
@@ -31,11 +30,10 @@ export function proxy(req: NextRequest) {
     headers.set(headerName, lngInPath || lng);
 
     // Redirect if lng in path is not supported
-    if (
-        !lngInPath &&
-        !req.nextUrl.pathname.startsWith("/_next")
-    ) {
-        return NextResponse.redirect(new URL(`/${lng}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url));
+    if (!lngInPath && !req.nextUrl.pathname.startsWith("/_next")) {
+        return NextResponse.redirect(
+            new URL(`/${lng}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url)
+        );
     }
 
     if (req.headers.has("referer")) {
