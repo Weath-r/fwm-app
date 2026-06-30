@@ -45,6 +45,7 @@ export async function generateMetadata(props: StationPageProps) {
             languages: {
                 en: `/en/station/${params.id}/${params.name}`,
                 el: `/el/station/${params.id}/${params.name}`,
+                "x-default": `/en/station/${params.id}/${params.name}`,
             },
         },
         openGraph: {

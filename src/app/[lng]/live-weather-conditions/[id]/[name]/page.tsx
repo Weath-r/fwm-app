@@ -46,6 +46,7 @@ export async function generateMetadata(props: LiveWeatherConditionsProps) {
             languages: {
                 en: `/en/live-weather-conditions/${params.id}/${params.name}`,
                 el: `/el/live-weather-conditions/${params.id}/${params.name}`,
+                "x-default": `/en/live-weather-conditions/${params.id}/${params.name}`,
             },
         },
         openGraph: {
