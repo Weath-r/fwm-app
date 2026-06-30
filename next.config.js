@@ -2,6 +2,7 @@
 const nextConfig = {
     output: "standalone",
     allowedDevOrigins: ["192.168.68.105"],
+    poweredByHeader: false,
     images: {
         dangerouslyAllowSVG: true,
         remotePatterns: [
