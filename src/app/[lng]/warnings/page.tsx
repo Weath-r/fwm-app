@@ -1,3 +1,4 @@
+import configuration from "@/app/appConfig";
 import ClientPageWarnings from "./page.client";
 import { getT } from "@/i18n";
 
@@ -5,7 +6,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
     const { lng } = await params;
     const { t, i18n } = await getT("pages");
     const keywords_en = [
-        "weather warnings Greece", 
+        "weather warnings Greece",
         "Greece weather alerts",
         "severe weather Greece",
         "storm alerts Greece",
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         "severe weather Central Greece",
         "storm alerts Central Greece",
         "extreme weather warnings Central Greece",
-        "alerts MyWeathr"
+        "alerts MyWeathr",
     ];
     const keywords_el = [
         "προειδοποιήσεις καιρού Ελλάδα",
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         "καταιγίδες Ελλάδα",
         "ακραία φαινόμενα Στερεά Ελλάδα",
         "καταιγίδες Στερεά Ελλάδα",
-        "alerts MyWeathr"
+        "alerts MyWeathr",
     ];
     return {
         title: t("warnings.title"),
@@ -41,11 +42,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         openGraph: {
             title: t("warnings.title"),
             description: t("warnings.description"),
-            url: `https://myweathr.com/${lng}/warnings`,
+            url: `${configuration.metadata.site_url}/${lng}/warnings`,
             type: "website",
         },
     };
-};
+}
 
 export default function Warnings() {
     return <ClientPageWarnings></ClientPageWarnings>;

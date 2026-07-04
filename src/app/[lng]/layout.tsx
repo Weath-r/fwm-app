@@ -13,6 +13,9 @@ import { dir } from "i18next";
 import { AppLanguages as languages } from "@/app/appConfig";
 import { getT } from "@/i18n";
 import type { Viewport } from "next";
+import JsonLd from "@/components/Seo/JsonLd";
+import { buildSiteGraph } from "@/helpers/seo/structuredData";
+import configuration from "@/app/appConfig";
 
 const fontFamily = Commissioner({
     subsets: ["greek"],
@@ -72,9 +75,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         "πρόγνωση καιρού Θεσσαλία",
     ];
     return {
-        metadataBase: new URL("https://myweathr.com"),
+        metadataBase: new URL(configuration.metadata.site_url),
         title: {
-            template: "%s | myWEATHR",
+            template: "%s | " + configuration.metadata.site_name,
             default: t("homepage.title"),
         },
         description: t("homepage.description"),
@@ -90,7 +93,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         openGraph: {
             title: t("homepage.title"),
             description: t("homepage.description"),
-            url: "https://myweathr.com",
+            url: configuration.metadata.site_url,
             siteName: t("homepage.title"),
             images: [
                 {
@@ -138,10 +141,25 @@ type RootLayoutProps = {
 
 export default async function RootLayout({ children, params }: Readonly<RootLayoutProps>) {
     const { lng } = await params;
-    const [featureFlags, menu] = await Promise.all([getConfiguration(), getMenu()]);
+    const [featureFlags, menu, { t }] = await Promise.all([
+        getConfiguration(),
+        getMenu(),
+        getT("pages"),
+    ]);
+    const siteGraph = buildSiteGraph(lng, {
+        name: t("structuredData.appName"),
+        description: t("structuredData.appDescription"),
+        featureList: [
+            t("structuredData.features.liveConditions"),
+            t("structuredData.features.interactiveMap"),
+            t("structuredData.features.forecasts"),
+            t("structuredData.features.warnings"),
+        ],
+    });
     return (
         <html lang={lng} dir={dir(lng)}>
             <body className={fontFamily.className}>
+                <JsonLd data={siteGraph} />
                 <ClientProvider>
                     <ConfigStoreHydrator featureFlags={featureFlags} menu={menu} />
                     <DayjsLocaleProvider locale={lng} />
