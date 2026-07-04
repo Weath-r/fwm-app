@@ -1,3 +1,4 @@
+import configuration from "@/app/appConfig";
 import FthiotidaForecastClientPage from "./page.client";
 import { getT } from "@/i18n";
 
@@ -23,29 +24,29 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         "Parnassos weather",
         "Parnassos weather app",
         "Parnassos weather forecast",
-        "weather tomorrow Parnassos"
+        "weather tomorrow Parnassos",
     ];
     const keywords_el = [
         "καιρός Φθιώτιδα",
-        "πρόγνωση καιρού Λαμία", 
+        "πρόγνωση καιρού Λαμία",
         "εφαρμογή καιρού Λαμία",
         "καιρός αύριο Φθιώτιδα",
         "καιρός Στυλίδα",
-        "πρόγνωση καιρού Στυλίδα", 
+        "πρόγνωση καιρού Στυλίδα",
         "εφαρμογή καιρού Στυλίδα",
         "καιρός αύριο Στυλίδα",
         "καιρός Ράχες",
-        "πρόγνωση καιρού Ράχες", 
+        "πρόγνωση καιρού Ράχες",
         "εφαρμογή καιρού Ράχες",
         "καιρός αύριο Ράχες",
         "καιρός Αταλάντη",
-        "πρόγνωση καιρού Αταλάντη", 
+        "πρόγνωση καιρού Αταλάντη",
         "εφαρμογή καιρού Αταλάντη",
         "καιρός αύριο Αταλάντη",
         "καιρός Παρνασσός",
-        "πρόγνωση καιρού Παρνασσός", 
+        "πρόγνωση καιρού Παρνασσός",
         "εφαρμογή καιρού Παρνασσός",
-        "καιρός αύριο Παρνασσός"
+        "καιρός αύριο Παρνασσός",
     ];
     return {
         title: t("fthiotidaForecast.title"),
@@ -62,14 +63,12 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         openGraph: {
             title: t("fthiotidaForecast.title"),
             description: t("fthiotidaForecast.description"),
-            url: `https://myweathr.com/${lng}/fthiotida-forecast`,
+            url: `${configuration.metadata.site_url}/${lng}/fthiotida-forecast`,
             type: "website",
         },
     };
-};
+}
 
 export default function Warnings() {
-    return (
-        <FthiotidaForecastClientPage></FthiotidaForecastClientPage>
-    );
+    return <FthiotidaForecastClientPage></FthiotidaForecastClientPage>;
 }

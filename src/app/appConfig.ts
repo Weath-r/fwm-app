@@ -9,6 +9,10 @@ type AppConfig = {
     defaultLocale: string;
     assetsVersion: string;
     baseMapToken: string;
+    metadata: {
+        site_name: string;
+        site_url: string;
+    };
 };
 
 const configuration: AppConfig = {
@@ -29,6 +33,10 @@ const configuration: AppConfig = {
         },
     ],
     defaultLocale: "en",
+    metadata: {
+        site_name: "myWEATHR",
+        site_url: "https://myweathr.com",
+    },
 };
 
 export const AppLanguages = configuration.languages.map((lang) => lang.id);

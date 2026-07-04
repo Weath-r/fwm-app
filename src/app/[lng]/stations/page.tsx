@@ -1,3 +1,4 @@
+import configuration from "@/app/appConfig";
 import ClientPageStations from "./page.client";
 import { getT } from "@/i18n";
 
@@ -38,11 +39,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         openGraph: {
             title: t("stations.title"),
             description: t("stations.description"),
-            url: `https://myweathr.com/${lng}/stations`,
+            url: `${configuration.metadata.site_url}/${lng}/stations`,
             type: "website",
         },
     };
-};
+}
 
 export default function Stations() {
     return <ClientPageStations></ClientPageStations>;
