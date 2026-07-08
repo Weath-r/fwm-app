@@ -4,7 +4,7 @@ import noDataToDisplay from "highcharts/modules/no-data-to-display";
 import windbarb from "highcharts/modules/windbarb";
 import { useEffect, useState } from "react";
 import { dateOnlyMonthYear } from "@/utils/dateTimeUtils";
-import { windDirectionCalc } from "@/helpers/windDirectionCalculator";
+import { windDirectionCalc } from "@/helpers/weatherCalculations";
 import { GraphVariables, GraphVariablesSuffixes } from "@/types";
 import { useT } from "@/i18n/client";
 

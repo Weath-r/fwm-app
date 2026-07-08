@@ -11,7 +11,7 @@ import {
     HeartIcon,
     ChevronLeftIcon,
 } from "@heroicons/react/24/solid";
-import { windDirectionCalc } from "@/helpers/windDirectionCalculator";
+import { windDirectionCalc } from "@/helpers/weatherCalculations";
 import { useAppStore } from "@/hooks/useAppStore";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import HeroBackground from "./HeroBackground";

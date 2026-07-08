@@ -12,7 +12,7 @@ import {
     resolveDaySummary,
     resolvePeriodSummaries,
 } from "@/helpers/forecastSignals/calculateForecastSignalsText";
-import { windDirectionCalc } from "@/helpers/windDirectionCalculator";
+import { windDirectionCalc } from "@/helpers/weatherCalculations";
 import { fullDateNoTime } from "@/utils/dateTimeUtils";
 import { ForecastSignalTranslationText } from "./ForecastSignalTranslationText";
 

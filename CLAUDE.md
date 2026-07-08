@@ -249,7 +249,7 @@ src/
 │   ├── general.tsx
 │   ├── internationalization.tsx
 │   ├── createStationName.tsx
-│   ├── windDirectionCalculator.tsx
+│   ├── weatherCalculations.ts
 │   ├── graphHelpers.tsx
 │   ├── assetsHandling.tsx
 │   ├── animations.tsx
