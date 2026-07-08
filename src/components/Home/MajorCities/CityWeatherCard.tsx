@@ -5,6 +5,10 @@ import { usePostHog } from "posthog-js/react";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import { useT } from "@/i18n/client";
 import { Measurements } from "@/types/measurements";
+import { EnvironmentalData } from "@/types";
+import SVGInline from "@/components/Common/SvgInline";
+import { UVCalculateCategory } from "@/helpers/weatherCalculations";
+import { UVColorList } from "@/constants/Colors";
 
 type ForecastSlot = {
     time: string;
@@ -23,6 +27,7 @@ export type CityWeatherCardProps = {
     rainMm: number;
     forecast: ForecastSlot[];
     href: string;
+    environmental: EnvironmentalData;
 };
 
 export default function CityWeatherCard({
@@ -35,9 +40,15 @@ export default function CityWeatherCard({
     rainMm,
     forecast,
     href,
+    environmental,
 }: Readonly<CityWeatherCardProps>) {
     const { t } = useT("weather_conditions");
+    const { t: tUv } = useT("uv");
     const posthog = usePostHog();
+
+    const uvIndex = Math.ceil(environmental.hourly.uv_index[0]);
+    const uvCategory = UVCalculateCategory(uvIndex);
+    const uvColor = UVColorList[uvCategory];
 
     return (
         <Link
@@ -94,6 +105,42 @@ export default function CityWeatherCard({
                             {t("rain")}
                         </p>
                     </div>
+                </div>
+
+                <div className="border-t border-secondary/20" />
+                <div className="flex items-center justify-center gap-2 text-secondary py-1 text-sm">
+                    {uvIndex > 0 && (
+                        <>
+                            <div className="text-xs">
+                                <SVGInline
+                                    path="/weather_icons/v2/uv.svg"
+                                    title="UV Index"
+                                    style={{ stroke: uvColor, opacity: uvIndex > 0 ? 1 : 0.4 }}
+                                    className="inline-block size-5"
+                                />
+                            </div>
+                            <p className="flex justify-between items-center gap-1 text-xs">
+                                <span>UV</span>
+                                <span className="font-bold">{uvIndex}</span> ·{" "}
+                                <span className="font-bold" style={{ color: uvColor }}>
+                                    {tUv(`category.${uvCategory}`)}
+                                </span>
+                            </p>
+                        </>
+                    )}
+                    {uvIndex === 0 && (
+                        <>
+                            <div className="text-xs">
+                                <SVGInline
+                                    path="/weather_icons/v2/uv_zero.svg"
+                                    title="UV Index"
+                                    style={{ fill: uvColor, opacity: uvIndex > 0 ? 1 : 0.4 }}
+                                    className="inline-block size-5"
+                                />
+                            </div>
+                            <p className="text-secondary/40 text-sm">{tUv("compact.night")}</p>
+                        </>
+                    )}
                 </div>
 
                 <div className="border-t border-secondary/20" />

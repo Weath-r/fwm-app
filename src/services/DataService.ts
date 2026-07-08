@@ -12,6 +12,7 @@ import {
     ClimateWeatherData,
     FrostData,
     WeatherHistoricalData,
+    EnvironmentalData,
 } from "@/types";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosInstance, AxiosResponse } from "axios";
@@ -27,6 +28,7 @@ import {
     HistoricalClimaDataResponse,
     FrostinDataResponsesSchema,
     HistoricalDataResponse,
+    EnvironmentalDataSchema,
 } from "@/schemas";
 
 type HandleResponseParams<T> = {
@@ -58,6 +60,7 @@ export class DataService {
         WEATHER_FORECASTS: "items/weather_forecasts",
         FTHIOTIDA_FORECASTS: "items/fthiotida_forecasts",
         FROST_DATA: "items/frost_data",
+        ENVIRONMENTAL_DATA: "items/environmental_data",
         FILES: "files",
         ASSETS: "assets",
     };
@@ -169,7 +172,7 @@ export class DataService {
     // Weather data filter builders
     private buildWeatherDataByStationFilter = (station_id: number): string => {
         const fields =
-            "date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.elevation,weather_station_id.translations.languages_code,weather_station_id.translations.name,weather_station_id.climatology_location_id,weather_station_id.station_type.label,weather_station_id.station_type.value,weather_station_id.municipality_id,weather_station_id.location,weather_station_id.header_bg";
+            "date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.elevation,weather_station_id.translations.languages_code,weather_station_id.translations.name,weather_station_id.climatology_location_id,weather_station_id.station_type.label,weather_station_id.station_type.value,weather_station_id.municipality_id,weather_station_id.location,weather_station_id.header_bg,weather_station_id.cluster";
         const filter = `filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&limit=1`;
         return `${this.ENDPOINTS.WEATHER_DATA}?${filter}&fields=${fields}`;
     };
@@ -185,6 +188,24 @@ export class DataService {
             "date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.elevation,weather_station_id.translations.languages_code,weather_station_id.translations.name";
         const filter = `filter[_and][0][weather_station_id][id][_eq]=${station_id}&sort=-date_created&fields=${fields}&filter[_and][0][_and][1][date_created][_lte]=${end_date}&filter[_and][0][_and][2][date_created][_gte]=${start_date}&page=${page}&limit=${limit}`;
         return `${this.ENDPOINTS.WEATHER_DATA}?${filter}`;
+    };
+
+    // ============================================
+    // ENVIRONMENTAL DATA DOMAIN
+    // ============================================
+    fetchEnvironmentalDataByStation = (cluster_id: number): Promise<EnvironmentalData[]> => {
+        const filter = this.buildEnvironmentalDataByStationFilter(cluster_id);
+        return this.fetchWithValidation<EnvironmentalData[]>(
+            filter,
+            EnvironmentalDataSchema as any
+        );
+    };
+
+    // Environmental data filter builders
+    private buildEnvironmentalDataByStationFilter = (cluster_id: number): string => {
+        const fields = "cluster,date_updated,current,hourly,units";
+        const filter = `filter[_and][0][cluster][id][_eq]=${cluster_id}`;
+        return `${this.ENDPOINTS.ENVIRONMENTAL_DATA}?${filter}&fields=${fields}`;
     };
 
     // ============================================

@@ -1,6 +1,7 @@
-import { windDirectionCalc } from "../windDirectionCalculator";
+import { windDirectionCalc, UVCalculateCategory } from "../weatherCalculations";
+import { UVCategory } from "@/types";
 
-describe("windDirectionCalculator", () => {
+describe("weatherCalculations", () => {
     describe("windDirectionCalc", () => {
         it("should be a function", () => {
             expect(typeof windDirectionCalc).toBe("function");
@@ -152,6 +153,58 @@ describe("windDirectionCalculator", () => {
                 const result = windDirectionCalc(degree);
                 expect(validDirections).toContain(result);
             }
+        });
+    });
+
+    describe("UVCalculateCategory", () => {
+        it("should be a function", () => {
+            expect(typeof UVCalculateCategory).toBe("function");
+        });
+
+        it("should return night for a UV index of exactly 0", () => {
+            expect(UVCalculateCategory(0)).toBe(UVCategory.night);
+        });
+
+        it("should return low for UV indexes between 0 and 3 (exclusive of 3)", () => {
+            expect(UVCalculateCategory(0.5)).toBe(UVCategory.low);
+            expect(UVCalculateCategory(1)).toBe(UVCategory.low);
+            expect(UVCalculateCategory(2.9)).toBe(UVCategory.low);
+        });
+
+        it("should return moderate for UV indexes between 3 and 6 (exclusive of 6)", () => {
+            expect(UVCalculateCategory(3)).toBe(UVCategory.moderate);
+            expect(UVCalculateCategory(4.5)).toBe(UVCategory.moderate);
+            expect(UVCalculateCategory(5.9)).toBe(UVCategory.moderate);
+        });
+
+        it("should return high for UV indexes between 6 and 8 (exclusive of 8)", () => {
+            expect(UVCalculateCategory(6)).toBe(UVCategory.high);
+            expect(UVCalculateCategory(7)).toBe(UVCategory.high);
+            expect(UVCalculateCategory(7.9)).toBe(UVCategory.high);
+        });
+
+        it("should return veryHigh for UV indexes between 8 and 11 (exclusive of 11)", () => {
+            expect(UVCalculateCategory(8)).toBe(UVCategory.veryHigh);
+            expect(UVCalculateCategory(9)).toBe(UVCategory.veryHigh);
+            expect(UVCalculateCategory(10.9)).toBe(UVCategory.veryHigh);
+        });
+
+        it("should return extreme for UV indexes of 11 and above", () => {
+            expect(UVCalculateCategory(11)).toBe(UVCategory.extreme);
+            expect(UVCalculateCategory(15)).toBe(UVCategory.extreme);
+            expect(UVCalculateCategory(100)).toBe(UVCategory.extreme);
+        });
+
+        it("should be consistent for the same input", () => {
+            expect(UVCalculateCategory(5)).toBe(UVCalculateCategory(5));
+        });
+
+        // Documents current (surprising) behavior: any negative, non-zero UV index
+        // falls through every case to the default branch and is reported as extreme,
+        // because the switch compares booleans (uvIndex > 0) against (uvIndex < N).
+        it("should currently report extreme for negative UV indexes (known quirk)", () => {
+            expect(UVCalculateCategory(-1)).toBe(UVCategory.extreme);
+            expect(UVCalculateCategory(-0.5)).toBe(UVCategory.extreme);
         });
     });
 });

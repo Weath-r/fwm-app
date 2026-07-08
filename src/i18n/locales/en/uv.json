@@ -1,0 +1,27 @@
+{
+    "title": "UV index",
+    "whenTomorrow": "· tomorrow",
+    "nowPeak": "{{value}} now · peak {{peak}} around {{time}}",
+    "category": {
+        "low": "Low",
+        "moderate": "Moderate",
+        "high": "High",
+        "veryHigh": "Very High",
+        "extreme": "Extreme"
+    },
+    "advice": {
+        "low": "Minimal protection needed today.",
+        "moderate": "Sunglasses on bright spells; SPF 30 if you're out a while.",
+        "high": "SPF 30+, hat and shade around midday.",
+        "veryHigh": "Extra protection — try to avoid the sun 11:00–16:00.",
+        "extreme": "Take every precaution — avoid being outside at midday."
+    },
+    "night": {
+        "line": "The sun's off duty 🌙 — UV picks back up at sunrise.",
+        "advice": "Save the sunscreen for the morning."
+    },
+    "compact": {
+        "reading": "UV {{value}} · {{category}}",
+        "night": "UV's off duty"
+    }
+}
