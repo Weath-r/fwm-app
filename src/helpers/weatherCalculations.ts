@@ -1,4 +1,4 @@
-import { UVCategory } from "@/types";
+import { UVCategory, AirQualityCategory } from "@/types";
 
 export const windDirectionCalc = (degree: number): string => {
     const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
@@ -25,5 +25,22 @@ export const UVCalculateCategory = (uvIndex: number) => {
             return UVCategory.veryHigh;
         default:
             return UVCategory.extreme;
+    }
+};
+
+export const AirQualityCalculateCategory = (aqi: number) => {
+    switch (aqi > 0) {
+        case aqi <= 20:
+            return AirQualityCategory.good;
+        case aqi <= 40:
+            return AirQualityCategory.fair;
+        case aqi <= 60:
+            return AirQualityCategory.moderate;
+        case aqi <= 80:
+            return AirQualityCategory.poor;
+        case aqi <= 100:
+            return AirQualityCategory.veryPoor;
+        default:
+            return AirQualityCategory.extremelyPoor;
     }
 };

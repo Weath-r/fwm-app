@@ -86,21 +86,18 @@ export type EnvironmentalData = {
         time: string;
         interval: number;
         uv_index: number;
-        pm10: number;
-        pm2_5: number;
+        european_aqi: number;
     };
     hourly: {
         time: string[];
         uv_index: number[];
-        pm10: number[];
-        pm2_5: number[];
+        european_aqi: number[];
     };
     units: {
         time: string;
         interval: string;
         uv_index: string;
-        pm10: string;
-        pm2_5: string;
+        european_aqi: string;
     };
     date_updated: string;
 };

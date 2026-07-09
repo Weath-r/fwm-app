@@ -272,6 +272,22 @@ export default async function Stations(props: AboutUsParams) {
                         </p>
                     </div>
                     <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md lg:w-2/3">
+                        <h4 className="text-lg font-semibold">Environmental Data</h4>
+                        <p className="mb-2 mt-4">
+                            MyWeathr also provides environmental data, including air quality and UV
+                            index information. The air quality data is sourced from the{" "}
+                            <a
+                                href="https://open-meteo.com"
+                                target="_blank"
+                                className="text-success"
+                                rel="noreferrer"
+                            >
+                                OpenMeteo.com
+                            </a>{" "}
+                            and are updated every four hours.
+                        </p>
+                    </div>
+                    <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md lg:w-2/3">
                         <h4 className="text-lg font-semibold">Special shouts</h4>
                         <ul className="mt-4 flex flex-col gap-2 pl-4">
                             <li>
@@ -522,6 +538,23 @@ export default async function Stations(props: AboutUsParams) {
                             και ανανεώνονται <span className="font-semibold">ωριαία</span>. Μπορείτε
                             να δείτε την συνολική λίστα των προειδοποιήσεων που προσφέρουν στην
                             ιστοσελίδα τους.
+                        </p>
+                    </div>
+                    <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md lg:w-2/3">
+                        <h4 className="text-lg font-semibold">Περιβαλλοντικά Δεδομένα</h4>
+                        <p className="mb-2 mt-4">
+                            Το MyWeathr επίσης προσφέρει περιβαλλοντικά δεδομένα,
+                            συμπεριλαμβανομένων των πληροφοριών για την ποιότητα του αέρα και το
+                            δείκτη UV. Τα δεδομένα της ποιότητας του αέρα προέρχονται από το{" "}
+                            <a
+                                href="https://open-meteo.com"
+                                target="_blank"
+                                className="text-success"
+                                rel="noreferrer"
+                            >
+                                OpenMeteo.com
+                            </a>{" "}
+                            και ανανεώνονται κάθε τέσσερις ώρες.
                         </p>
                     </div>
                     <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md lg:w-2/3">
