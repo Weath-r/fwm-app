@@ -2,7 +2,7 @@
 import { WeatherData, Measurements, WeatherConditions } from "@/types";
 import { useT } from "@/i18n/client";
 import SvgInline from "@/components/Common/SvgInline";
-import { windDirectionCalc } from "@/helpers/windDirectionCalculator";
+import { windDirectionCalc } from "@/helpers/weatherCalculations";
 
 type StationMetricsProps = WeatherData & {
     variant?: "page" | "modal";

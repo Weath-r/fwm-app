@@ -1,3 +1,4 @@
+import configuration from "@/app/appConfig";
 import WeatherMap from "./page.weathermap";
 import { getT } from "@/i18n";
 
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
         openGraph: {
             title: t("weathermap.title"),
             description: t("weathermap.description"),
-            url: `https://myweathr.com/${lng}/weather-map`,
+            url: `${configuration.metadata.site_url}/${lng}/weather-map`,
             type: "website",
         },
     };

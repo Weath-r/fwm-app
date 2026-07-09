@@ -34,6 +34,9 @@ jest.mock("@/schemas", () => ({
     HistoricalDataResponse: {
         parse: jest.fn((data) => data),
     },
+    EnvironmentalDataSchema: {
+        parse: jest.fn((data) => data),
+    },
 }));
 
 describe("DataService", () => {
@@ -225,6 +228,17 @@ describe("DataService", () => {
                     expect((err as Error).message).toContain("API Error");
                 }
             });
+
+            it("should include the weather_station_id.cluster field in the filter", async () => {
+                mockAxiosInstance.get.mockResolvedValue({
+                    data: { data: [] },
+                });
+
+                await dataService.fetchWeatherDataByStation(123);
+
+                const callArg = mockAxiosInstance.get.mock.calls[0][0];
+                expect(callArg).toContain("weather_station_id.cluster");
+            });
         });
 
         describe("fetchWeatherDataByStationPaginated", () => {
@@ -261,6 +275,82 @@ describe("DataService", () => {
                 const callArg = mockAxiosInstance.get.mock.calls[0][0];
                 expect(callArg).toContain("page=1");
                 expect(callArg).toContain("limit=64");
+            });
+        });
+    });
+
+    describe("Environmental Data", () => {
+        describe("fetchEnvironmentalDataByStation", () => {
+            it("should fetch environmental data for a cluster", async () => {
+                const mockData = [
+                    {
+                        cluster: 5,
+                        current: {
+                            time: "2024-01-01T10:00",
+                            interval: 3600,
+                            uv_index: 4,
+                            pm10: 12.3,
+                            pm2_5: 5.6,
+                        },
+                        hourly: {
+                            time: ["2024-01-01T10:00"],
+                            uv_index: [4],
+                            pm10: [12.3],
+                            pm2_5: [5.6],
+                        },
+                        units: {
+                            time: "iso8601",
+                            uv_index: "",
+                            pm10: "μg/m³",
+                            pm2_5: "μg/m³",
+                        },
+                    },
+                ];
+
+                mockAxiosInstance.get.mockResolvedValue({
+                    data: { data: mockData },
+                });
+
+                const result = await dataService.fetchEnvironmentalDataByStation(5);
+
+                expect(result).toEqual(mockData);
+                expect(mockAxiosInstance.get).toHaveBeenCalled();
+            });
+
+            it("should include the cluster ID and correct endpoint in the filter", async () => {
+                mockAxiosInstance.get.mockResolvedValue({
+                    data: { data: [] },
+                });
+
+                await dataService.fetchEnvironmentalDataByStation(42);
+
+                const callArg = mockAxiosInstance.get.mock.calls[0][0];
+                expect(callArg).toContain("items/environmental_data");
+                expect(callArg).toContain("filter[_and][0][cluster][id][_eq]=42");
+                expect(callArg).toContain("fields=cluster,date_updated,current,hourly,units");
+            });
+
+            it("should handle empty response", async () => {
+                mockAxiosInstance.get.mockResolvedValue({
+                    data: { data: [] },
+                });
+
+                const result = await dataService.fetchEnvironmentalDataByStation(5);
+
+                expect(result).toEqual([]);
+            });
+
+            it("should throw DataServiceError on network failure", async () => {
+                const error = new AxiosError("Network Error");
+                mockAxiosInstance.get.mockRejectedValue(error);
+
+                try {
+                    await dataService.fetchEnvironmentalDataByStation(5);
+                    fail("Should have thrown an error");
+                } catch (err) {
+                    expect(err).toEqual(expect.any(Error));
+                    expect((err as Error).message).toContain("Network Error");
+                }
             });
         });
     });

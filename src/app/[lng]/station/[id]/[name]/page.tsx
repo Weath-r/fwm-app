@@ -2,6 +2,8 @@ import StationPage from "@/components/StationPage/StationPage";
 import { DataService } from "@/services/DataService";
 import { properStationName } from "@/helpers/createStationName";
 import { getT } from "@/i18n";
+import StationStructuredData from "@/components/Seo/StationStructuredData";
+import configuration from "@/app/appConfig";
 
 type StationPageProps = {
     params: Promise<{
@@ -51,7 +53,7 @@ export async function generateMetadata(props: StationPageProps) {
         openGraph: {
             title: t("stationIndividual.title", { station: stationName }),
             description: t("stationIndividual.description", { station: stationName }),
-            url: `https://myweathr.com/${params.lng}/station/${params.id}/${params.name}`,
+            url: `${configuration.metadata.site_url}/${params.lng}/station/${params.id}/${params.name}`,
             siteName: t("stationIndividual.title", { station: stationName }),
             locale: i18n.language,
             type: "website",
@@ -114,13 +116,22 @@ export default async function StationPageView(props: StationPageProps) {
     const stationHistoricalData = await dataService.fetchStationHistoricalData(+params.id);
 
     return (
-        <StationPage
-            params={params}
-            weatherData={translatedResponse}
-            climateData={historicalClimateData}
-            currentWeather={currentWeather[0]}
-            forecast={stationForecast[0]}
-            historicalData={stationHistoricalData}
-        />
+        <>
+            <StationStructuredData
+                stationId={+params.id}
+                stationName={currentWeather[0].weather_station_id.name}
+                lng={lng}
+                routeSegment="station"
+                nameSegment={params.name}
+            />
+            <StationPage
+                params={params}
+                weatherData={translatedResponse}
+                climateData={historicalClimateData}
+                currentWeather={currentWeather[0]}
+                forecast={stationForecast[0]}
+                historicalData={stationHistoricalData}
+            />
+        </>
     );
 }

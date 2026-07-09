@@ -5,3 +5,4 @@ export * from "./ConfigurationSchemas";
 export * from "./AssetsDirectus";
 export * from "./ClimatologyData";
 export * from "./HistoricalDataSchema";
+export * from "./EnvironmentalData";

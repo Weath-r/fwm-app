@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://myweathr.com";
+import configuration from "./appConfig";
 
 export default function robots(): MetadataRoute.Robots {
     return {
@@ -11,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: ["/api/", "/_next/"],
             },
         ],
-        sitemap: `${BASE_URL}/sitemap.xml`,
-        host: BASE_URL,
+        sitemap: `${configuration.metadata.site_url}/sitemap.xml`,
+        host: configuration.metadata.site_url,
     };
 }

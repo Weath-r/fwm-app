@@ -1,0 +1,12 @@
+{
+    "title": "Air Quality Index",
+    "homepageTitle": "Air quality",
+    "category": {
+        "good": "Good",
+        "fair": "Fair",
+        "moderate": "Moderate",
+        "poor": "Poor",
+        "veryPoor": "Very poor",
+        "extremelyPoor": "Extremely poor"
+    }
+}

@@ -15,3 +15,4 @@ export * from "./enums/graphEnums";
 export * from "./enums/stationTypesEnum";
 export * from "./enums/weatherForecastEnums";
 export * from "./enums/shareableCards";
+export * from "./enums/environmentalCategories";

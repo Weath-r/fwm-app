@@ -4,13 +4,26 @@ import CityWeatherCard, {
 import { DataService } from "@/services/DataService";
 import { calculateWindToBft } from "@/utils/weatherConvertUnits";
 import { urlStationName } from "@/helpers/createStationName";
-import { WeatherDataResponse, WeatherForecastResponse, ForecastData } from "@/types";
+import {
+    WeatherDataResponse,
+    WeatherForecastResponse,
+    ForecastData,
+    EnvironmentalData,
+} from "@/types";
 
 type MajorCitiesSectionProps = {
     stationIds: number[];
     lng: string;
     heading: string;
     subheading: string;
+};
+
+type BuildCityCardProps = {
+    stationId: number;
+    current: WeatherDataResponse;
+    forecastRecord: WeatherForecastResponse | undefined;
+    environmentalData: EnvironmentalData;
+    lng: string;
 };
 
 function pickForecastSlots(forecast: ForecastData[]): CityWeatherCardProps["forecast"] {
@@ -45,12 +58,41 @@ function pickForecastSlots(forecast: ForecastData[]): CityWeatherCardProps["fore
     });
 }
 
-function buildCityCard(
-    stationId: number,
-    current: WeatherDataResponse,
-    forecastRecord: WeatherForecastResponse | undefined,
-    lng: string
-): CityWeatherCardProps {
+function pickEnvironmentalData(environmentalData: EnvironmentalData): EnvironmentalData {
+    if (!environmentalData.hourly || !environmentalData.hourly.time.length) {
+        return environmentalData;
+    }
+    const now = new Date();
+
+    const nearestIndex = environmentalData.hourly.time.reduce((nearestIdx, timeStr, idx) => {
+        const timeMs = new Date(timeStr).getTime();
+        const nowMs = now.getTime();
+        const nearestTimeMs = new Date(environmentalData.hourly.time[nearestIdx]).getTime();
+        return Math.abs(timeMs - nowMs) < Math.abs(nearestTimeMs - nowMs) ? idx : nearestIdx;
+    }, 0);
+
+    const pickedEnvironmentalData = {
+        cluster: environmentalData.cluster,
+        current: environmentalData.current,
+        hourly: {
+            time: [environmentalData.hourly.time[nearestIndex]],
+            uv_index: [environmentalData.hourly.uv_index[nearestIndex]],
+            european_aqi: [environmentalData.hourly.european_aqi[nearestIndex]],
+        },
+        units: environmentalData.units,
+        date_updated: environmentalData.date_updated,
+    };
+
+    return pickedEnvironmentalData;
+}
+
+function buildCityCard({
+    stationId,
+    current,
+    forecastRecord,
+    environmentalData,
+    lng,
+}: BuildCityCardProps): CityWeatherCardProps {
     const station = current.weather_station_id;
     const translatedName =
         station.translations?.find((translation) => translation.languages_code === lng)?.name ??
@@ -66,6 +108,7 @@ function buildCityCard(
         rainMm: Math.round((current.percipitation ?? 0) * 10) / 10,
         forecast: pickForecastSlots(forecastRecord?.full_forecast ?? []),
         href: `/${lng}/station/${stationId}/${urlStationName(translatedName)}`,
+        environmental: pickEnvironmentalData(environmentalData),
     };
 }
 
@@ -90,11 +133,26 @@ export default async function MajorCitiesSection({
         ),
     ]);
 
+    const findClusterIds = currentResults.flat().map((result) => result.weather_station_id.cluster);
+
+    const environmentalDataResults = await Promise.all(
+        findClusterIds.map((clusterId) =>
+            dataService.fetchEnvironmentalDataByStation(clusterId).catch(() => [])
+        )
+    );
+
     const cityCards = stationIds
         .map((stationId, index) => {
             const current = currentResults[index][0];
+            const environmentalData = environmentalDataResults[index][0];
             return current
-                ? buildCityCard(stationId, current, forecastResults[index][0], lng)
+                ? buildCityCard({
+                      stationId,
+                      current,
+                      forecastRecord: forecastResults[index][0],
+                      environmentalData,
+                      lng,
+                  })
                 : null;
         })
         .filter((card): card is CityWeatherCardProps => card !== null);

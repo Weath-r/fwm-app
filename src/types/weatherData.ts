@@ -29,6 +29,7 @@ export type WeatherStation = {
         coordinates: [number, number];
     };
     header_bg: string;
+    cluster: number;
 };
 
 export type WeatherData = CommonWeatherData & {
@@ -77,4 +78,26 @@ export type WeatherHistoricalData = {
     total_percipitation: number;
     avg_windspd: number;
     avg_winddir: number;
+};
+
+export type EnvironmentalData = {
+    cluster: number;
+    current: {
+        time: string;
+        interval: number;
+        uv_index: number;
+        european_aqi: number;
+    };
+    hourly: {
+        time: string[];
+        uv_index: number[];
+        european_aqi: number[];
+    };
+    units: {
+        time: string;
+        interval: string;
+        uv_index: string;
+        european_aqi: string;
+    };
+    date_updated: string;
 };

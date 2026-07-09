@@ -3,6 +3,8 @@ import { getT } from "@/i18n";
 import { properStationName } from "@/helpers/createStationName";
 import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/helpers/fetchWeatherData";
 import { getConfiguration } from "@/services/getConfiguration";
+import StationStructuredData from "@/components/Seo/StationStructuredData";
+import configuration from "@/app/appConfig";
 
 type LiveWeatherConditionsProps = {
     params: Promise<{
@@ -52,7 +54,7 @@ export async function generateMetadata(props: LiveWeatherConditionsProps) {
         openGraph: {
             title: t("stationIndividual.title", { station: stationName }),
             description: t("stationIndividual.description", { station: stationName }),
-            url: `https://myweathr.com/${params.lng}/live-weather-conditions/${params.id}/${params.name}`,
+            url: `${configuration.metadata.site_url}/${params.lng}/live-weather-conditions/${params.id}/${params.name}`,
             siteName: t("stationIndividual.title", { station: stationName }),
             locale: i18n.language,
             type: "website",
@@ -72,9 +74,18 @@ export default async function StationPageView(props: LiveWeatherConditionsProps)
         isForecastEnabled,
     });
     return (
-        <ClientPageLiveWeatherConditions
-            params={params}
-            weatherData={weatherData}
-        ></ClientPageLiveWeatherConditions>
+        <>
+            <StationStructuredData
+                stationId={+id}
+                stationName={decodeURI(properStationName(params.name))}
+                lng={lng}
+                routeSegment="live-weather-conditions"
+                nameSegment={params.name}
+            />
+            <ClientPageLiveWeatherConditions
+                params={params}
+                weatherData={weatherData}
+            ></ClientPageLiveWeatherConditions>
+        </>
     );
 }
