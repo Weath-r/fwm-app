@@ -77,8 +77,7 @@ function pickEnvironmentalData(environmentalData: EnvironmentalData): Environmen
         hourly: {
             time: [environmentalData.hourly.time[nearestIndex]],
             uv_index: [environmentalData.hourly.uv_index[nearestIndex]],
-            pm10: [environmentalData.hourly.pm10[nearestIndex]],
-            pm2_5: [environmentalData.hourly.pm2_5[nearestIndex]],
+            european_aqi: [environmentalData.hourly.european_aqi[nearestIndex]],
         },
         units: environmentalData.units,
         date_updated: environmentalData.date_updated,

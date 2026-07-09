@@ -1,4 +1,4 @@
-import { UVCategory } from "@/types/";
+import { AirQualityCategory, UVCategory } from "@/types/";
 
 export const TemperatureColorList = [
     "#8B007A", // -20
@@ -76,4 +76,13 @@ export const UVColorList = {
     [UVCategory.veryHigh]: "#E0414F",
     [UVCategory.extreme]: "#8E5BD0",
     [UVCategory.night]: "#f5f0ed",
+};
+
+export const AirQualityColorList = {
+    [AirQualityCategory.good]: "#3DB36A",
+    [AirQualityCategory.fair]: "#7FB800",
+    [AirQualityCategory.moderate]: "#E0A800",
+    [AirQualityCategory.poor]: "#F0782E",
+    [AirQualityCategory.veryPoor]: "#E0414F",
+    [AirQualityCategory.extremelyPoor]: "#8E5BD0",
 };
