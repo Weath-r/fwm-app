@@ -1,6 +1,7 @@
 import CityWeatherCard, {
     type CityWeatherCardProps,
 } from "@/components/Home/MajorCities/CityWeatherCard";
+import dayjs from "@/utils/dateTimeUtils";
 import { DataService } from "@/services/DataService";
 import { calculateWindToBft } from "@/utils/weatherConvertUnits";
 import { urlStationName } from "@/helpers/createStationName";
@@ -26,26 +27,28 @@ type BuildCityCardProps = {
     lng: string;
 };
 
+const FORECAST_TIMEZONE = "Europe/Athens";
+
 function pickForecastSlots(forecast: ForecastData[]): CityWeatherCardProps["forecast"] {
     if (!forecast.length) return [];
 
-    const now = new Date();
-    const nowMs = now.getTime();
-    const todayStartMs = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const now = dayjs().tz(FORECAST_TIMEZONE);
+    const todayStart = now.startOf("day");
+    const nowMs = now.valueOf();
+    const tomorrowStartMs = todayStart.add(1, "day").valueOf();
 
     const nextCanonicalMs =
         [0, 6, 12, 18]
-            .map((hour) => todayStartMs + hour * 3600 * 1000)
-            .find((slotMs) => slotMs > nowMs) ?? todayStartMs + 24 * 3600 * 1000;
+            .map((hour) => todayStart.hour(hour).valueOf())
+            .find((slotMs) => slotMs > nowMs) ?? tomorrowStartMs;
 
     return Array.from({ length: 4 }, (_item, slotIndex) => {
         const targetMs = nextCanonicalMs + slotIndex * 6 * 3600 * 1000;
         const closest = forecast.reduce((best, entry) =>
             Math.abs(entry.time - targetMs) < Math.abs(best.time - targetMs) ? entry : best
         );
-        const slotDate = new Date(targetMs);
-        const hour = slotDate.getHours();
-        const isTomorrow = targetMs >= todayStartMs + 24 * 3600 * 1000;
+        const hour = dayjs(targetMs).tz(FORECAST_TIMEZONE).hour();
+        const isTomorrow = targetMs >= tomorrowStartMs;
         const timeLabel = isTomorrow
             ? `+1 ${String(hour).padStart(2, "0")}:00`
             : `${String(hour).padStart(2, "0")}:00`;
