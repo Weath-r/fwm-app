@@ -21,11 +21,13 @@ import { Share } from "@/components/Common/Share/";
 type StationHeroProps = WeatherData & {
     variant?: "page" | "modal";
     language: string;
+    onBack?: () => void;
 };
 
 export function StationModalHeading({
     variant = "page",
     language,
+    onBack,
     ...elem
 }: Readonly<StationHeroProps>) {
     const { i18n } = useT("stationModal");
@@ -91,16 +93,27 @@ export function StationModalHeading({
             />
 
             <div className="flex items-center gap-2 [text-shadow:0_1px_8px_rgba(0,0,0,.4)]">
-                {isPage && (
-                    <Link
-                        href={`/${language}`}
-                        aria-label="Go to homepage"
-                        title="Go to homepage"
-                        className="lw-icon-btn"
-                    >
-                        <ChevronLeftIcon className="size-4 fill-white" />
-                    </Link>
-                )}
+                {isPage &&
+                    (onBack ? (
+                        <button
+                            type="button"
+                            onClick={onBack}
+                            aria-label="Go back"
+                            title="Go back"
+                            className="lw-icon-btn"
+                        >
+                            <ChevronLeftIcon className="size-4 fill-white" />
+                        </button>
+                    ) : (
+                        <Link
+                            href={`/${language}`}
+                            aria-label="Go to homepage"
+                            title="Go to homepage"
+                            className="lw-icon-btn"
+                        >
+                            <ChevronLeftIcon className="size-4 fill-white" />
+                        </Link>
+                    ))}
                 <div className="ml-auto flex items-center gap-2">
                     {elem.frost_data && elem.frost_data.frost_level > 0 && (
                         <span className="flex items-center rounded-full border border-white/35 bg-white/85 px-2 py-1 backdrop-blur">

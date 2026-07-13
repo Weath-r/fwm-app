@@ -115,6 +115,11 @@ export default async function StationPageView(props: StationPageProps) {
     const stationForecast = await dataService.fetchForecastByStation(+params.id);
     const stationHistoricalData = await dataService.fetchStationHistoricalData(+params.id);
 
+    const frostData = await dataService.fetchFrostDataByMunicipality(
+        currentWeather[0].weather_station_id.municipality_id
+    );
+    const stationFrostData = frostData.length > 0 ? frostData[0] : null;
+
     return (
         <>
             <StationStructuredData
@@ -131,6 +136,7 @@ export default async function StationPageView(props: StationPageProps) {
                 currentWeather={currentWeather[0]}
                 forecast={stationForecast[0]}
                 historicalData={stationHistoricalData}
+                frostData={stationFrostData}
             />
         </>
     );
