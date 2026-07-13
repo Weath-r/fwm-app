@@ -1,14 +1,19 @@
 "use client";
 import {
+    WeatherData,
     WeatherDataResponse,
     ClimateWeatherData,
     WeatherForecastResponse,
     WeatherHistoricalData,
+    FrostData,
 } from "@/types";
+import { useRouter } from "next/navigation";
 import useRedirectToHomeOnBack from "@/hooks/useRedirectToHomeOnBack";
 import { useT } from "@/i18n/client";
+import { buildWeatherData } from "@/utils/weatherDataFormatUtils";
 
-import StationPageHeader from "@/components/StationPage/components/StationPageHeader";
+import { StationModalHeading } from "@/components/LiveWeatherConditions/components/StationModalHeading";
+import { StationModalBody } from "@/components/LiveWeatherConditions/components/StationModalBody";
 import StationPageInformation from "@/components/StationPage/components/StationPageInformation";
 import StationPageMainContent from "@/components/StationPage/components/StationPageMainContent";
 import LastDayGraph from "@/components/StationPage/LastDayGraph";
@@ -28,6 +33,7 @@ type StationPageProps = {
     currentWeather: WeatherDataResponse;
     forecast: WeatherForecastResponse;
     historicalData: WeatherHistoricalData[];
+    frostData: FrostData | null;
 };
 
 export default function StationPage({
@@ -36,10 +42,18 @@ export default function StationPage({
     currentWeather,
     forecast,
     historicalData,
+    frostData,
 }: StationPageProps) {
     useRedirectToHomeOnBack();
+    const router = useRouter();
     const { i18n } = useT("stationModal");
     const DAYS_FOR_EXTREME_CALCULATION = 7;
+
+    const currentWeatherData: WeatherData = {
+        ...buildWeatherData(currentWeather),
+        full_forecast: forecast?.full_forecast ?? [],
+        frost_data: frostData,
+    };
 
     const extremeTemperatureValues = extremeValuesLastNDaysPerVariable({
         weatherData,
@@ -60,11 +74,18 @@ export default function StationPage({
 
     return (
         <main className="mt-4 md:container md:mx-auto">
-            <StationPageHeader stationCurrentWeather={currentWeather}></StationPageHeader>
+            <div className="mx-2 mb-2 overflow-hidden rounded-xl bg-white pb-4 drop-shadow-md md:mx-0">
+                <StationModalHeading
+                    {...currentWeatherData}
+                    variant="page"
+                    language={i18n.language}
+                    onBack={() => router.back()}
+                />
+                <StationModalBody {...currentWeatherData} variant="page" />
+            </div>
             <div className="flex flex-wrap gap-2 mx-2 md:mx-0">
                 <div className="my-2 w-full rounded-xl bg-white p-4 drop-shadow-md lg:w-[calc(33.333%-0.5rem)]">
                     <StationPageInformation
-                        i18n={i18n}
                         extremeTemperatureValues={extremeTemperatureValues!}
                         extremeWindSpeedValues={extremeWindSpeedValues!}
                         rainyDays={rainyDays}
@@ -75,7 +96,6 @@ export default function StationPage({
                     <LastDayGraph weatherData={weatherData}></LastDayGraph>
                 </div>
                 <StationPageMainContent
-                    i18n={i18n}
                     stationForecast={forecast}
                     stationWeather={weatherData}
                     stationClimate={climateData}

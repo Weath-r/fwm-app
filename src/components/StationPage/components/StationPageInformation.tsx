@@ -1,5 +1,6 @@
 import { Measurements, WeatherStation } from "@/types";
 import { calculateWindToBft } from "@/utils/weatherConvertUnits";
+import { useT } from "@/i18n/client";
 import { MapPinIcon, IdentificationIcon, MapIcon } from "@heroicons/react/24/solid";
 import StationTypeLabel from "@/components/Common/General/StationTypeLabel";
 import StationPageMapModal from "./StationPageMapModal";
@@ -15,7 +16,6 @@ type StationPageInformationProps = {
     extremeWindSpeedValues: ExtremeValues;
     stationMetadata: WeatherStation;
     rainyDays: number;
-    i18n: any;
 };
 
 export default function StationPageInformation({
@@ -23,15 +23,12 @@ export default function StationPageInformation({
     extremeWindSpeedValues,
     stationMetadata,
     rainyDays,
-    i18n,
 }: StationPageInformationProps) {
-    const lang = i18n.language;
+    const { t } = useT("station");
 
     return (
         <section>
-            <h2 className="mb-2 text-lg font-bold text-primary">
-                {i18n.getFixedT(lang, "station")("information.title")}
-            </h2>
+            <h2 className="mb-2 text-lg font-bold text-primary">{t("information.title")}</h2>
             <div className="flex items-center gap-3 text-primary pb-2 border-b-2 border-secondary">
                 <StationPageMapModal
                     coordinates={stationMetadata.location?.coordinates || [0, 0]}
@@ -62,13 +59,11 @@ export default function StationPageInformation({
                 </div>
             </div>
             <h3 className="mt-4 mb-2 text-md font-bold text-primary">
-                {i18n.getFixedT(lang, "station")("information.subtitle")}
+                {t("information.subtitle")}
             </h3>
             <section className="flex flex-col gap-2">
                 <div className="text-primary">
-                    <h4 className="text-sm">
-                        {i18n.getFixedT(lang, "station")("information.temperature")}
-                    </h4>
+                    <h4 className="text-sm">{t("information.temperature")}</h4>
                     <p>
                         <span className="font-bold">
                             {extremeTemperatureValues.maxValue} {Measurements.CELCIUS}
@@ -77,9 +72,7 @@ export default function StationPageInformation({
                     </p>
                 </div>
                 <div className="text-primary">
-                    <h4 className="text-sm">
-                        {i18n.getFixedT(lang, "station")("information.meanTemp")}
-                    </h4>
+                    <h4 className="text-sm">{t("information.meanTemp")}</h4>
                     <p>
                         <span className="font-bold">
                             {extremeTemperatureValues.meanValue} {Measurements.CELCIUS}
@@ -87,17 +80,13 @@ export default function StationPageInformation({
                     </p>
                 </div>
                 <div className="text-primary">
-                    <h4 className="text-sm">
-                        {i18n.getFixedT(lang, "station")("information.rainyDaysTitle")}
-                    </h4>
+                    <h4 className="text-sm">{t("information.rainyDaysTitle")}</h4>
                     <p>
                         <span className="font-bold">{rainyDays}</span>
                     </p>
                 </div>
                 <div className="text-primary">
-                    <h4 className="text-sm">
-                        {i18n.getFixedT(lang, "station")("information.maxWind")}
-                    </h4>
+                    <h4 className="text-sm">{t("information.maxWind")}</h4>
                     <p>
                         <span className="font-bold">
                             {extremeWindSpeedValues.maxValue} {Measurements.SPEED} ~{" "}

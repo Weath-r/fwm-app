@@ -5,6 +5,7 @@ import {
     WeatherHistoricalData,
 } from "@/types";
 import * as Tabs from "@radix-ui/react-tabs";
+import { useT } from "@/i18n/client";
 
 import MonthGraph from "@/components/StationPage/MonthGraph";
 import StationPageClimateSummary from "@/components/StationPage/components/StationPageClimateSummary";
@@ -14,7 +15,6 @@ import StationPageHistoricalData from "@/components/StationPage/components/Stati
 import { useState } from "react";
 
 type StationPageMainContentProps = {
-    i18n: any;
     stationForecast: WeatherForecastResponse;
     stationWeather: WeatherDataResponse[];
     stationClimate: ClimateWeatherData[];
@@ -23,7 +23,6 @@ type StationPageMainContentProps = {
 };
 
 export default function StationPageMainContent({
-    i18n,
     stationForecast,
     stationWeather,
     stationClimate,
@@ -31,22 +30,24 @@ export default function StationPageMainContent({
     historicalData,
 }: StationPageMainContentProps) {
     const [activeTab, setActiveTab] = useState("forecast");
+    const { t } = useT("station");
+
     const tabs = [
         {
             value: "forecast",
-            label: i18n.getFixedT(i18n.language, "station")("tabs.forecast"),
+            label: t("tabs.forecast"),
         },
         {
             value: "graphs",
-            label: i18n.getFixedT(i18n.language, "station")("tabs.graphs"),
+            label: t("tabs.graphs"),
         },
         {
             value: "history",
-            label: i18n.getFixedT(i18n.language, "station")("tabs.history"),
+            label: t("tabs.history"),
         },
         {
             value: "climate",
-            label: i18n.getFixedT(i18n.language, "station")("tabs.climatology"),
+            label: t("tabs.climatology"),
         },
     ];
 
