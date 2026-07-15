@@ -1,6 +1,7 @@
 {
     "title": "Air Quality Index",
     "homepageTitle": "Air quality",
+    "ariaLabel": "Air quality index — tap for advice",
     "category": {
         "good": "Good",
         "fair": "Fair",

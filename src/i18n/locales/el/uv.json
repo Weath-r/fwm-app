@@ -2,6 +2,7 @@
     "title": "Δείκτης UV",
     "whenTomorrow": "· αύριο",
     "nowPeak": "{{value}} τώρα · μέγιστο {{peak}} γύρω στις {{time}}",
+    "ariaLabel": "Δείκτης UV — πατήστε για συμβουλές",
     "category": {
         "low": "Χαμηλός",
         "moderate": "Μέτριος",

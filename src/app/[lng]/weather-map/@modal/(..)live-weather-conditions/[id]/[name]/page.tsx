@@ -22,7 +22,7 @@ export default async function LiveWeatherConditionsModal(props: StationPageProps
 
     const { id, lng } = params;
 
-    const { weatherData } = await FetchLiveWeatherStationData({
+    const { weatherData, environmentalConditions } = await FetchLiveWeatherStationData({
         lng,
         stationId: +id,
         isForecastEnabled,
@@ -32,6 +32,7 @@ export default async function LiveWeatherConditionsModal(props: StationPageProps
         <LiveWeatherConditionsModalPage
             params={params}
             weatherData={weatherData}
+            environmentalConditions={environmentalConditions}
         ></LiveWeatherConditionsModalPage>
     );
 }

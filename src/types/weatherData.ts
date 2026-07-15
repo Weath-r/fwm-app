@@ -101,3 +101,8 @@ export type EnvironmentalData = {
     };
     date_updated: string;
 };
+
+export type StationEnvironmentalConditions = {
+    uvIndex: number | null;
+    airQualityIndex: number | null;
+};

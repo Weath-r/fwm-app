@@ -5,7 +5,7 @@ import { usePostHog } from "posthog-js/react";
 import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import { useT } from "@/i18n/client";
 import { Measurements } from "@/types/measurements";
-import { EnvironmentalData } from "@/types";
+import { StationEnvironmentalConditions } from "@/types";
 import SVGInline from "@/components/Common/SvgInline";
 import { AirQualityCalculateCategory, UVCalculateCategory } from "@/helpers/weatherCalculations";
 import { AirQualityColorList, UVColorList } from "@/constants/Colors";
@@ -27,7 +27,7 @@ export type CityWeatherCardProps = {
     rainMm: number;
     forecast: ForecastSlot[];
     href: string;
-    environmental: EnvironmentalData;
+    environmentalConditions: StationEnvironmentalConditions;
 };
 
 export default function CityWeatherCard({
@@ -40,19 +40,19 @@ export default function CityWeatherCard({
     rainMm,
     forecast,
     href,
-    environmental,
+    environmentalConditions,
 }: Readonly<CityWeatherCardProps>) {
     const { t } = useT("weather_conditions");
     const { t: tUv } = useT("uv");
     const { t: tAqi } = useT("aqi");
     const posthog = usePostHog();
 
-    const uvIndex = Math.ceil(environmental.hourly.uv_index[0]);
-    const uvCategory = UVCalculateCategory(uvIndex);
-    const uvColor = UVColorList[uvCategory];
-    const aqi = environmental.hourly.european_aqi[0];
-    const aqiCategory = AirQualityCalculateCategory(aqi);
-    const aqiColor = AirQualityColorList[aqiCategory];
+    const { uvIndex, airQualityIndex } = environmentalConditions;
+    const uvCategory = uvIndex !== null ? UVCalculateCategory(uvIndex) : null;
+    const uvColor = uvCategory ? UVColorList[uvCategory] : undefined;
+    const aqiCategory =
+        airQualityIndex !== null ? AirQualityCalculateCategory(airQualityIndex) : null;
+    const aqiColor = aqiCategory ? AirQualityColorList[aqiCategory] : undefined;
 
     return (
         <Link
@@ -113,13 +113,13 @@ export default function CityWeatherCard({
 
                 <div className="border-t border-secondary/20" />
                 <div className="flex flex-col gap-2 text-secondary py-1 text-sm">
-                    {uvIndex > 0 && (
+                    {uvIndex !== null && uvIndex > 0 && (
                         <>
                             <div className="flex items-center gap-1">
                                 <SVGInline
                                     path="/weather_icons/v2/uv.svg"
-                                    title="UV Index"
-                                    style={{ stroke: uvColor, opacity: uvIndex > 0 ? 1 : 0.4 }}
+                                    title={tUv("title")}
+                                    style={{ stroke: uvColor, opacity: 1 }}
                                     className="inline-block size-4"
                                 />
                                 <p className="text-xs">
@@ -140,31 +140,33 @@ export default function CityWeatherCard({
                             <div className="flex items-center gap-1">
                                 <SVGInline
                                     path="/weather_icons/v2/uv_zero.svg"
-                                    title="UV Index"
-                                    style={{ fill: uvColor, opacity: uvIndex > 0 ? 1 : 0.4 }}
+                                    title={tUv("title")}
+                                    style={{ fill: uvColor, opacity: 0.4 }}
                                     className="inline-block size-4"
                                 />
                                 <p className="text-secondary/40 text-xs">{tUv("compact.night")}</p>
                             </div>
                         </>
                     )}
-                    <div className="flex items-center gap-1 ">
-                        <SVGInline
-                            path="/weather_icons/v2/aqi.svg"
-                            title="Air Quality Index"
-                            style={{ fill: aqiColor }}
-                            className="inline-block size-4"
-                        />
-                        <p className="text-xs">
-                            <span className="inline-block mr-1">{tAqi("homepageTitle")}</span>·
-                            <span
-                                className="font-bold inline-block ml-1"
-                                style={{ color: aqiColor }}
-                            >
-                                {tAqi(`category.${aqiCategory}`)}
-                            </span>
-                        </p>
-                    </div>
+                    {aqiCategory && (
+                        <div className="flex items-center gap-1 ">
+                            <SVGInline
+                                path="/weather_icons/v2/aqi.svg"
+                                title={tAqi("title")}
+                                style={{ fill: aqiColor }}
+                                className="inline-block size-4"
+                            />
+                            <p className="text-xs">
+                                <span className="inline-block mr-1">{tAqi("homepageTitle")}</span>·
+                                <span
+                                    className="font-bold inline-block ml-1"
+                                    style={{ color: aqiColor }}
+                                >
+                                    {tAqi(`category.${aqiCategory}`)}
+                                </span>
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="border-t border-secondary/20" />

@@ -6,8 +6,10 @@ import { WeatherData, ForecastData, FrostData } from "@/types";
 // Mock DataService
 jest.mock("@/services/DataService");
 
-// Mock buildWeatherData
+// Mock buildWeatherData only — applyStationTranslations stays real so the
+// translation expectations below exercise the actual logic.
 jest.mock("@/utils/weatherDataFormatUtils", () => ({
+    ...jest.requireActual("@/utils/weatherDataFormatUtils"),
     buildWeatherData: jest.fn(),
 }));
 
@@ -46,6 +48,7 @@ const mockWeatherResponse = [
             elevation: 100,
             climatology_location_id: 1,
             municipality_id: 1,
+            cluster: 1,
         },
         temperature: 20,
         humidity: 65,
@@ -57,6 +60,20 @@ const mockWeatherResponse = [
         weather_condition: "Clear",
         weather_condition_icon: "sun",
         date_created: "2024-01-01T12:00:00Z",
+    },
+];
+
+const mockEnvironmentalData = [
+    {
+        cluster: 1,
+        date_updated: "2024-01-01T12:00:00Z",
+        current: {},
+        hourly: {
+            time: ["2024-01-01T12:00:00Z"],
+            uv_index: [3],
+            european_aqi: [25],
+        },
+        units: {},
     },
 ];
 
@@ -104,6 +121,7 @@ const mockBuiltWeatherData = {
         elevation: 100,
         climatology_location_id: 1,
         municipality_id: 1,
+        cluster: 1,
         header_bg: "#ffffff",
     },
     assetId: "test",
@@ -122,6 +140,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -148,6 +167,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -173,6 +193,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -204,6 +225,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -237,6 +259,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -261,6 +284,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -286,6 +310,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -311,6 +336,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -335,6 +361,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue([]),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -359,6 +386,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -384,6 +412,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue([]),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -408,6 +437,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -446,6 +476,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(multipleStations),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -484,6 +515,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(noTranslations),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -509,6 +541,7 @@ describe("FetchLiveWeatherStationData", () => {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
             fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
         };
 
         (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
@@ -528,5 +561,62 @@ describe("FetchLiveWeatherStationData", () => {
         expect(result.weatherData[0].full_forecast).toBeDefined();
         expect(Array.isArray(result.weatherData[0].full_forecast)).toBe(true);
         expect(result.weatherData[0].frost_data).toBeDefined();
+    });
+
+    it("should fetch environmental data for the station cluster", async () => {
+        const mockDataService = {
+            fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
+            fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
+            fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockResolvedValue(mockEnvironmentalData),
+        };
+
+        (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
+            () => mockDataService as any
+        );
+
+        (weatherDataFormatUtils.buildWeatherData as jest.Mock).mockReturnValue(
+            mockBuiltWeatherData
+        );
+
+        const result = await FetchLiveWeatherStationData({
+            lng: "en",
+            stationId: 1,
+            isForecastEnabled: false,
+        });
+
+        expect(mockDataService.fetchEnvironmentalDataByStation).toHaveBeenCalledWith(1);
+        expect(result.environmentalConditions).toEqual({ uvIndex: 3, airQualityIndex: 25 });
+    });
+
+    it("should degrade to null readings when the environmental request fails", async () => {
+        const mockDataService = {
+            fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
+            fetchForecastByStation: jest.fn().mockResolvedValue(mockForecastData),
+            fetchFrostDataByMunicipality: jest.fn().mockResolvedValue(mockFrostData),
+            fetchEnvironmentalDataByStation: jest.fn().mockRejectedValue(new Error("failed")),
+        };
+
+        (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
+            () => mockDataService as any
+        );
+
+        (weatherDataFormatUtils.buildWeatherData as jest.Mock).mockReturnValue(
+            mockBuiltWeatherData
+        );
+
+        const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+        const result = await FetchLiveWeatherStationData({
+            lng: "en",
+            stationId: 1,
+            isForecastEnabled: false,
+        });
+
+        expect(result.environmentalConditions).toEqual({ uvIndex: null, airQualityIndex: null });
+        expect(result.weatherData.length).toBeGreaterThan(0);
+        expect(consoleErrorSpy).toHaveBeenCalled();
+
+        consoleErrorSpy.mockRestore();
     });
 });

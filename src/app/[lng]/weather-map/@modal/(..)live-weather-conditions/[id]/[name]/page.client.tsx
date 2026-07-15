@@ -1,17 +1,12 @@
 "use client";
-import { WeatherData } from "@/types";
+import { StationEnvironmentalConditions, WeatherData } from "@/types";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/Common/CommonDialog";
-import { StationModalHeading } from "@/components/LiveWeatherConditions/components/StationModalHeading";
-import { StationModalBody } from "@/components/LiveWeatherConditions/components/StationModalBody";
-
-import { StationWeatherForecastDetails } from "@/components/LiveWeatherConditions/StationWeatherForecastDetails";
+import LiveWeatherConditionsPage from "@/components/LiveWeatherConditions/LiveWeatherConditionsPage";
 import { CloseModalButton } from "@/components/LiveWeatherConditions/buttons/CloseModalButton";
-import StationLink from "@/components/Common/StationLink";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useConfigurationStore } from "@/stores/configurationStore";
 import { useT } from "@/i18n/client";
 
 type StationPageProps = {
@@ -21,14 +16,15 @@ type StationPageProps = {
         lng: string;
     };
     weatherData: WeatherData[];
+    environmentalConditions: StationEnvironmentalConditions;
 };
 
-export default function LiveWeatherConditionsModalPage({ params, weatherData }: StationPageProps) {
+export default function LiveWeatherConditionsModalPage({
+    params,
+    weatherData,
+    environmentalConditions,
+}: StationPageProps) {
     const { i18n } = useT("stationModal");
-    const selectedLanguage = i18n.language;
-    const { featureFlags } = useConfigurationStore();
-    const isFullStationPageEnabled = featureFlags?.standalone_station?.moreDetailsModalUrl;
-
     const router = useRouter();
     const dialogTitle = (
         <div className="text-sm font-bold uppercase text-primary">
@@ -39,11 +35,6 @@ export default function LiveWeatherConditionsModalPage({ params, weatherData }: 
 
     const handleOpenChange = (value: boolean) => {
         setOpen(value);
-    };
-
-    const fullForecastData = {
-        forecast: weatherData[0].full_forecast || [],
-        station: weatherData[0].station.name,
     };
 
     return (
@@ -59,32 +50,12 @@ export default function LiveWeatherConditionsModalPage({ params, weatherData }: 
                     router.back();
                 }}
             >
-                {weatherData &&
-                    weatherData.map((elem: WeatherData) => {
-                        return (
-                            <div className="relative flex flex-col" key={elem.station.id}>
-                                <StationModalHeading {...elem} variant="modal" language={params.lng} />
-                                <StationModalBody {...elem} variant="modal" />
-                                <StationWeatherForecastDetails {...fullForecastData} variant="modal" />
-                                {isFullStationPageEnabled && (
-                                    <div className="flex justify-center px-4 pb-6 pt-1">
-                                        <StationLink
-                                            stationId={elem.station.id}
-                                            stationName={elem.station.name}
-                                            pageName="station"
-                                            lang={selectedLanguage}
-                                            className="text-sm font-bold uppercase text-primary"
-                                        >
-                                            {i18n.getFixedT(
-                                                selectedLanguage,
-                                                "stationModal"
-                                            )("moreDetails")}
-                                        </StationLink>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
+                <LiveWeatherConditionsPage
+                    params={params}
+                    weatherData={weatherData}
+                    environmentalConditions={environmentalConditions}
+                    variant="modal"
+                />
             </DialogContent>
         </Dialog>
     );

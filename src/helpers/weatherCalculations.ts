@@ -1,4 +1,36 @@
-import { UVCategory, AirQualityCategory } from "@/types";
+import {
+    UVCategory,
+    AirQualityCategory,
+    EnvironmentalData,
+    StationEnvironmentalConditions,
+} from "@/types";
+
+const findNearestHourIndex = (times: string[]): number => {
+    const nowMs = new Date().getTime();
+    return times.reduce((nearestIdx, timeStr, idx) => {
+        const timeMs = new Date(timeStr).getTime();
+        const nearestTimeMs = new Date(times[nearestIdx]).getTime();
+        return Math.abs(timeMs - nowMs) < Math.abs(nearestTimeMs - nowMs) ? idx : nearestIdx;
+    }, 0);
+};
+
+export const resolveEnvironmentalConditions = (
+    environmentalData: EnvironmentalData[] | null
+): StationEnvironmentalConditions => {
+    const hourly = environmentalData?.[0]?.hourly;
+    if (!hourly?.time.length) {
+        return { uvIndex: null, airQualityIndex: null };
+    }
+
+    const nearestIndex = findNearestHourIndex(hourly.time);
+    const uvIndex = hourly.uv_index[nearestIndex];
+    const airQualityIndex = hourly.european_aqi[nearestIndex];
+
+    return {
+        uvIndex: uvIndex !== undefined ? Math.ceil(uvIndex) : null,
+        airQualityIndex: airQualityIndex || null,
+    };
+};
 
 export const windDirectionCalc = (degree: number): string => {
     const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];

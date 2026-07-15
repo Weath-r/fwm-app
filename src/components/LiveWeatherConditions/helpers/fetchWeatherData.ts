@@ -1,5 +1,6 @@
 import { DataService } from "@/services/DataService";
-import { buildWeatherData } from "@/utils/weatherDataFormatUtils";
+import { applyStationTranslations, buildWeatherData } from "@/utils/weatherDataFormatUtils";
+import { resolveEnvironmentalConditions } from "@/helpers/weatherCalculations";
 import { ForecastData, FrostData } from "@/types";
 
 type FetchDataParameters = {
@@ -7,23 +8,20 @@ type FetchDataParameters = {
     stationId: number;
     isForecastEnabled: boolean;
 };
-export const FetchLiveWeatherStationData = async ({ lng, stationId, isForecastEnabled }: FetchDataParameters) => {
+export const FetchLiveWeatherStationData = async ({
+    lng,
+    stationId,
+    isForecastEnabled,
+}: FetchDataParameters) => {
     const dataService = new DataService();
 
-    const currentWeather = (await dataService.fetchWeatherDataByStation(stationId)).map(elem => {
-        if (lng && elem.weather_station_id.translations) {
-            const translationStationName = elem.weather_station_id.translations.find(t => t.languages_code === lng);
-            if (translationStationName) {
-                elem.weather_station_id.name = translationStationName.name;
-            }
-        }
+    const [currentWeatherRaw, stationForecast] = await Promise.all([
+        dataService.fetchWeatherDataByStation(stationId),
+        isForecastEnabled ? dataService.fetchForecastByStation(stationId) : Promise.resolve([]),
+    ]);
 
-        if (lng && elem.weather_station_id.prefecture_id.translations) {
-            const translationPrefectureName = elem.weather_station_id.prefecture_id.translations.find(t => t.languages_code === lng);
-            if (translationPrefectureName) {
-                elem.weather_station_id.prefecture_id.label = translationPrefectureName.name;
-            }
-        }
+    const currentWeather = currentWeatherRaw.map((elem) => {
+        applyStationTranslations(elem, lng);
         return {
             ...buildWeatherData(elem),
             full_forecast: [] as ForecastData[],
@@ -31,17 +29,26 @@ export const FetchLiveWeatherStationData = async ({ lng, stationId, isForecastEn
         };
     });
 
-    if (isForecastEnabled) {
-        const stationForecast = await dataService.fetchForecastByStation(stationId);
-        if (currentWeather.length > 0) {
-            currentWeather[0].full_forecast = stationForecast[0]?.full_forecast || [];
-        }
+    if (isForecastEnabled && currentWeather.length > 0) {
+        currentWeather[0].full_forecast = stationForecast[0]?.full_forecast || [];
     }
 
-    const frostData = await dataService.fetchFrostDataByMunicipality(currentWeather[0].station.municipality_id);
+    const station = currentWeather[0].station;
+
+    const [frostData, environmentalData] = await Promise.all([
+        dataService.fetchFrostDataByMunicipality(station.municipality_id),
+        dataService.fetchEnvironmentalDataByStation(station.cluster).catch((error) => {
+            console.error(
+                `Environmental data unavailable for station ${station.id} (cluster ${station.cluster}):`,
+                error
+            );
+            return null;
+        }),
+    ]);
     currentWeather[0].frost_data = frostData.length > 0 ? frostData[0] : null;
 
     return {
         weatherData: currentWeather,
+        environmentalConditions: resolveEnvironmentalConditions(environmentalData),
     };
 };

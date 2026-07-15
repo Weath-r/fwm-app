@@ -1,8 +1,10 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { WeatherData, Measurements } from "@/types";
+import { WeatherData, Measurements, StationEnvironmentalConditions } from "@/types";
 import { timeFromNowUtil } from "@/utils/dateTimeUtils";
+import { AirQualityCalculateCategory, UVCalculateCategory } from "@/helpers/weatherCalculations";
+import { AirQualityColorList, UVColorList } from "@/constants/Colors";
 import { useT } from "@/i18n/client";
 import {
     MapPinIcon,
@@ -17,22 +19,27 @@ import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import HeroBackground from "./HeroBackground";
 import { FrostWarning } from "./FrostWarning";
 import { Share } from "@/components/Common/Share/";
+import SVGInline from "@/components/Common/SvgInline";
 
 type StationHeroProps = WeatherData & {
     variant?: "page" | "modal";
     language: string;
     onBack?: () => void;
+    environmentalConditions: StationEnvironmentalConditions;
 };
 
 export function StationModalHeading({
     variant = "page",
     language,
     onBack,
+    environmentalConditions,
     ...elem
 }: Readonly<StationHeroProps>) {
     const { i18n } = useT("stationModal");
     const { i18n: i18n_icons } = useT("weather_icons");
     const { i18n: i18n_conditions } = useT("weather_conditions");
+    const { t: tUv } = useT("uv");
+    const { t: tAqi } = useT("aqi");
     const selectedLanguage = i18n.language;
     const pathname = usePathname();
 
@@ -78,6 +85,12 @@ export function StationModalHeading({
         }),
         url: `https://myweathr.com${pathname}`,
     };
+
+    const { uvIndex, airQualityIndex } = environmentalConditions;
+    // UV is omitted at night (index 0) as well as when it could not be resolved.
+    const uvCategory = uvIndex !== null && uvIndex > 0 ? UVCalculateCategory(uvIndex) : null;
+    const aqiCategory =
+        airQualityIndex !== null ? AirQualityCalculateCategory(airQualityIndex) : null;
 
     return (
         <div
@@ -191,6 +204,47 @@ export function StationModalHeading({
                     <div className="self-center text-base font-semibold capitalize [text-shadow:0_1px_8px_rgba(0,0,0,.5)]">
                         {conditionLabel}
                     </div>
+                </div>
+                <div className="mt-4 flex items-center gap-2 mb-2">
+                    {uvCategory && (
+                        <button
+                            type="button"
+                            className="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold text-white bottom-1 border-white"
+                            style={{
+                                letterSpacing: ".2px",
+                                backgroundColor: UVColorList[uvCategory],
+                            }}
+                            aria-label={tUv("ariaLabel")}
+                        >
+                            <SVGInline
+                                path="/weather_icons/v2/uv.svg"
+                                title={tUv("title")}
+                                style={{ stroke: "white", opacity: 1 }}
+                                className="inline-block size-4"
+                            />
+                            <p>UV</p>
+                            <p className="font-bold">{tUv(`category.${uvCategory}`)}</p>
+                        </button>
+                    )}
+                    {aqiCategory && (
+                        <button
+                            type="button"
+                            className="flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-bold text-white bottom-1 border-white"
+                            style={{
+                                letterSpacing: ".2px",
+                                backgroundColor: AirQualityColorList[aqiCategory],
+                            }}
+                            aria-label={tAqi("ariaLabel")}
+                        >
+                            <SVGInline
+                                path="/weather_icons/v2/aqi.svg"
+                                title={tAqi("title")}
+                                style={{ fill: "white" }}
+                                className="inline-block size-4"
+                            />
+                            <p className="font-bold">{tAqi(`category.${aqiCategory}`)}</p>
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
