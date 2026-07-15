@@ -1,5 +1,9 @@
-import { windDirectionCalc, UVCalculateCategory } from "../weatherCalculations";
-import { UVCategory } from "@/types";
+import {
+    windDirectionCalc,
+    UVCalculateCategory,
+    resolveEnvironmentalConditions,
+} from "../weatherCalculations";
+import { UVCategory, EnvironmentalData } from "@/types";
 
 describe("weatherCalculations", () => {
     describe("windDirectionCalc", () => {
@@ -205,6 +209,94 @@ describe("weatherCalculations", () => {
         it("should currently report extreme for negative UV indexes (known quirk)", () => {
             expect(UVCalculateCategory(-1)).toBe(UVCategory.extreme);
             expect(UVCalculateCategory(-0.5)).toBe(UVCategory.extreme);
+        });
+    });
+
+    describe("resolveEnvironmentalConditions", () => {
+        const buildEnvironmentalData = (
+            hourly: Partial<EnvironmentalData["hourly"]> = {}
+        ): EnvironmentalData[] => [
+            {
+                cluster: 1,
+                current: { time: "", interval: 3600, uv_index: 0, european_aqi: 0 },
+                hourly: {
+                    time: ["2024-06-01T12:00:00Z"],
+                    uv_index: [4.2],
+                    european_aqi: [25],
+                    ...hourly,
+                },
+                units: { time: "iso8601", interval: "seconds", uv_index: "", european_aqi: "" },
+                date_updated: "2024-06-01T12:00:00Z",
+            } as EnvironmentalData,
+        ];
+
+        it("should resolve both readings to null when the request failed", () => {
+            expect(resolveEnvironmentalConditions(null)).toEqual({
+                uvIndex: null,
+                airQualityIndex: null,
+            });
+        });
+
+        it("should resolve both readings to null when there are no records", () => {
+            expect(resolveEnvironmentalConditions([])).toEqual({
+                uvIndex: null,
+                airQualityIndex: null,
+            });
+        });
+
+        it("should resolve both readings to null when a valid record carries no readings", () => {
+            const noReadings = buildEnvironmentalData({
+                time: [],
+                uv_index: [],
+                european_aqi: [],
+            });
+
+            expect(resolveEnvironmentalConditions(noReadings)).toEqual({
+                uvIndex: null,
+                airQualityIndex: null,
+            });
+        });
+
+        it("should round the UV index up so it maps onto a category", () => {
+            expect(resolveEnvironmentalConditions(buildEnvironmentalData()).uvIndex).toBe(5);
+        });
+
+        it("should return the air quality index untouched", () => {
+            expect(resolveEnvironmentalConditions(buildEnvironmentalData()).airQualityIndex).toBe(
+                25
+            );
+        });
+
+        it("should pick the reading nearest to now rather than the first", () => {
+            const now = Date.now();
+            const hourMs = 3600 * 1000;
+            const nearby = buildEnvironmentalData({
+                time: [
+                    new Date(now - 6 * hourMs).toISOString(),
+                    new Date(now).toISOString(),
+                    new Date(now + 6 * hourMs).toISOString(),
+                ],
+                uv_index: [1, 7, 9],
+                european_aqi: [10, 50, 90],
+            });
+
+            expect(resolveEnvironmentalConditions(nearby)).toEqual({
+                uvIndex: 7,
+                airQualityIndex: 50,
+            });
+        });
+
+        it("should resolve readings to null when the arrays are shorter than the times", () => {
+            const misaligned = buildEnvironmentalData({
+                time: ["2024-06-01T12:00:00Z"],
+                uv_index: [],
+                european_aqi: [],
+            });
+
+            expect(resolveEnvironmentalConditions(misaligned)).toEqual({
+                uvIndex: null,
+                airQualityIndex: null,
+            });
         });
     });
 });

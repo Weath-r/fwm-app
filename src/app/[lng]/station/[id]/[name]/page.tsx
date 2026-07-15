@@ -1,5 +1,5 @@
 import StationPage from "@/components/StationPage/StationPage";
-import { DataService } from "@/services/DataService";
+import { fetchStationPageData } from "@/components/StationPage/helpers/fetchStationPageData";
 import { properStationName } from "@/helpers/createStationName";
 import { getT } from "@/i18n";
 import StationStructuredData from "@/components/Seo/StationStructuredData";
@@ -63,74 +63,36 @@ export async function generateMetadata(props: StationPageProps) {
 
 export default async function StationPageView(props: StationPageProps) {
     const params = await props.params;
-    const dataService = new DataService();
-    const end_date = "$NOW";
-    const start_date = "$NOW(-1 month)";
-    const monthlyWeatherData = await dataService.fetchWeatherDataByStationPaginated({
-        station_id: +params.id,
-        start_date,
-        end_date,
-        page: 1,
-        limit: -1,
-    });
-    const { lng } = params;
-    const currentWeather = (await dataService.fetchWeatherDataByStation(+params.id)).map(
-        (station) => {
-            if (station.weather_station_id.translations) {
-                const translatedStationName = station.weather_station_id.translations.find(
-                    (t) => t.languages_code === lng
-                );
-                if (translatedStationName) {
-                    station.weather_station_id.name = translatedStationName.name;
-                }
-            }
-            if (station.weather_station_id.prefecture_id.translations) {
-                const translatedPrefecture =
-                    station.weather_station_id.prefecture_id.translations.find(
-                        (t) => t.languages_code === lng
-                    );
-                if (translatedPrefecture) {
-                    station.weather_station_id.prefecture_id.label = translatedPrefecture.name;
-                }
-            }
-            return station;
-        }
-    );
-    const climateLocationId = currentWeather[0].weather_station_id.climatology_location_id;
-    const historicalClimateData =
-        await dataService.fetchStationHistoricalClimateData(climateLocationId);
+    const { lng, id, name } = params;
 
-    const translatedResponse = monthlyWeatherData.map((station) => {
-        if (station.weather_station_id.translations) {
-            const translatedStationName = station.weather_station_id.translations.find(
-                (t) => t.languages_code === lng
-            );
-            if (translatedStationName) {
-                station.weather_station_id.name = translatedStationName.name;
-            }
-        }
-        return station;
-    });
-
-    const stationForecast = await dataService.fetchForecastByStation(+params.id);
-    const stationHistoricalData = await dataService.fetchStationHistoricalData(+params.id);
+    const {
+        weatherData,
+        currentWeather,
+        climateData,
+        forecast,
+        historicalData,
+        frostData,
+        environmentalConditions,
+    } = await fetchStationPageData({ lng, stationId: +id });
 
     return (
         <>
             <StationStructuredData
-                stationId={+params.id}
-                stationName={currentWeather[0].weather_station_id.name}
+                stationId={+id}
+                stationName={currentWeather.weather_station_id.name}
                 lng={lng}
                 routeSegment="station"
-                nameSegment={params.name}
+                nameSegment={name}
             />
             <StationPage
                 params={params}
-                weatherData={translatedResponse}
-                climateData={historicalClimateData}
-                currentWeather={currentWeather[0]}
-                forecast={stationForecast[0]}
-                historicalData={stationHistoricalData}
+                weatherData={weatherData}
+                climateData={climateData}
+                currentWeather={currentWeather}
+                forecast={forecast}
+                historicalData={historicalData}
+                frostData={frostData}
+                environmentalConditions={environmentalConditions}
             />
         </>
     );

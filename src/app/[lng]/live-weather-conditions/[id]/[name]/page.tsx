@@ -68,11 +68,12 @@ export default async function StationPageView(props: LiveWeatherConditionsProps)
     const isForecastEnabled = featureFlags.forecasts.modalForecast || false;
     const { lng, id } = params;
 
-    const { weatherData } = await FetchLiveWeatherStationData({
+    const { weatherData, environmentalConditions } = await FetchLiveWeatherStationData({
         lng,
         stationId: +id,
         isForecastEnabled,
     });
+
     return (
         <>
             <StationStructuredData
@@ -85,6 +86,7 @@ export default async function StationPageView(props: LiveWeatherConditionsProps)
             <ClientPageLiveWeatherConditions
                 params={params}
                 weatherData={weatherData}
+                environmentalConditions={environmentalConditions}
             ></ClientPageLiveWeatherConditions>
         </>
     );

@@ -34,7 +34,7 @@ import {
 type HandleResponseParams<T> = {
     response: AxiosResponse;
     schema: z.ZodSchema<T>;
-    reject: (reason?: any) => void;
+    endpoint: string;
 };
 
 export class DataServiceError extends Error {
@@ -43,6 +43,10 @@ export class DataServiceError extends Error {
         public status?: number
     ) {
         super(message);
+        // Required because the ES5 target breaks the prototype chain when
+        // extending built-ins, which would make `instanceof` always false.
+        Object.setPrototypeOf(this, DataServiceError.prototype);
+        this.name = "DataServiceError";
     }
 }
 
@@ -74,18 +78,20 @@ export class DataService {
             this.client
                 .get(endpoint)
                 .then((response) => {
-                    if (schema) {
-                        const { res, error } = this.handleResponse({
-                            response,
-                            schema: schema as any,
-                            reject,
-                        });
-                        if (res && !error) {
-                            resolve(res as T);
-                        }
-                    } else {
+                    if (!schema) {
                         resolve(response.data.data as T);
+                        return;
                     }
+                    const { res, error } = this.handleResponse({
+                        response,
+                        schema: schema as any,
+                        endpoint,
+                    });
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve(res as T);
                 })
                 .catch((error) => {
                     reject(this.generateDataServiceError(error));
@@ -401,23 +407,33 @@ export class DataService {
     private handleResponse = <T>({
         response,
         schema,
-        reject,
-    }: HandleResponseParams<T>): { res: T | null; error: boolean } => {
+        endpoint,
+    }: HandleResponseParams<T>): { res: T | null; error: DataServiceError | null } => {
         try {
             const parsedResponse = schema.parse(response.data.data);
             return {
                 res: parsedResponse,
-                error: false,
+                error: null,
             };
         } catch (error) {
             if (error instanceof z.ZodError) {
-                console.error("Validation error! API message does not comply!", error.issues);
-            } else {
-                reject(this.generateDataServiceError(error));
+                console.error(
+                    `Validation error! API message does not comply! Endpoint: ${endpoint}`,
+                    error.issues
+                );
+                const issueSummary = error.issues
+                    .map((issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`)
+                    .join("; ");
+                return {
+                    res: null,
+                    error: new DataServiceError(
+                        `Response validation failed for ${endpoint} — ${issueSummary}`
+                    ),
+                };
             }
             return {
                 res: null,
-                error: true,
+                error: this.generateDataServiceError(error),
             };
         }
     };

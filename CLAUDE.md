@@ -319,6 +319,7 @@ src/
 ## Code Conventions
 
 ### Formatting (Prettier)
+
 - **Indent:** 4 spaces
 - **Line width:** 100 characters
 - **Quotes:** Double
@@ -326,6 +327,7 @@ src/
 - **Trailing commas:** ES5 style (objects/arrays: yes, imports/exports: no)
 
 ### TypeScript
+
 - Strict mode enabled
 - Path alias: `@/*` → `src/*`
 - No explicit `any` (rule disabled but avoid it anyway)
@@ -333,12 +335,14 @@ src/
 - **Variable names:** always use full, descriptive names — avoid one or two-letter variables (e.g. `st`, `c`, `w`, `acc`). The only accepted short names are `t` (i18next translate function), `lng` (language code, established convention throughout the codebase), and `prev` (React setState callback convention)
 
 ### ESLint
+
 - 4-space indent enforced
 - Semicolons required
 - `exhaustive-deps` hook rule is off
 - Tailwind CSS plugin applied (class ordering not enforced)
 
 ### Architecture Rules
+
 - Server components by default; use `"use client"` only when needed
 - All API calls go through `DataService` — do not make raw Axios calls in components
 - Zustand stores for UI/map state; React providers for heavier shared state
@@ -377,3 +381,7 @@ All variables are browser-exposed (`NEXT_PUBLIC_*`). Do not store secrets here.
 - **Map layers:** Leaflet for standard tiles + velocity (wind), MapLibre for vector tiles
 - **Releases:** `pnpm release:patch/minor/major` (standard-version, updates CHANGELOG.md)
 - **Docker:** `prod.Dockerfile` for production container builds
+
+## General rules
+
+- Minimize the usage of comments only when is really necessary
