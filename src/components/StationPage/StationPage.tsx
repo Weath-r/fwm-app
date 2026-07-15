@@ -6,6 +6,7 @@ import {
     WeatherForecastResponse,
     WeatherHistoricalData,
     FrostData,
+    StationEnvironmentalConditions,
 } from "@/types";
 import { useRouter } from "next/navigation";
 import useRedirectToHomeOnBack from "@/hooks/useRedirectToHomeOnBack";
@@ -34,6 +35,7 @@ type StationPageProps = {
     forecast: WeatherForecastResponse;
     historicalData: WeatherHistoricalData[];
     frostData: FrostData | null;
+    environmentalConditions: StationEnvironmentalConditions;
 };
 
 export default function StationPage({
@@ -43,6 +45,7 @@ export default function StationPage({
     forecast,
     historicalData,
     frostData,
+    environmentalConditions,
 }: StationPageProps) {
     useRedirectToHomeOnBack();
     const router = useRouter();
@@ -80,6 +83,7 @@ export default function StationPage({
                     variant="page"
                     language={i18n.language}
                     onBack={() => router.back()}
+                    environmentalConditions={environmentalConditions}
                 />
                 <StationModalBody {...currentWeatherData} variant="page" />
             </div>

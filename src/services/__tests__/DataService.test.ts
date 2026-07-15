@@ -1,6 +1,7 @@
 import { DataService, DataServiceError } from "../DataService";
 import { createAxiosInstance } from "@/utils/httpClientUtils";
 import { AxiosError } from "axios";
+import { z } from "zod";
 
 // Mock the httpClientUtils
 jest.mock("@/utils/httpClientUtils");
@@ -727,6 +728,66 @@ describe("DataService", () => {
                     expect((err as Error).message).toContain("Network Error");
                 }
             });
+        });
+    });
+
+    describe("Response validation", () => {
+        const buildZodError = () =>
+            new z.ZodError([
+                {
+                    code: "invalid_type",
+                    expected: "number",
+                    received: "string",
+                    path: ["0", "cluster"],
+                    message: "Expected number, received string",
+                } as any,
+            ]);
+
+        let consoleErrorSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+        });
+
+        afterEach(() => {
+            consoleErrorSpy.mockRestore();
+        });
+
+        it("should reject instead of hanging when the response fails schema validation", async () => {
+            const { EnvironmentalDataSchema } = jest.requireMock("@/schemas");
+            (EnvironmentalDataSchema.parse as jest.Mock).mockImplementationOnce(() => {
+                throw buildZodError();
+            });
+
+            mockAxiosInstance.get.mockResolvedValue({
+                data: { data: [{ cluster: "not-a-number" }] },
+            });
+
+            await expect(dataService.fetchEnvironmentalDataByStation(1)).rejects.toBeInstanceOf(
+                DataServiceError
+            );
+        });
+
+        it("should surface the endpoint and the failing field so the source is traceable", async () => {
+            const { EnvironmentalDataSchema } = jest.requireMock("@/schemas");
+            (EnvironmentalDataSchema.parse as jest.Mock).mockImplementationOnce(() => {
+                throw buildZodError();
+            });
+
+            mockAxiosInstance.get.mockResolvedValue({
+                data: { data: [{ cluster: "not-a-number" }] },
+            });
+
+            await expect(dataService.fetchEnvironmentalDataByStation(1)).rejects.toThrow(
+                /environmental_data.*0\.cluster: Expected number, received string/
+            );
+        });
+
+        it("should resolve normally when the schema parses successfully", async () => {
+            const payload = [{ cluster: 1 }];
+            mockAxiosInstance.get.mockResolvedValue({ data: { data: payload } });
+
+            await expect(dataService.fetchEnvironmentalDataByStation(1)).resolves.toEqual(payload);
         });
     });
 

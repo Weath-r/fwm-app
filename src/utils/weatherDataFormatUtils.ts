@@ -1,5 +1,32 @@
 import { StationResponse, WeatherDataResponse } from "@/types";
 
+export const applyStationTranslations = (
+    elem: WeatherDataResponse,
+    lng: string
+): WeatherDataResponse => {
+    const station = elem.weather_station_id;
+
+    if (lng && station.translations) {
+        const translatedStationName = station.translations.find(
+            (translation) => translation.languages_code === lng
+        );
+        if (translatedStationName) {
+            station.name = translatedStationName.name;
+        }
+    }
+
+    if (lng && station.prefecture_id?.translations) {
+        const translatedPrefecture = station.prefecture_id.translations.find(
+            (translation) => translation.languages_code === lng
+        );
+        if (translatedPrefecture) {
+            station.prefecture_id.label = translatedPrefecture.name;
+        }
+    }
+
+    return elem;
+};
+
 export const buildWeatherData = (elem: WeatherDataResponse) => {
     return {
         dateCreated: elem.date_created,

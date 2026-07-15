@@ -5,11 +5,12 @@ import dayjs from "@/utils/dateTimeUtils";
 import { DataService } from "@/services/DataService";
 import { calculateWindToBft } from "@/utils/weatherConvertUnits";
 import { urlStationName } from "@/helpers/createStationName";
+import { resolveEnvironmentalConditions } from "@/helpers/weatherCalculations";
 import {
     WeatherDataResponse,
     WeatherForecastResponse,
     ForecastData,
-    EnvironmentalData,
+    StationEnvironmentalConditions,
 } from "@/types";
 
 type MajorCitiesSectionProps = {
@@ -23,7 +24,7 @@ type BuildCityCardProps = {
     stationId: number;
     current: WeatherDataResponse;
     forecastRecord: WeatherForecastResponse | undefined;
-    environmentalData: EnvironmentalData;
+    environmentalConditions: StationEnvironmentalConditions;
     lng: string;
 };
 
@@ -61,39 +62,11 @@ function pickForecastSlots(forecast: ForecastData[]): CityWeatherCardProps["fore
     });
 }
 
-function pickEnvironmentalData(environmentalData: EnvironmentalData): EnvironmentalData {
-    if (!environmentalData.hourly || !environmentalData.hourly.time.length) {
-        return environmentalData;
-    }
-    const now = new Date();
-
-    const nearestIndex = environmentalData.hourly.time.reduce((nearestIdx, timeStr, idx) => {
-        const timeMs = new Date(timeStr).getTime();
-        const nowMs = now.getTime();
-        const nearestTimeMs = new Date(environmentalData.hourly.time[nearestIdx]).getTime();
-        return Math.abs(timeMs - nowMs) < Math.abs(nearestTimeMs - nowMs) ? idx : nearestIdx;
-    }, 0);
-
-    const pickedEnvironmentalData = {
-        cluster: environmentalData.cluster,
-        current: environmentalData.current,
-        hourly: {
-            time: [environmentalData.hourly.time[nearestIndex]],
-            uv_index: [environmentalData.hourly.uv_index[nearestIndex]],
-            european_aqi: [environmentalData.hourly.european_aqi[nearestIndex]],
-        },
-        units: environmentalData.units,
-        date_updated: environmentalData.date_updated,
-    };
-
-    return pickedEnvironmentalData;
-}
-
 function buildCityCard({
     stationId,
     current,
     forecastRecord,
-    environmentalData,
+    environmentalConditions,
     lng,
 }: BuildCityCardProps): CityWeatherCardProps {
     const station = current.weather_station_id;
@@ -111,7 +84,7 @@ function buildCityCard({
         rainMm: Math.round((current.percipitation ?? 0) * 10) / 10,
         forecast: pickForecastSlots(forecastRecord?.full_forecast ?? []),
         href: `/${lng}/station/${stationId}/${urlStationName(translatedName)}`,
-        environmental: pickEnvironmentalData(environmentalData),
+        environmentalConditions,
     };
 }
 
@@ -136,24 +109,37 @@ export default async function MajorCitiesSection({
         ),
     ]);
 
-    const findClusterIds = currentResults.flat().map((result) => result.weather_station_id.cluster);
-
+    // Indexed per station slot rather than over a flattened list, so a station
+    // whose current weather failed cannot shift the others out of alignment.
+    // Environmental data is supplementary: a failure degrades that card's
+    // readings to null instead of dropping the card or breaking the section.
     const environmentalDataResults = await Promise.all(
-        findClusterIds.map((clusterId) =>
-            dataService.fetchEnvironmentalDataByStation(clusterId).catch(() => [])
-        )
+        currentResults.map((stationCurrent, index) => {
+            const clusterId = stationCurrent[0]?.weather_station_id.cluster;
+            if (clusterId === undefined) {
+                return Promise.resolve(null);
+            }
+            return dataService.fetchEnvironmentalDataByStation(clusterId).catch((error) => {
+                console.error(
+                    `Environmental data unavailable for station ${stationIds[index]} (cluster ${clusterId}):`,
+                    error
+                );
+                return null;
+            });
+        })
     );
 
     const cityCards = stationIds
         .map((stationId, index) => {
             const current = currentResults[index][0];
-            const environmentalData = environmentalDataResults[index][0];
             return current
                 ? buildCityCard({
                       stationId,
                       current,
                       forecastRecord: forecastResults[index][0],
-                      environmentalData,
+                      environmentalConditions: resolveEnvironmentalConditions(
+                          environmentalDataResults[index]
+                      ),
                       lng,
                   })
                 : null;
