@@ -11,7 +11,10 @@ type HomepageWarningsSectionProps = {
 
 function normalizeWarnings(warnings: WeatherWarnings[], language: string): WeatherWarnings[] {
     return warnings.map((warning) => {
-        const [hazard] = translatedContent({ data: [warning.hazard_id], selectedLanguage: language });
+        const [hazard] = translatedContent({
+            data: [warning.hazard_id],
+            selectedLanguage: language,
+        });
         const [level] = translatedContent({ data: [warning.level_id], selectedLanguage: language });
         const [location] = translatedContent({
             data: [warning.warning_location_id],
@@ -60,7 +63,7 @@ export default async function HomepageWarningsSection({ lng }: HomepageWarningsS
         .then((data) => normalizeWarnings(data, lng))
         .catch(() => [] as WeatherWarnings[]);
 
-    const activeWarnings = warnings.filter((warning) => warning.level_id.id > 1);
+    const activeWarnings = warnings.filter((warning) => warning.level_id.id >= 1);
     const locationSummaries = summarizeLocations(activeWarnings);
 
     return (
