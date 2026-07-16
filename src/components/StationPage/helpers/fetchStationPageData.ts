@@ -1,4 +1,5 @@
 import { DataService } from "@/services/DataService";
+import { getClimatologyData } from "@/services/getClimatologyData";
 import { applyStationTranslations } from "@/utils/weatherDataFormatUtils";
 import { resolveEnvironmentalConditions } from "@/helpers/weatherCalculations";
 
@@ -34,7 +35,7 @@ export const fetchStationPageData = async ({ lng, stationId }: FetchStationPageD
     const station = currentWeather[0].weather_station_id;
 
     const [historicalClimateData, frostData, environmentalData] = await Promise.all([
-        dataService.fetchStationHistoricalClimateData(station.climatology_location_id),
+        getClimatologyData(station.climatology_location_id),
         dataService.fetchFrostDataByMunicipality(station.municipality_id),
         dataService.fetchEnvironmentalDataByStation(station.cluster).catch((error) => {
             console.error(

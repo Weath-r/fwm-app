@@ -1,4 +1,4 @@
-import { GroupedWarnings } from "@/types";
+import { GroupedWarnings, WarningHazard, WarningLevel } from "@/types";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 import { useT } from "@/i18n/client";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/Common/CommonDialog";
@@ -7,9 +7,15 @@ import WarningsInformationModal from "@/components/Warnings/WarningsInformationM
 
 type WeatherWarningBannerProps = {
     warnings: GroupedWarnings[];
+    hazards: WarningHazard[];
+    warningLevels: WarningLevel[];
 };
 
-export default function WeatherWarningsBanner({ warnings }: Readonly<WeatherWarningBannerProps>) {
+export default function WeatherWarningsBanner({
+    warnings,
+    hazards,
+    warningLevels,
+}: Readonly<WeatherWarningBannerProps>) {
     const { i18n } = useT("warnings");
     const selectedLanguage = i18n.language;
     return (
@@ -31,7 +37,11 @@ export default function WeatherWarningsBanner({ warnings }: Readonly<WeatherWarn
                         <span className="text-primary font-bold">
                             {i18n.getFixedT(selectedLanguage, "warnings")("warningsPageTitle")}
                         </span>
-                        <WarningsInformationModal i18n={i18n} />
+                        <WarningsInformationModal
+                            i18n={i18n}
+                            hazards={hazards}
+                            warningLevels={warningLevels}
+                        />
                     </span>
                 }
             >
