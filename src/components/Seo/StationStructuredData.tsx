@@ -1,5 +1,5 @@
 import JsonLd from "@/components/Seo/JsonLd";
-import { DataService } from "@/services/DataService";
+import { getWeatherStations } from "@/services/getWeatherStations";
 import { getT } from "@/i18n";
 import { buildStationPlaceSchema, buildBreadcrumbSchema } from "@/helpers/seo/structuredData";
 
@@ -36,7 +36,7 @@ export default async function StationStructuredData({
 
     let placeSchema: Record<string, unknown> | null = null;
     try {
-        const stations = await new DataService().fetchWeatherStations();
+        const stations = await getWeatherStations();
         const station = stations.find((entry) => entry.id === stationId);
         if (station) {
             placeSchema = buildStationPlaceSchema({ station, stationName, pagePath, lng });

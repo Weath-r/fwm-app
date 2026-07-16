@@ -1,6 +1,8 @@
 import configuration from "@/app/appConfig";
 import WeatherMap from "./page.weathermap";
 import { getT } from "@/i18n";
+import { getWeatherHazards } from "@/services/getWeatherHazards";
+import { getWarningLevels } from "@/services/getWarningLevels";
 
 export async function generateMetadata({ params }: { params: Promise<{ lng: string }> }) {
     const { lng } = await params;
@@ -46,6 +48,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
     };
 }
 
-export default function Home() {
-    return <WeatherMap></WeatherMap>;
+export default async function Home() {
+    const [hazards, warningLevels] = await Promise.all([
+        getWeatherHazards(),
+        getWarningLevels(),
+    ]);
+    return <WeatherMap hazards={hazards} warningLevels={warningLevels}></WeatherMap>;
 }

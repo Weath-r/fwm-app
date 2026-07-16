@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import configuration from "@/app/appConfig";
 import { ConfigurationSchema } from "@/schemas";
+import { CACHE_TAGS } from "@/services/cacheTags";
 import { BASE_MENU } from "@/constants/navigation";
 import { Configurations, FeatureFlags, MenuLink } from "@/types";
 
@@ -14,7 +15,7 @@ import { Configurations, FeatureFlags, MenuLink } from "@/types";
  * so multiple server components awaiting the config trigger a single fetch.
  */
 
-export const CONFIGURATION_CACHE_TAG = "configurations";
+export const CONFIGURATION_CACHE_TAG = CACHE_TAGS.configurations;
 
 const CONFIGURATION_REVALIDATE_SECONDS = 3600;
 
