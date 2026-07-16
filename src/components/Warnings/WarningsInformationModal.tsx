@@ -1,4 +1,4 @@
-import { useGeneralStore } from "@/stores/settingsStore";
+import { WarningHazard, WarningLevel } from "@/types";
 
 import SvgInline from "@/components/Common/SvgInline";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/Common/CommonDialog";
@@ -7,10 +7,15 @@ import WarningLevelsLegend from "./components/WarningLevelsLegend";
 
 type WarningsInformationModalProps = {
     i18n: any;
+    hazards: WarningHazard[];
+    warningLevels: WarningLevel[];
 };
 
-export default function WarningsInformationModal({ i18n } : WarningsInformationModalProps) {
-    const { hazards, warningLevels } = useGeneralStore();
+export default function WarningsInformationModal({
+    i18n,
+    hazards,
+    warningLevels,
+}: WarningsInformationModalProps) {
     const selectedLanguage = i18n.language;
     const dialogTitle = (<div className="text-sm font-bold uppercase text-primary">{i18n.getFixedT(selectedLanguage, "warnings")("information")}</div>);
     return (

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import configuration from "./appConfig";
 
-import { DataService } from "@/services/DataService";
+import { getWeatherStations } from "@/services/getWeatherStations";
 import { urlStationName } from "@/helpers/createStationName";
 
 type SitemapEntry = MetadataRoute.Sitemap[0];
@@ -85,9 +85,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ),
     ];
 
-    const dataService = new DataService();
     try {
-        const response = await dataService.fetchWeatherStations();
+        const response = await getWeatherStations();
 
         const stationEntries = response.flatMap((station) =>
             bilingualEntries(

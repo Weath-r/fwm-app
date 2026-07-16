@@ -14,8 +14,7 @@ import {
     WeatherHistoricalData,
     EnvironmentalData,
 } from "@/types";
-import { createAxiosInstance } from "@/utils/httpClientUtils";
-import { AxiosInstance, AxiosResponse } from "axios";
+import configuration from "@/app/appConfig";
 import { z } from "zod";
 import {
     StationResponsesSchema,
@@ -32,7 +31,7 @@ import {
 } from "@/schemas";
 
 type HandleResponseParams<T> = {
-    response: AxiosResponse;
+    data: unknown;
     schema: z.ZodSchema<T>;
     endpoint: string;
 };
@@ -51,7 +50,7 @@ export class DataServiceError extends Error {
 }
 
 export class DataService {
-    client: AxiosInstance;
+    private readonly baseUrl: string;
 
     private readonly ENDPOINTS = {
         WEATHER_STATIONS: "items/weather_stations",
@@ -70,41 +69,68 @@ export class DataService {
     };
 
     constructor() {
-        this.client = createAxiosInstance();
+        this.baseUrl = (configuration.baseUrl ?? "").replace(/\/$/, "");
     }
 
-    private fetchWithValidation = <T>(endpoint: string, schema?: z.ZodSchema<T>): Promise<T> => {
-        return new Promise<T>((resolve, reject) => {
-            this.client
-                .get(endpoint)
-                .then((response) => {
-                    if (!schema) {
-                        resolve(response.data.data as T);
-                        return;
-                    }
-                    const { res, error } = this.handleResponse({
-                        response,
-                        schema: schema as any,
-                        endpoint,
-                    });
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-                    resolve(res as T);
-                })
-                .catch((error) => {
-                    reject(this.generateDataServiceError(error));
-                });
+    // Single transport chokepoint. Returns the parsed JSON body; for Directus
+    // collection endpoints that body is the `{ data: [...] }` envelope, for the
+    // raw asset endpoint it is the asset payload itself.
+    //
+    // `next` opts a call into the Next.js Data Cache (revalidate window + tags).
+    // Omitted, the fetch is uncached — matching the previous Axios behaviour, so
+    // only callers that pass cache options are cached.
+    private request = async (endpoint: string, next?: NextFetchRequestConfig): Promise<any> => {
+        let response: Response;
+        try {
+            response = await fetch(`${this.baseUrl}/${endpoint}`, {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                next,
+            });
+        } catch (error) {
+            throw this.generateDataServiceError(error);
+        }
+        if (!response.ok) {
+            throw new DataServiceError(
+                `Request failed for ${endpoint}: ${response.statusText}`,
+                response.status
+            );
+        }
+        return response.json();
+    };
+
+    private fetchWithValidation = async <T>(
+        endpoint: string,
+        schema?: z.ZodSchema<T>,
+        next?: NextFetchRequestConfig
+    ): Promise<T> => {
+        const body = await this.request(endpoint, next);
+        if (!schema) {
+            return body.data as T;
+        }
+        const { res, error } = this.handleResponse({
+            data: body.data,
+            schema: schema as any,
+            endpoint,
         });
+        if (error) {
+            throw error;
+        }
+        return res as T;
     };
 
     // ============================================
     // STATIONS DOMAIN
     // ============================================
-    fetchWeatherStations = (): Promise<StationResponse[]> => {
+    fetchWeatherStations = (next?: NextFetchRequestConfig): Promise<StationResponse[]> => {
         const filter = this.buildStationsFilter();
-        return this.fetchWithValidation<StationResponse[]>(filter, StationResponsesSchema as any);
+        return this.fetchWithValidation<StationResponse[]>(
+            filter,
+            StationResponsesSchema as any,
+            next
+        );
     };
 
     fetchWeatherStationsWithData = (): Promise<WeatherDataResponse[]> => {
@@ -226,12 +252,14 @@ export class DataService {
     };
 
     fetchStationHistoricalClimateData = (
-        clima_location_id: number
+        clima_location_id: number,
+        next?: NextFetchRequestConfig
     ): Promise<ClimateWeatherData[]> => {
         const filter = this.buildHistoricalClimateDataFilter(clima_location_id);
         return this.fetchWithValidation<ClimateWeatherData[]>(
             filter,
-            HistoricalClimaDataResponse as any
+            HistoricalClimaDataResponse as any,
+            next
         );
     };
 
@@ -270,43 +298,34 @@ export class DataService {
         return this.fetchWithValidation<WeatherWarnings[]>(filter, WarningsResponsesSchema as any);
     };
 
-    fetchAllWeatherWarnings = (page: number): Promise<WarningsWithPages> => {
+    fetchAllWeatherWarnings = async (page: number): Promise<WarningsWithPages> => {
         const limitPerPage = 50;
-        const warningsFilter = this.buildAllWarningsFilter(page, limitPerPage);
-        const countFilter = this.buildWarningsCountFilter();
-
-        return new Promise<WarningsWithPages>((resolve, reject) => {
-            const warningsPromise = this.client.get(warningsFilter);
-            const countPromise = this.client.get(countFilter);
-            Promise.all([warningsPromise, countPromise])
-                .then(([warningsResponse, countResponse]) => {
-                    const totalPages = Math.ceil(
-                        +countResponse.data.data[0].countDistinct.id / limitPerPage
-                    );
-                    resolve({
-                        warnings: warningsResponse.data.data,
-                        totalPages,
-                    });
-                })
-                .catch((error) => {
-                    reject(this.generateDataServiceError(error));
-                });
-        });
+        const [warningsBody, countBody] = await Promise.all([
+            this.request(this.buildAllWarningsFilter(page, limitPerPage)),
+            this.request(this.buildWarningsCountFilter()),
+        ]);
+        const totalPages = Math.ceil(+countBody.data[0].countDistinct.id / limitPerPage);
+        return {
+            warnings: warningsBody.data,
+            totalPages,
+        };
     };
 
-    fetchWeatherHazards = (): Promise<WarningHazard[]> => {
+    fetchWeatherHazards = (next?: NextFetchRequestConfig): Promise<WarningHazard[]> => {
         const filter = this.buildHazardsFilter();
         return this.fetchWithValidation<WarningHazard[]>(
             filter,
-            HazardLevelsResponsesSchema as any
+            HazardLevelsResponsesSchema as any,
+            next
         );
     };
 
-    fetchWarningLevels = (): Promise<WarningLevel[]> => {
+    fetchWarningLevels = (next?: NextFetchRequestConfig): Promise<WarningLevel[]> => {
         const filter = this.buildWarningLevelsFilter();
         return this.fetchWithValidation<WarningLevel[]>(
             filter,
-            WarningLevelsResponsesSchema as any
+            WarningLevelsResponsesSchema as any,
+            next
         );
     };
 
@@ -373,18 +392,11 @@ export class DataService {
         return this.fetchWithValidation<Assets[]>(filter, AssetsSchema as any);
     };
 
-    fetchAsset = (assetId: string): Promise<any> => {
-        const filter = `${this.ENDPOINTS.ASSETS}/${assetId}`;
-        return new Promise<any>((resolve, reject) => {
-            this.client
-                .get(filter)
-                .then((response) => {
-                    resolve(response);
-                })
-                .catch((error) => {
-                    reject(this.generateDataServiceError(error));
-                });
-        });
+    // The asset endpoint returns the raw payload (not a `{ data }` envelope).
+    // Consumers read `response.data`, so wrap the parsed body to keep that shape.
+    fetchAsset = async (assetId: string): Promise<any> => {
+        const body = await this.request(`${this.ENDPOINTS.ASSETS}/${assetId}`);
+        return { data: body };
     };
 
     // Assets filter builders
@@ -398,19 +410,19 @@ export class DataService {
     // PRIVATE UTILITY METHODS
     // ============================================
     private generateDataServiceError = (error: any): DataServiceError => {
-        if (!error.response) {
-            return new DataServiceError(error.message);
+        if (error instanceof DataServiceError) {
+            return error;
         }
-        return new DataServiceError(error.message, error.response.status);
+        return new DataServiceError(error?.message ?? "Request failed");
     };
 
     private handleResponse = <T>({
-        response,
+        data,
         schema,
         endpoint,
     }: HandleResponseParams<T>): { res: T | null; error: DataServiceError | null } => {
         try {
-            const parsedResponse = schema.parse(response.data.data);
+            const parsedResponse = schema.parse(data);
             return {
                 res: parsedResponse,
                 error: null,

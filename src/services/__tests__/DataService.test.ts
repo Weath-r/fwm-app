@@ -1,10 +1,5 @@
 import { DataService, DataServiceError } from "../DataService";
-import { createAxiosInstance } from "@/utils/httpClientUtils";
-import { AxiosError } from "axios";
 import { z } from "zod";
-
-// Mock the httpClientUtils
-jest.mock("@/utils/httpClientUtils");
 
 // Mock schemas
 jest.mock("@/schemas", () => ({
@@ -42,7 +37,27 @@ jest.mock("@/schemas", () => ({
 
 describe("DataService", () => {
     let dataService: DataService;
-    let mockAxiosInstance: any;
+    // `mockAxiosInstance.get` stands in for the old Axios call: tests still queue
+    // responses in the Axios envelope shape `{ data: <body> }`. The `fetch` mock
+    // below delegates to it and adapts the resolved value into a `Response`, so
+    // the existing test bodies keep working against the native-fetch transport.
+    let mockAxiosInstance: { get: jest.Mock };
+
+    const makeOkResponse = (body: unknown): Partial<Response> => ({
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        json: async () => body,
+    });
+
+    const mockHttpError = (status: number) => {
+        (global.fetch as jest.Mock).mockResolvedValue({
+            ok: false,
+            status,
+            statusText: `Error ${status}`,
+            json: async () => ({}),
+        });
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -51,7 +66,10 @@ describe("DataService", () => {
             get: jest.fn(),
         };
 
-        (createAxiosInstance as jest.Mock).mockReturnValue(mockAxiosInstance);
+        global.fetch = jest.fn(async (url: string) => {
+            const axiosResponse = await mockAxiosInstance.get(url);
+            return makeOkResponse(axiosResponse.data);
+        }) as unknown as typeof fetch;
 
         dataService = new DataService();
     });
@@ -82,7 +100,7 @@ describe("DataService", () => {
             });
 
             it("should throw DataServiceError on network failure", async () => {
-                const error = new AxiosError("Network Error");
+                const error = new Error("Network Error");
                 mockAxiosInstance.get.mockRejectedValue(error);
 
                 try {
@@ -218,7 +236,7 @@ describe("DataService", () => {
             });
 
             it("should throw error on API failure", async () => {
-                const error = new AxiosError("API Error");
+                const error = new Error("API Error");
                 mockAxiosInstance.get.mockRejectedValue(error);
 
                 try {
@@ -342,7 +360,7 @@ describe("DataService", () => {
             });
 
             it("should throw DataServiceError on network failure", async () => {
-                const error = new AxiosError("Network Error");
+                const error = new Error("Network Error");
                 mockAxiosInstance.get.mockRejectedValue(error);
 
                 try {
@@ -508,7 +526,7 @@ describe("DataService", () => {
             });
 
             it("should reject on error in either request", async () => {
-                mockAxiosInstance.get.mockRejectedValue(new AxiosError("API Error"));
+                mockAxiosInstance.get.mockRejectedValue(new Error("API Error"));
 
                 try {
                     await dataService.fetchAllWeatherWarnings(1);
@@ -686,10 +704,7 @@ describe("DataService", () => {
 
         describe("Error scenarios", () => {
             it("should handle 404 responses", async () => {
-                const error: any = new AxiosError("Not Found");
-                error.response = { status: 404 };
-
-                mockAxiosInstance.get.mockRejectedValue(error);
+                mockHttpError(404);
 
                 try {
                     await dataService.fetchWeatherStations();
@@ -701,10 +716,7 @@ describe("DataService", () => {
             });
 
             it("should handle 500 responses", async () => {
-                const error: any = new AxiosError("Server Error");
-                error.response = { status: 500 };
-
-                mockAxiosInstance.get.mockRejectedValue(error);
+                mockHttpError(500);
 
                 try {
                     await dataService.fetchWeatherStations();
@@ -716,7 +728,7 @@ describe("DataService", () => {
             });
 
             it("should handle network errors without response", async () => {
-                const error = new AxiosError("Network Error");
+                const error = new Error("Network Error");
 
                 mockAxiosInstance.get.mockRejectedValue(error);
 
@@ -792,18 +804,14 @@ describe("DataService", () => {
     });
 
     describe("Integration Tests", () => {
-        it("should initialize axios instance on construction", () => {
-            expect(createAxiosInstance).toHaveBeenCalled();
-        });
-
-        it("should use same axios instance for all requests", () => {
+        it("should issue exactly one request per fetch call", async () => {
             mockAxiosInstance.get.mockResolvedValue({
                 data: { data: [] },
             });
 
-            dataService.fetchWeatherStations();
+            await dataService.fetchWeatherStations();
 
-            expect(mockAxiosInstance.get).toHaveBeenCalledTimes(1);
+            expect(global.fetch).toHaveBeenCalledTimes(1);
         });
     });
 });

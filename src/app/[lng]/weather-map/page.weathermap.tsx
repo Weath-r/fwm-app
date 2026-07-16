@@ -4,6 +4,12 @@ import "leaflet/dist/leaflet.css";
 import dynamic from "next/dynamic";
 import ForecastLayer from "@/components/WeatherMap/ForecastLayer";
 import WeatherWarningBanner from "@/components/WeatherMap/Warnings/WeatherWarningBanner";
+import { WarningHazard, WarningLevel } from "@/types";
+
+type WeatherMapPageProps = {
+    hazards: WarningHazard[];
+    warningLevels: WarningLevel[];
+};
 
 const StationsMap = dynamic(() => import("@/components/WeatherMap/StationsMap"), {
     ssr: false,
@@ -12,7 +18,7 @@ const LayersMenu = dynamic(() => import("@/components/WeatherMap/LayersMenu"), {
     ssr: false,
 });
 
-export default function WeatherMapPage() {
+export default function WeatherMapPage({ hazards, warningLevels }: WeatherMapPageProps) {
     const { warnings } = useWarningsProvider();
     const warningsCount = warnings.reduce((currValue, acc) => {
         currValue += acc.warnings.length;
@@ -29,7 +35,11 @@ export default function WeatherMapPage() {
             <aside
                 className={`absolute left-0 top-1 z-[2] w-full ${warningsCount === 0 ? "hidden" : ""}`}
             >
-                <WeatherWarningBanner warnings={warnings} />
+                <WeatherWarningBanner
+                    warnings={warnings}
+                    hazards={hazards}
+                    warningLevels={warningLevels}
+                />
             </aside>
             <StationsMap></StationsMap>
             <section className="fixed bottom-0 z-[2] w-full lg:bottom-0">
