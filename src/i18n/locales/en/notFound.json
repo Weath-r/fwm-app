@@ -1,0 +1,12 @@
+{
+    "eyebrow": "Signal lost",
+    "title": "This station's gone off-grid.",
+    "body": "Our weather station on Mount Oíti can't get a reading for this page. Either the wind blew it clean off the map or this route was never charted to begin with.",
+    "readoutLabel": "Station reading",
+    "readoutValue": "-- . --",
+    "status": "NO DATA",
+    "coordinates": "Mt. Oíti · 2,152 m · no uplink",
+    "forecast": "Forecast for this page: 100% chance of nothing.",
+    "primaryCta": "Back to base",
+    "secondaryCta": "Open the map"
+}
