@@ -6,6 +6,7 @@ import { DataService } from "@/services/DataService";
 import { calculateWindToBft } from "@/utils/weatherConvertUnits";
 import { urlStationName } from "@/helpers/createStationName";
 import { resolveEnvironmentalConditions } from "@/helpers/weatherCalculations";
+import { assetUrl } from "@/helpers/assetsHandling";
 import {
     WeatherDataResponse,
     WeatherForecastResponse,
@@ -76,7 +77,7 @@ function buildCityCard({
 
     return {
         city: translatedName,
-        imageSrc: `/assets/cities/${urlStationName(station.name).toLowerCase()}.jpg`,
+        imageSrc: assetUrl(current.weather_station_id.header_bg),
         currentAssetId: current.weather_condition_icon ?? "",
         currentDescription: current.weather_condition ?? "",
         currentTemp: Math.round(current.temperature),
