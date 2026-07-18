@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { DataService } from "@/services/DataService";
 import { getClimatologyData } from "@/services/getClimatologyData";
 import { applyStationTranslations } from "@/utils/weatherDataFormatUtils";
@@ -32,6 +33,18 @@ export const fetchStationPageData = async ({ lng, stationId }: FetchStationPageD
         applyStationTranslations(elem, lng)
     );
 
+    if (currentWeather.length === 0) {
+        return {
+            weatherData: [],
+            currentWeather: null,
+            climateData: [],
+            forecast: null,
+            historicalData: [],
+            frostData: null,
+            environmentalConditions: resolveEnvironmentalConditions(null),
+        };
+    }
+
     const station = currentWeather[0].weather_station_id;
 
     const [historicalClimateData, frostData, environmentalData] = await Promise.all([
@@ -56,3 +69,7 @@ export const fetchStationPageData = async ({ lng, stationId }: FetchStationPageD
         environmentalConditions: resolveEnvironmentalConditions(environmentalData),
     };
 };
+
+export const getCachedStationPageData = cache((lng: string, stationId: number) =>
+    fetchStationPageData({ lng, stationId })
+);

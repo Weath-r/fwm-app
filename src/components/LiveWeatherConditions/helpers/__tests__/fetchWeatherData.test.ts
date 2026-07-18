@@ -157,9 +157,9 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData).toBeDefined();
-        expect(Array.isArray(result.weatherData)).toBe(true);
-        expect(result.weatherData.length).toBeGreaterThan(0);
+        expect(result.weatherData!).toBeDefined();
+        expect(Array.isArray(result.weatherData!)).toBe(true);
+        expect(result.weatherData!.length).toBeGreaterThan(0);
     });
 
     it("should translate station name when language is provided", async () => {
@@ -185,7 +185,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData[0].station.name).toBe("Test Station EN");
+        expect(result.weatherData![0].station.name).toBe("Test Station EN");
     });
 
     it("should translate prefecture name when language is provided", async () => {
@@ -217,7 +217,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData[0].station.prefecture_id.label).toBe("Test Prefecture EN");
+        expect(result.weatherData![0].station.prefecture_id.label).toBe("Test Prefecture EN");
     });
 
     it("should handle different language codes", async () => {
@@ -250,8 +250,8 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData[0].station.name).toBe("Test Station GR");
-        expect(result.weatherData[0].station.prefecture_id.label).toBe("Test Prefecture GR");
+        expect(result.weatherData![0].station.name).toBe("Test Station GR");
+        expect(result.weatherData![0].station.prefecture_id.label).toBe("Test Prefecture GR");
     });
 
     it("should keep original name when translation not found", async () => {
@@ -276,7 +276,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData[0].station.name).toBe("Test Station");
+        expect(result.weatherData![0].station.name).toBe("Test Station");
     });
 
     it("should handle empty language parameter", async () => {
@@ -301,8 +301,8 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData).toBeDefined();
-        expect(result.weatherData.length).toBeGreaterThan(0);
+        expect(result.weatherData!).toBeDefined();
+        expect(result.weatherData!.length).toBeGreaterThan(0);
     });
 
     it("should fetch forecast data when isForecastEnabled is true", async () => {
@@ -328,7 +328,7 @@ describe("FetchLiveWeatherStationData", () => {
         });
 
         expect(mockDataService.fetchForecastByStation).toHaveBeenCalledWith(1);
-        expect(result.weatherData[0].full_forecast).toBeDefined();
+        expect(result.weatherData![0].full_forecast).toBeDefined();
     });
 
     it("should not fetch forecast data when isForecastEnabled is false", async () => {
@@ -378,7 +378,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: true,
         });
 
-        expect(result.weatherData[0].full_forecast).toEqual([]);
+        expect(result.weatherData![0].full_forecast).toEqual([]);
     });
 
     it("should fetch frost data by municipality", async () => {
@@ -404,7 +404,7 @@ describe("FetchLiveWeatherStationData", () => {
         });
 
         expect(mockDataService.fetchFrostDataByMunicipality).toHaveBeenCalledWith(1);
-        expect(result.weatherData[0].frost_data).toBeDefined();
+        expect(result.weatherData![0].frost_data).toBeDefined();
     });
 
     it("should set frost_data to null when no frost data is available", async () => {
@@ -429,7 +429,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData[0].frost_data).toBeNull();
+        expect(result.weatherData![0].frost_data).toBeNull();
     });
 
     it("should use buildWeatherData utility function", async () => {
@@ -493,7 +493,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData.length).toBe(2);
+        expect(result.weatherData!.length).toBe(2);
     });
 
     it("should handle weather data without translations", async () => {
@@ -532,8 +532,8 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData).toBeDefined();
-        expect(result.weatherData.length).toBeGreaterThan(0);
+        expect(result.weatherData!).toBeDefined();
+        expect(result.weatherData!.length).toBeGreaterThan(0);
     });
 
     it("should preserve full_forecast and frost_data initialization", async () => {
@@ -558,9 +558,9 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData[0].full_forecast).toBeDefined();
-        expect(Array.isArray(result.weatherData[0].full_forecast)).toBe(true);
-        expect(result.weatherData[0].frost_data).toBeDefined();
+        expect(result.weatherData![0].full_forecast).toBeDefined();
+        expect(Array.isArray(result.weatherData![0].full_forecast)).toBe(true);
+        expect(result.weatherData![0].frost_data).toBeDefined();
     });
 
     it("should fetch environmental data for the station cluster", async () => {
@@ -614,9 +614,32 @@ describe("FetchLiveWeatherStationData", () => {
         });
 
         expect(result.environmentalConditions).toEqual({ uvIndex: null, airQualityIndex: null });
-        expect(result.weatherData.length).toBeGreaterThan(0);
+        expect(result.weatherData!.length).toBeGreaterThan(0);
         expect(consoleErrorSpy).toHaveBeenCalled();
 
         consoleErrorSpy.mockRestore();
+    });
+
+    it("should return null weatherData and environmentalConditions when the station has no readings", async () => {
+        const mockDataService = {
+            fetchWeatherDataByStation: jest.fn().mockResolvedValue([]),
+            fetchForecastByStation: jest.fn().mockResolvedValue([]),
+            fetchFrostDataByMunicipality: jest.fn(),
+            fetchEnvironmentalDataByStation: jest.fn(),
+        };
+
+        (DataService as jest.MockedClass<typeof DataService>).mockImplementation(
+            () => mockDataService as any
+        );
+
+        const result = await FetchLiveWeatherStationData({
+            lng: "en",
+            stationId: 1,
+            isForecastEnabled: false,
+        });
+
+        expect(result).toEqual({ weatherData: null, environmentalConditions: null });
+        expect(mockDataService.fetchFrostDataByMunicipality).not.toHaveBeenCalled();
+        expect(mockDataService.fetchEnvironmentalDataByStation).not.toHaveBeenCalled();
     });
 });
