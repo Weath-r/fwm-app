@@ -1,8 +1,9 @@
 import StationPage from "@/components/StationPage/StationPage";
-import { fetchStationPageData } from "@/components/StationPage/helpers/fetchStationPageData";
+import { getCachedStationPageData } from "@/components/StationPage/helpers/fetchStationPageData";
 import { properStationName } from "@/helpers/createStationName";
 import { getT } from "@/i18n";
 import StationStructuredData from "@/components/Seo/StationStructuredData";
+import StationUnavailable from "@/components/StationUnavailable/StationUnavailable";
 import configuration from "@/app/appConfig";
 
 type StationPageProps = {
@@ -17,6 +18,7 @@ export async function generateMetadata(props: StationPageProps) {
     const params = await props.params;
     const stationName = decodeURI(properStationName(params.name));
     const { t, i18n } = await getT("pages");
+    const { currentWeather } = await getCachedStationPageData(params.lng, +params.id);
 
     const keywords_en = [
         `${stationName} weather`,
@@ -58,12 +60,20 @@ export async function generateMetadata(props: StationPageProps) {
             locale: i18n.language,
             type: "website",
         },
+        ...(!currentWeather && { robots: { index: false, follow: false } }),
     };
 }
 
 export default async function StationPageView(props: StationPageProps) {
     const params = await props.params;
     const { lng, id, name } = params;
+
+    const result = await getCachedStationPageData(lng, +id);
+
+    if (!result.currentWeather) {
+        const { t } = await getT("stationUnavailable");
+        return <StationUnavailable lng={lng} t={t} variant="page" />;
+    }
 
     const {
         weatherData,
@@ -73,7 +83,7 @@ export default async function StationPageView(props: StationPageProps) {
         historicalData,
         frostData,
         environmentalConditions,
-    } = await fetchStationPageData({ lng, stationId: +id });
+    } = result;
 
     return (
         <>

@@ -4,6 +4,7 @@ import { StationEnvironmentalConditions, WeatherData } from "@/types";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/Common/CommonDialog";
 import LiveWeatherConditionsPage from "@/components/LiveWeatherConditions/LiveWeatherConditionsPage";
 import { CloseModalButton } from "@/components/LiveWeatherConditions/buttons/CloseModalButton";
+import StationUnavailable from "@/components/StationUnavailable/StationUnavailable";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,8 +16,8 @@ type StationPageProps = {
         name: string;
         lng: string;
     };
-    weatherData: WeatherData[];
-    environmentalConditions: StationEnvironmentalConditions;
+    weatherData: WeatherData[] | null;
+    environmentalConditions: StationEnvironmentalConditions | null;
 };
 
 export default function LiveWeatherConditionsModalPage({
@@ -25,6 +26,7 @@ export default function LiveWeatherConditionsModalPage({
     environmentalConditions,
 }: StationPageProps) {
     const { i18n } = useT("stationModal");
+    const { t: tStationUnavailable } = useT("stationUnavailable");
     const router = useRouter();
     const dialogTitle = (
         <div className="text-sm font-bold uppercase text-primary">
@@ -50,12 +52,18 @@ export default function LiveWeatherConditionsModalPage({
                     router.back();
                 }}
             >
-                <LiveWeatherConditionsPage
-                    params={params}
-                    weatherData={weatherData}
-                    environmentalConditions={environmentalConditions}
-                    variant="modal"
-                />
+                {weatherData ? (
+                    <LiveWeatherConditionsPage
+                        params={params}
+                        weatherData={weatherData}
+                        environmentalConditions={
+                            environmentalConditions as StationEnvironmentalConditions
+                        }
+                        variant="modal"
+                    />
+                ) : (
+                    <StationUnavailable lng={params.lng} t={tStationUnavailable} variant="modal" />
+                )}
             </DialogContent>
         </Dialog>
     );

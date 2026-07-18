@@ -1,4 +1,5 @@
 import { CurrentWeatherShareableCard } from "@/components/ShareableCards/CurrentWeatherShareableCard";
+import { StationUnavailableShareableCard } from "@/components/ShareableCards/StationUnavailableShareableCard";
 import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/helpers/fetchWeatherData";
 import { getT } from "@/i18n";
 
@@ -20,6 +21,10 @@ export default async function Image({ params }: Props) {
         stationId: +id,
         isForecastEnabled: false,
     });
+
+    if (!weatherData) {
+        return StationUnavailableShareableCard(lng);
+    }
 
     const data = weatherData[0];
 

@@ -1,0 +1,12 @@
+{
+    "eyebrow": "Station offline",
+    "title": "This station isn't reporting right now.",
+    "body": "We're not receiving live readings from this station at the moment — it might be a temporary issue. Check back shortly, or explore the map for stations that are online now.",
+    "readoutLabel": "Station reading",
+    "readoutValue": "-- . --",
+    "status": "NO DATA",
+    "coordinates": "Standing by · reconnecting",
+    "forecast": "This reading will refresh the moment the station reconnects.",
+    "primaryCta": "Back to weather map",
+    "secondaryCta": "View all stations"
+}

@@ -1,9 +1,10 @@
 import ClientPageLiveWeatherConditions from "./page.client";
 import { getT } from "@/i18n";
 import { properStationName } from "@/helpers/createStationName";
-import { FetchLiveWeatherStationData } from "@/components/LiveWeatherConditions/helpers/fetchWeatherData";
+import { getCachedLiveWeatherStationData } from "@/components/LiveWeatherConditions/helpers/fetchWeatherData";
 import { getConfiguration } from "@/services/getConfiguration";
 import StationStructuredData from "@/components/Seo/StationStructuredData";
+import StationUnavailable from "@/components/StationUnavailable/StationUnavailable";
 import configuration from "@/app/appConfig";
 
 type LiveWeatherConditionsProps = {
@@ -18,6 +19,13 @@ export async function generateMetadata(props: LiveWeatherConditionsProps) {
     const params = await props.params;
     const stationName = decodeURI(properStationName(params.name));
     const { t, i18n } = await getT("pages");
+    const featureFlags = await getConfiguration();
+    const isForecastEnabled = featureFlags.forecasts.modalForecast || false;
+    const { weatherData } = await getCachedLiveWeatherStationData(
+        params.lng,
+        +params.id,
+        isForecastEnabled
+    );
 
     const keywords_en = [
         `${stationName} weather`,
@@ -59,6 +67,7 @@ export async function generateMetadata(props: LiveWeatherConditionsProps) {
             locale: i18n.language,
             type: "website",
         },
+        ...(!weatherData && { robots: { index: false, follow: false } }),
     };
 }
 
@@ -68,11 +77,14 @@ export default async function StationPageView(props: LiveWeatherConditionsProps)
     const isForecastEnabled = featureFlags.forecasts.modalForecast || false;
     const { lng, id } = params;
 
-    const { weatherData, environmentalConditions } = await FetchLiveWeatherStationData({
-        lng,
-        stationId: +id,
-        isForecastEnabled,
-    });
+    const result = await getCachedLiveWeatherStationData(lng, +id, isForecastEnabled);
+
+    if (!result.weatherData) {
+        const { t } = await getT("stationUnavailable");
+        return <StationUnavailable lng={lng} t={t} variant="page" />;
+    }
+
+    const { weatherData, environmentalConditions } = result;
 
     return (
         <>
