@@ -6,19 +6,28 @@ A Next.js weather forecasting and monitoring application with interactive maps, 
 
 - **Framework:** Next.js 16 (App Router), React 19, TypeScript 5
 - **Styling:** Tailwind CSS 3 with custom theme (primary: #3D5361, secondary: #F5F0ED)
-- **UI Components:** Radix UI primitives
+- **UI Components:** Radix UI primitives; TanStack Table for data tables
 - **Maps:** Leaflet + react-leaflet, MapLibre GL + react-map-gl
 - **Charts:** Highcharts, D3.js (spatial interpolation), Anime.js
 - **State:** Zustand stores, React Context providers
-- **HTTP:** Axios with custom instance; Zod validation at API boundary
+- **HTTP:** native `fetch` through `DataService` (single chokepoint); Zod validation at the API boundary; optional Next.js Data Cache options per call
 - **i18n:** i18next + react-i18next (en, el)
 - **Analytics:** PostHog
-- **Package Manager:** pnpm (enforced — do not use npm or yarn)
+- **Package Manager:** pnpm (enforced via `only-allow` — do not use npm or yarn)
+
+## Architecture Docs
+
+`architecture/` (repo root, outside `src/`) holds the living architecture reference — consult it before structural decisions and keep it updated when the shape of the system changes:
+
+- `architecture/current-architecture.md` — as-is system context, frontend layering, caching rules, `weather_data` flow
+- `architecture/weather-data-websocket.md` — target design for `weather_data` over Directus Realtime
+- `architecture/architecture.html` — self-contained rendered version of both (diagrams also live in its `DIAGRAMS` object; update `.md` and `.html` together)
 
 ## Commands
 
 ```bash
 pnpm dev            # Start dev server (port 3000)
+pnpm dev-secure     # Dev server with experimental HTTPS
 pnpm build          # Production build
 pnpm start          # Start production server
 pnpm test           # Run tests once
@@ -31,6 +40,7 @@ pnpm lint:fix       # Auto-fix lint issues
 ## Project Structure
 
 ```
+architecture/                               # Architecture reference docs (see above)
 src/
 ├── app/
 │   ├── appConfig.ts                        # Centralized app config
@@ -38,17 +48,19 @@ src/
 │   ├── robots.ts
 │   ├── globals.css
 │   ├── api/
-│   │   └── [lng]/share-card/
-│   │       └── route.tsx                   # OG share-card image generation
+│   │   ├── [lng]/share-card/route.tsx      # OG share-card image generation
+│   │   └── revalidate/route.ts             # Secret-gated on-demand Data Cache invalidation
 │   └── [lng]/                              # Dynamic language routing
 │       ├── layout.tsx
+│       ├── not-found.tsx
+│       ├── [...notFound]/page.tsx          # Catch-all 404
 │       ├── PostHogPageView.tsx
 │       ├── (home)/                         # Home route group
-│       │   ├── layout.tsx
+│       │   ├── layout.tsx                  # Mounts StationsProvider
 │       │   ├── page.tsx
-│       │   └── page.homepage.tsx
-│       ├── weather-map/                    # Interactive map page
-│       │   ├── layout.tsx
+│       │   └── page.homepage.tsx           # RSC sections wrapped in Suspense + skeletons
+│       ├── weather-map/
+│       │   ├── layout.tsx                  # Mounts StationsProvider
 │       │   ├── page.tsx
 │       │   ├── page.weathermap.tsx
 │       │   └── @modal/                     # Parallel modal slot
@@ -79,241 +91,116 @@ src/
 │           └── page.tsx
 ├── components/
 │   ├── BaseComponents/                     # Map and UI primitives
-│   │   ├── BaseMap.tsx
-│   │   ├── BaseMapLibre.tsx
-│   │   ├── BaseMarker.tsx
-│   │   ├── BaseGeoJSON.tsx
-│   │   ├── BaseDialog.tsx
-│   │   ├── BaseToggle.tsx
-│   │   └── BaseWeatherIcon.tsx
+│   │   ├── BaseMap.tsx / BaseMapLibre.tsx / BaseMarker.tsx / BaseGeoJSON.tsx
+│   │   └── BaseDialog.tsx / BaseToggle.tsx / BaseWeatherIcon.tsx
 │   ├── Common/                             # Shared UI components
-│   │   ├── CommonButton.tsx
-│   │   ├── CommonDialog.tsx
-│   │   ├── CommonPopover.tsx
-│   │   ├── CommonSelect.tsx
-│   │   ├── CommonSlider.tsx
-│   │   ├── StationLink.tsx
-│   │   ├── SvgInline.tsx
-│   │   ├── LoadingSpinner.tsx
-│   │   ├── DivIconMarker.tsx
-│   │   ├── DropdownMenu.tsx
-│   │   ├── DropdownListMenu.tsx
-│   │   ├── CollapsedCard.tsx
-│   │   ├── Favorite/
-│   │   │   └── favoriteStationButton.tsx
-│   │   ├── General/
-│   │   │   └── StationTypeLabel.tsx
-│   │   ├── LibreMap/
-│   │   │   └── LibreMapMarker.tsx
+│   │   ├── CommonButton / CommonDialog / CommonPopover / CommonSelect / CommonSlider
+│   │   ├── StationLink / SvgInline / LoadingSpinner / DivIconMarker
+│   │   ├── DropdownMenu / DropdownListMenu / CollapsedCard
+│   │   ├── Favorite/favoriteStationButton.tsx
+│   │   ├── General/StationTypeLabel.tsx
+│   │   ├── LibreMap/LibreMapMarker.tsx
 │   │   └── Share/                          # Social share popover
-│   │       ├── Share.tsx
-│   │       ├── ShareController.tsx
-│   │       ├── SharePopup.tsx
-│   │       └── index.tsx
-│   ├── Home/                               # Homepage-only sections
-│   │   ├── CityWeatherCard.tsx
-│   │   ├── HomepageWarningsSection.tsx
-│   │   └── HomepageStationsSection.tsx
+│   ├── Home/                               # Homepage sections — each: Section (RSC fetch) + View (client) + Skeleton
+│   │   ├── About/HomepageAboutSection.tsx
+│   │   ├── MajorCities/                    # CityWeatherCard, MajorCitiesSection, MajorCitiesSkeleton
+│   │   ├── Stations/                       # HomepageStationsSection, ...View, ...Skeleton
+│   │   └── Warnings/                       # HomepageWarningsSection, ...View, ...Skeleton
+│   ├── Seo/                                # JsonLd.tsx, StationStructuredData.tsx
+│   ├── NotFound/                           # NotFoundPage, OffGridStationScene, module CSS
+│   ├── StationUnavailable/StationUnavailable.tsx
 │   ├── ShareableCards/                     # OG / share card templates
 │   │   ├── CurrentWeatherShareableCard.tsx
+│   │   ├── StationUnavailableShareableCard.tsx
 │   │   └── createImageTemplates.ts
 │   ├── WeatherMap/                         # Interactive map page components
-│   │   ├── StationsMap.tsx
-│   │   ├── LayersMenu.tsx
-│   │   ├── ForecastLayer.tsx
-│   │   ├── MapWarningsGeojsonGroup.tsx
-│   │   ├── Layers/
-│   │   │   ├── ClusterStationsLayer.tsx
-│   │   │   ├── TemperatureLayer.tsx
-│   │   │   └── WindLayer.tsx
-│   │   ├── Markers/
-│   │   │   ├── MapMarkerWithLabel.tsx
-│   │   │   └── ClusterMarkersContent.tsx
-│   │   ├── SearchForm/
-│   │   │   └── MapSearchForm.tsx
-│   │   └── Warnings/
-│   │       └── WeatherWarningBanner.tsx
+│   │   ├── StationsMap.tsx / LayersMenu.tsx / ForecastLayer.tsx / MapWarningsGeojsonGroup.tsx
+│   │   ├── Layers/                         # ClusterStationsLayer, TemperatureLayer, WindLayer
+│   │   ├── Markers/                        # MapMarkerWithLabel, ClusterMarkersContent
+│   │   ├── SearchForm/MapSearchForm.tsx
+│   │   └── Warnings/WeatherWarningBanner.tsx
 │   ├── Stations/
-│   │   ├── StationsPage.tsx
-│   │   └── components/
-│   │       ├── StationTableColumns.tsx
-│   │       └── StationsTableData.tsx
+│   │   ├── StationsPage.tsx                # Client component, fetches on mount
+│   │   └── components/                     # StationTableColumns, StationsTableData
 │   ├── LiveWeatherConditions/
 │   │   ├── LiveWeatherConditionsPage.tsx
 │   │   ├── StationWeatherForecastDetails.tsx
-│   │   ├── buttons/
-│   │   │   ├── BackToHomepageButton.tsx
-│   │   │   └── CloseModalButton.tsx
-│   │   ├── components/
-│   │   │   ├── StationModalHeading.tsx
-│   │   │   ├── StationModalBody.tsx
-│   │   │   ├── FrostWarning.tsx
-│   │   │   └── forecast/
-│   │   │       ├── ForecastSummary.tsx
-│   │   │       ├── ForecastPeriodLabel.tsx
-│   │   │       └── ForecastSignalTranslationText.tsx
-│   │   ├── loading/
-│   │   │   └── LoadingScreenModal.tsx
-│   │   └── helpers/
-│   │       └── fetchWeatherData.ts
+│   │   ├── buttons/CloseModalButton.tsx
+│   │   ├── components/                     # StationModalHeading, StationModalBody, FrostWarning, HeroBackground, forecast/
+│   │   ├── loading/LoadingScreenModal.tsx
+│   │   └── helpers/fetchWeatherData.ts     # Server-side data loader (React cache())
 │   ├── StationPage/
-│   │   ├── StationPage.tsx
-│   │   ├── LastDayGraph.tsx
-│   │   ├── MonthGraph.tsx
-│   │   ├── loading/
-│   │   │   └── StationPageLoading.tsx
-│   │   └── components/
-│   │       ├── BackButton.tsx
-│   │       ├── StationPageInformation.tsx
-│   │       ├── StationPageHeader.tsx
-│   │       ├── StationPageMainContent.tsx
-│   │       ├── StationPageMapModal.tsx
-│   │       ├── StationPageClimateSummary.tsx
-│   │       ├── StationPageHistoricalData.tsx
-│   │       ├── TemperaturePercipitationGraph.tsx
-│   │       └── WindCombinedGraph.tsx
+│   │   ├── StationPage.tsx / LastDayGraph.tsx / MonthGraph.tsx
+│   │   ├── helpers/fetchStationPageData.ts # Server-side data loader (React cache())
+│   │   ├── loading/StationPageLoading.tsx
+│   │   └── components/                     # BackButton, StationPageInformation, StationPageMainContent,
+│   │                                       # StationPageMapModal, StationPageClimateSummary,
+│   │                                       # StationPageHistoricalData, TemperaturePercipitationGraph, WindCombinedGraph
 │   ├── FthiotidaForecasts/
 │   │   ├── FthiotidaForecastsPage.tsx
 │   │   └── components/
-│   │       ├── FthiotidaForecastsSection.tsx
-│   │       ├── FthiotidaForecastsIndividualForecastCard.tsx
-│   │       ├── FthiotidaForecastsIndividualWindCard.tsx
-│   │       ├── CalendarSection.tsx
-│   │       ├── LoadingForecastData.tsx
-│   │       └── NoForecastSection.tsx
 │   ├── Warnings/
-│   │   ├── WarningsPage.tsx
-│   │   ├── WarningsPanel.tsx
-│   │   ├── WarningsInformationModal.tsx
-│   │   ├── utils/
-│   │   │   └── warningsHelpers.ts
-│   │   └── components/
-│   │       ├── WarningsTableData.tsx
-│   │       ├── HazardIcon.tsx
-│   │       ├── WarningLevelsLegend.tsx
-│   │       └── WarningHazardsLegend.tsx
+│   │   ├── WarningsPage.tsx / WarningsPanel.tsx / WarningsInformationModal.tsx
+│   │   ├── utils/warningsHelpers.ts
+│   │   └── components/                     # WarningsTableData, HazardIcon, legends
 │   ├── Header/
-│   │   ├── Header.tsx
-│   │   ├── HeaderMenu.tsx
-│   │   ├── MobileHeaderMenu.tsx
-│   │   └── HeaderChangeLanguageMenu.tsx
-│   ├── Graphs/
-│   │   ├── AreaGraphDateTime.tsx
-│   │   └── LineGraphDateTime.tsx
-│   └── MapControls/
-│       └── MapControls.tsx
+│   ├── Graphs/                             # AreaGraphDateTime, LineGraphDateTime
+│   └── MapControls/MapControls.tsx
 ├── stores/                                 # Zustand state
 │   ├── mapStore.ts
-│   ├── settingsStore.ts
-│   ├── configurationStore.ts
+│   ├── configurationStore.ts               # Feature flags (hydrated from server config)
 │   └── forecastLayerStore.ts
-├── hooks/                                  # Custom React hooks
-│   ├── useAppStore.ts
-│   ├── useDialog.ts
-│   ├── useFetchGeneral.ts
-│   ├── useFetchAssetsFromFolder.ts
-│   ├── useAnimeIcon.ts
-│   └── useRedirectToHomeOnBack.ts
+├── hooks/
+│   ├── useAppStore.ts                      # Favourites (persisted to localStorage)
+│   ├── useDialog.ts / useFetchAssetsFromFolder.ts / useAnimeIcon.ts / useRedirectToHomeOnBack.ts
 ├── services/
-│   └── DataService.ts                      # Single API client with Zod validation
+│   ├── DataService.ts                      # Single API client: fetch → Zod parse → typed result
+│   ├── cacheTags.ts                        # Central registry of Next.js Data Cache tags
+│   ├── getWeatherStations.ts               # Cached server getters: fetch + revalidate window + tag
+│   ├── getConfiguration.ts                 # Feature flags, shared across requests
+│   ├── getLatestReadings.ts                # Shared 60s snapshot of latest weather_data per station
+│   ├── getForecastByStation.ts             # Per-station forecast, 6h TTL + forecasts tag
+│   ├── getEnvironmentalData.ts             # Per-cluster AQI/UV, 15min TTL (no tag)
+│   ├── getClimatologyData.ts / getWeatherHazards.ts / getWarningLevels.ts
 ├── schemas/                                # Zod schemas for all API responses
 │   ├── index.ts
-│   ├── WeatherData.ts
-│   ├── WeatherStations.ts
-│   ├── ClimatologyData.ts
-│   ├── HistoricalDataSchema.ts
-│   ├── ConfigurationSchemas.ts
-│   ├── WeatherWarnings.ts
-│   └── AssetsDirectus.ts
+│   ├── WeatherData.ts / WeatherStations.ts / ClimatologyData.ts
+│   ├── HistoricalDataSchema.ts / ConfigurationSchemas.ts
+│   ├── WeatherWarnings.ts / EnvironmentalData.ts / AssetsDirectus.ts
 ├── types/                                  # TypeScript types and enums
-│   ├── index.ts
-│   ├── general.ts
-│   ├── weatherData.ts
-│   ├── weatherForecast.ts
-│   ├── stations.ts
-│   ├── stationPage.ts
-│   ├── measurements.ts
-│   ├── gisTypes.ts
-│   ├── mapSettings.ts
-│   ├── climateWeatherData.ts
-│   ├── FthiotidaForecasts.ts
-│   ├── warnings.ts
-│   ├── assets.ts
-│   ├── loading_messages.ts
-│   ├── leaflet.velocity.d.ts
-│   └── enums/
-│       ├── weatherForecastEnums.ts
-│       ├── stationTypesEnum.ts
-│       └── graphEnums.ts
+│   ├── index.ts, general.ts, weatherData.ts, weatherForecast.ts, stations.ts,
+│   ├── stationPage.ts, measurements.ts, gisTypes.ts, mapSettings.ts,
+│   ├── climateWeatherData.ts, FthiotidaForecasts.ts, warnings.ts, assets.ts,
+│   ├── loading_messages.ts, leaflet.velocity.d.ts
+│   └── enums/                              # weatherForecastEnums, stationTypesEnum, graphEnums,
+│                                           # environmentalCategories, shareableCards
 ├── helpers/                                # Domain-specific business logic
-│   ├── general.tsx
-│   ├── internationalization.tsx
-│   ├── createStationName.tsx
-│   ├── weatherCalculations.ts
-│   ├── graphHelpers.tsx
-│   ├── assetsHandling.tsx
-│   ├── animations.tsx
-│   ├── fthiotidaForecastLocations.tsx
-│   ├── stationPage/
-│   │   └── getExtremeValues.ts
-│   └── forecastSignals/
-│       ├── calculateForecastSignalsText.ts
-│       ├── generalSignalCalculations.ts
-│       ├── temperatureSignalCalculations.ts
-│       ├── windSignalCalculations.ts
-│       ├── precipSignalCalculations.ts
-│       └── cloudinessSignalCalculations.ts
-├── utils/                                  # Generic utility functions (date, math, GIS, units)
-│   ├── mathUtils.ts
-│   ├── dateTimeUtils.ts
-│   ├── dateManipulation.ts
-│   ├── localStorage.ts
-│   ├── d3Utils.ts
-│   ├── weatherConvertUnits.ts
-│   ├── weatherDataFormatUtils.ts
-│   ├── colorManipulation.ts
-│   ├── httpClientUtils.ts
-│   ├── gisUtils.ts
-│   └── transformTranslations.ts
+│   ├── general.tsx, internationalization.tsx, createStationName.tsx,
+│   ├── weatherCalculations.ts, graphHelpers.tsx, assetsHandling.tsx,
+│   ├── animations.tsx, fthiotidaForecastLocations.tsx
+│   ├── liveWeather/                        # heroBackdrop.ts, heroMood.ts
+│   ├── seo/structuredData.ts
+│   ├── stationPage/getExtremeValues.ts
+│   └── forecastSignals/                    # calculateForecastSignalsText + per-signal calculations
+├── utils/                                  # Generic utilities (date, math, GIS, units, colors)
+│   ├── mathUtils.ts, dateTimeUtils.ts, dateManipulation.ts, localStorage.ts,
+│   ├── d3Utils.ts, weatherConvertUnits.ts, weatherDataFormatUtils.ts,
+│   └── colorManipulation.ts, gisUtils.ts, transformTranslations.ts
 ├── providers/                              # React context providers
 │   ├── clientProvider.tsx
-│   ├── StationsProvider.tsx
+│   ├── StationsProvider.tsx                # Stations metadata + active warnings (client)
+│   ├── ConfigStoreHydrator.tsx             # Server config → configurationStore
 │   └── DayjsLocaleProvider.tsx
-├── i18n/                                   # i18next config + locales
-│   ├── index.ts
-│   ├── client.ts
-│   ├── i18next.ts
-│   ├── settings.ts
-│   └── locales/
-│       ├── en/
-│       │   ├── common.json
-│       │   ├── forecasts.json
-│       │   ├── pages.json
-│       │   ├── station.json
-│       │   ├── stationModal.json
-│       │   ├── warnings.json
-│       │   ├── weather_conditions.json
-│       │   └── weather_icons.json
-│       └── el/
-│           ├── common.json
-│           ├── forecasts.json
-│           ├── pages.json
-│           ├── station.json
-│           ├── stationModal.json
-│           ├── warnings.json
-│           ├── weather_conditions.json
-│           └── weather_icons.json
 ├── constants/
-│   └── Colors.ts                           # App-wide color constants
-├── assets/
-│   ├── logos/
-│   │   ├── logo.png
-│   │   └── myweathr.png
-│   └── styles/
-│       └── spinner.css
-├── __MOCKS__/
-│   └── forecastMockResponse.json           # Mock data for tests
-└── proxy.ts                                # HTTP client proxy configuration
+│   ├── Colors.ts
+│   └── navigation.ts
+├── i18n/                                   # i18next config + locales
+│   └── locales/{en,el}/                    # common, forecasts, pages, station, stationModal,
+│                                           # warnings, weather_conditions, weather_icons,
+│                                           # homepage, aqi, uv, notFound, shareableCards, stationUnavailable
+├── assets/                                 # logos/, styles/spinner.css
+├── __MOCKS__/                              # forecastMockResponse.json, serverOnly.ts
+└── proxy.ts                                # Language-detection request proxy (Next.js proxy convention)
 ```
 
 ## Code Conventions
@@ -344,8 +231,12 @@ src/
 ### Architecture Rules
 
 - Server components by default; use `"use client"` only when needed
-- All API calls go through `DataService` — do not make raw Axios calls in components
-- Zustand stores for UI/map state; React providers for heavier shared state
+- All API calls go through `DataService` — no raw fetch/HTTP calls in components
+- **Server data layer:** reads that benefit from caching go through `src/services/get*.ts` getters, which pass Next.js Data Cache options (`revalidate` + tag) into `DataService`. Tags are registered centrally in `services/cacheTags.ts`; `/api/revalidate?tag=…` (Bearer-secret-gated, called by Directus Flows) invalidates on demand. Calls without cache options are uncached
+- **Cache invalidation rule of thumb:** tag what's written in discrete batches (forecasts, config, stations metadata), TTL what changes on a rolling cadence (`getLatestReadings` 60s, `getEnvironmentalData` 15min), never tag what's written continuously (`weather_data` inserts). Homepage sections and server page loaders consume the shared `getLatestReadings` snapshot instead of querying `weather_data` per station; `/stations` (client) still fetches directly
+- **Homepage section pattern:** each section is a server component that fetches (`*Section.tsx`), renders through a presentational client component (`*SectionView.tsx`), and streams behind `Suspense` with a `*Skeleton.tsx` fallback
+- Server-side page data loaders (`fetchStationPageData`, `fetchWeatherData`) are wrapped in React `cache()` for per-request dedupe
+- Zustand stores for UI/map state; React providers for heavier shared state. `configurationStore` feature flags come from `getConfiguration` via `ConfigStoreHydrator`
 - Translations live in `src/i18n/locales/{en,el}/*.json`; namespaces are loaded on-demand by filename — adding a new `*.json` file is sufficient, no config change needed
 - **Units:** always use the `Measurements` enum from `src/types/measurements.ts` for unit strings (`°C`, `Bft`, `mm`, `hPa`, `%`, etc.) — never hardcode them inline
 - **Weather condition labels** (Wind, Rain, Temperature, etc.): use `useT("weather_conditions")` — translations already exist in both locales
@@ -370,15 +261,19 @@ NEXT_PUBLIC_POSTHOG_KEY=
 NEXT_PUBLIC_POSTHOG_HOST=
 NEXT_PUBLIC_FORECAST_JSON_FOLDER=
 NEXT_PUBLIC_ASSETS_VERSION=
+NEXT_PUBLIC_MAPBOX_TOKEN=
+
+CONFIG_REVALIDATE_SECRET=
 ```
 
-All variables are browser-exposed (`NEXT_PUBLIC_*`). Do not store secrets here.
+`NEXT_PUBLIC_*` variables are browser-exposed — do not store secrets in them. `CONFIG_REVALIDATE_SECRET` (also read as `REVALIDATE_SECRET`) is server-only and gates `/api/revalidate`.
 
 ## Key Patterns
 
-- **API boundary:** `DataService` → Axios → Zod parse → typed result or `DataServiceError`
-- **Routing:** `src/app/[lng]/` — every page is under a language segment
-- **Map layers:** Leaflet for standard tiles + velocity (wind), MapLibre for vector tiles
+- **API boundary:** `DataService` → native `fetch` → Zod parse → typed result or `DataServiceError`; Directus REST is the only backend (`items/*` collections, `files`, `assets`)
+- **Routing:** `src/app/[lng]/` — every page is under a language segment; `src/proxy.ts` handles language detection/redirects
+- **Map layers:** Leaflet for standard tiles + velocity (wind), MapLibre for vector tiles; temperature/wind layers render forecast JSON assets (kriging + leaflet-velocity), station markers show metadata from `StationsProvider`
+- **SEO:** JSON-LD via `components/Seo/`, per-page `opengraph-image.tsx`, share cards via `/api/[lng]/share-card`
 - **Releases:** `pnpm release:patch/minor/major` (standard-version, updates CHANGELOG.md)
 - **Docker:** `prod.Dockerfile` for production container builds
 
