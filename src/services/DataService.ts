@@ -133,28 +133,33 @@ export class DataService {
         );
     };
 
-    fetchWeatherStationsWithData = (): Promise<WeatherDataResponse[]> => {
+    fetchWeatherStationsWithData = (
+        next?: NextFetchRequestConfig
+    ): Promise<WeatherDataResponse[]> => {
         const filter = this.buildWeatherStationsWithDataFilter();
-        return this.fetchWithValidation<WeatherDataResponse[]>(filter).then((data) => {
-            let result: WeatherDataResponse[] = [];
-            data.forEach((element: WeatherDataResponse) => {
-                const previousMeasurement = result.findIndex(
-                    (res) => res.weather_station_id.id === element.weather_station_id.id
-                );
-                if (previousMeasurement !== -1) {
-                    const difference =
-                        element.temperature - result[previousMeasurement].temperature;
-                    result[previousMeasurement].temp_difference = Math.round(difference * 10) / 10;
-                    result[previousMeasurement].date_created = element.date_created;
-                } else {
-                    result.push(element);
-                }
-            });
-            result = result.sort((a, b) => {
-                return a.weather_station_id.name.localeCompare(b.weather_station_id.name);
-            });
-            return result;
-        });
+        return this.fetchWithValidation<WeatherDataResponse[]>(filter, undefined, next).then(
+            (data) => {
+                let result: WeatherDataResponse[] = [];
+                data.forEach((element: WeatherDataResponse) => {
+                    const previousMeasurement = result.findIndex(
+                        (res) => res.weather_station_id.id === element.weather_station_id.id
+                    );
+                    if (previousMeasurement !== -1) {
+                        const difference =
+                            element.temperature - result[previousMeasurement].temperature;
+                        result[previousMeasurement].temp_difference =
+                            Math.round(difference * 10) / 10;
+                        result[previousMeasurement].date_created = element.date_created;
+                    } else {
+                        result.push(element);
+                    }
+                });
+                result = result.sort((a, b) => {
+                    return a.weather_station_id.name.localeCompare(b.weather_station_id.name);
+                });
+                return result;
+            }
+        );
     };
 
     // Stations filter builders
@@ -171,7 +176,7 @@ export class DataService {
             to: "$NOW",
         };
         const fields =
-            "date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.translations.languages_code,weather_station_id.translations.name";
+            "date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.translations.languages_code,weather_station_id.translations.name,weather_station_id.header_bg,weather_station_id.cluster";
         const filter = `filter[_and][0][_and][1][weather_station_id][status][_eq]=published&filter[_and][0][_and][0][date_created][_between][0]=${dateFilters.from}&filter[_and][0][_and][0][date_created][_between][1]=${dateFilters.to}&sort=date_created`;
         return `${this.ENDPOINTS.WEATHER_DATA}?${filter}&fields=${fields}`;
     };
@@ -225,11 +230,15 @@ export class DataService {
     // ============================================
     // ENVIRONMENTAL DATA DOMAIN
     // ============================================
-    fetchEnvironmentalDataByStation = (cluster_id: number): Promise<EnvironmentalData[]> => {
+    fetchEnvironmentalDataByStation = (
+        cluster_id: number,
+        next?: NextFetchRequestConfig
+    ): Promise<EnvironmentalData[]> => {
         const filter = this.buildEnvironmentalDataByStationFilter(cluster_id);
         return this.fetchWithValidation<EnvironmentalData[]>(
             filter,
-            EnvironmentalDataSchema as any
+            EnvironmentalDataSchema as any,
+            next
         );
     };
 
@@ -361,11 +370,15 @@ export class DataService {
     // ============================================
     // FORECASTS DOMAIN
     // ============================================
-    fetchForecastByStation = (station_id: number): Promise<WeatherForecastResponse[]> => {
+    fetchForecastByStation = (
+        station_id: number,
+        next?: NextFetchRequestConfig
+    ): Promise<WeatherForecastResponse[]> => {
         const filter = this.buildForecastByStationFilter(station_id);
         return this.fetchWithValidation<WeatherForecastResponse[]>(
             filter,
-            WeatherForecastDataResponsesSchema as any
+            WeatherForecastDataResponsesSchema as any,
+            next
         );
     };
 

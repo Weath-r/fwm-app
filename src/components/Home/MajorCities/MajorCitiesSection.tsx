@@ -2,7 +2,9 @@ import CityWeatherCard, {
     type CityWeatherCardProps,
 } from "@/components/Home/MajorCities/CityWeatherCard";
 import dayjs from "@/utils/dateTimeUtils";
-import { DataService } from "@/services/DataService";
+import { getLatestReadings } from "@/services/getLatestReadings";
+import { getForecastByStation } from "@/services/getForecastByStation";
+import { getEnvironmentalData } from "@/services/getEnvironmentalData";
 import { calculateWindToBft } from "@/utils/weatherConvertUnits";
 import { urlStationName } from "@/helpers/createStationName";
 import { resolveEnvironmentalConditions } from "@/helpers/weatherCalculations";
@@ -95,23 +97,24 @@ export default async function MajorCitiesSection({
     heading,
     subheading,
 }: MajorCitiesSectionProps) {
-    const dataService = new DataService();
-
-    const [currentResults, forecastResults] = await Promise.all([
+    const [latestReadings, forecastResults] = await Promise.all([
+        getLatestReadings().catch(() => [] as WeatherDataResponse[]),
         Promise.all(
-            stationIds.map((stationId) =>
-                dataService.fetchWeatherDataByStation(stationId).catch(() => [])
-            )
-        ),
-        Promise.all(
-            stationIds.map((stationId) =>
-                dataService.fetchForecastByStation(stationId).catch(() => [])
-            )
+            stationIds.map((stationId) => getForecastByStation(stationId).catch(() => []))
         ),
     ]);
 
-    // Indexed per station slot rather than over a flattened list, so a station
-    // whose current weather failed cannot shift the others out of alignment.
+    // The shared snapshot only contains stations that reported within its
+    // window, so a stalled station drops its card instead of showing stale
+    // data. Slots stay indexed per station so a missing one cannot shift the
+    // others out of alignment.
+    const currentResults = stationIds.map((stationId) => {
+        const reading = latestReadings.find(
+            (candidate) => candidate.weather_station_id.id === stationId
+        );
+        return reading ? [reading] : [];
+    });
+
     // Environmental data is supplementary: a failure degrades that card's
     // readings to null instead of dropping the card or breaking the section.
     const environmentalDataResults = await Promise.all(
@@ -120,7 +123,7 @@ export default async function MajorCitiesSection({
             if (clusterId === undefined) {
                 return Promise.resolve(null);
             }
-            return dataService.fetchEnvironmentalDataByStation(clusterId).catch((error) => {
+            return getEnvironmentalData(clusterId).catch((error) => {
                 console.error(
                     `Environmental data unavailable for station ${stationIds[index]} (cluster ${clusterId}):`,
                     error

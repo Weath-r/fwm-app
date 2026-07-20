@@ -1,4 +1,7 @@
+import { cache } from "react";
 import { DataService } from "@/services/DataService";
+import { getForecastByStation } from "@/services/getForecastByStation";
+import { getEnvironmentalData } from "@/services/getEnvironmentalData";
 import { applyStationTranslations, buildWeatherData } from "@/utils/weatherDataFormatUtils";
 import { resolveEnvironmentalConditions } from "@/helpers/weatherCalculations";
 import { ForecastData, FrostData } from "@/types";
@@ -17,8 +20,15 @@ export const FetchLiveWeatherStationData = async ({
 
     const [currentWeatherRaw, stationForecast] = await Promise.all([
         dataService.fetchWeatherDataByStation(stationId),
-        isForecastEnabled ? dataService.fetchForecastByStation(stationId) : Promise.resolve([]),
+        isForecastEnabled ? getForecastByStation(stationId) : Promise.resolve([]),
     ]);
+
+    if (currentWeatherRaw.length === 0) {
+        return {
+            weatherData: null,
+            environmentalConditions: null,
+        };
+    }
 
     const currentWeather = currentWeatherRaw.map((elem) => {
         applyStationTranslations(elem, lng);
@@ -32,12 +42,11 @@ export const FetchLiveWeatherStationData = async ({
     if (isForecastEnabled && currentWeather.length > 0) {
         currentWeather[0].full_forecast = stationForecast[0]?.full_forecast || [];
     }
-
     const station = currentWeather[0].station;
 
     const [frostData, environmentalData] = await Promise.all([
         dataService.fetchFrostDataByMunicipality(station.municipality_id),
-        dataService.fetchEnvironmentalDataByStation(station.cluster).catch((error) => {
+        getEnvironmentalData(station.cluster).catch((error) => {
             console.error(
                 `Environmental data unavailable for station ${station.id} (cluster ${station.cluster}):`,
                 error
@@ -52,3 +61,8 @@ export const FetchLiveWeatherStationData = async ({
         environmentalConditions: resolveEnvironmentalConditions(environmentalData),
     };
 };
+
+export const getCachedLiveWeatherStationData = cache(
+    (lng: string, stationId: number, isForecastEnabled: boolean) =>
+        FetchLiveWeatherStationData({ lng, stationId, isForecastEnabled })
+);
