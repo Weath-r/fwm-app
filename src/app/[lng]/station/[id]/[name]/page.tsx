@@ -60,6 +60,11 @@ export async function generateMetadata(props: StationPageProps) {
             locale: i18n.language,
             type: "website",
         },
+        twitter: {
+            card: "summary_large_image",
+            title: t("stationIndividual.title", { station: stationName }),
+            description: t("stationIndividual.description", { station: stationName }),
+        },
         ...(!currentWeather && { robots: { index: false, follow: false } }),
     };
 }
