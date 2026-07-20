@@ -67,6 +67,11 @@ export async function generateMetadata(props: LiveWeatherConditionsProps) {
             locale: i18n.language,
             type: "website",
         },
+        twitter: {
+            card: "summary_large_image",
+            title: t("stationIndividual.title", { station: stationName }),
+            description: t("stationIndividual.description", { station: stationName }),
+        },
         ...(!weatherData && { robots: { index: false, follow: false } }),
     };
 }
