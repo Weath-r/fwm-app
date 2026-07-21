@@ -141,17 +141,16 @@ export class DataService {
             (data) => {
                 let result: WeatherDataResponse[] = [];
                 data.forEach((element: WeatherDataResponse) => {
-                    const previousMeasurement = result.findIndex(
+                    const currentRecordIndex = result.findIndex(
                         (res) => res.weather_station_id.id === element.weather_station_id.id
                     );
-                    if (previousMeasurement !== -1) {
-                        const difference =
-                            element.temperature - result[previousMeasurement].temperature;
-                        result[previousMeasurement].temp_difference =
-                            Math.round(difference * 10) / 10;
-                        result[previousMeasurement].date_created = element.date_created;
-                    } else {
+                    if (currentRecordIndex === -1) {
                         result.push(element);
+                    } else {
+                        const difference =
+                            result[currentRecordIndex].temperature - element.temperature;
+                        result[currentRecordIndex].temp_difference =
+                            Math.round(difference * 10) / 10;
                     }
                 });
                 result = result.sort((a, b) => {
@@ -177,7 +176,7 @@ export class DataService {
         };
         const fields =
             "date_created,temperature,barometer,humidity,percipitation,rainrate,windspd,winddir,weather_condition,weather_station_id.name,weather_station_id.id,weather_station_id.website_url,weather_station_id.prefecture_id.label,weather_station_id.prefecture_id.translations.languages_code,weather_station_id.prefecture_id.translations.name,weather_condition_icon,weather_station_id.translations.languages_code,weather_station_id.translations.name,weather_station_id.header_bg,weather_station_id.cluster";
-        const filter = `filter[_and][0][_and][1][weather_station_id][status][_eq]=published&filter[_and][0][_and][0][date_created][_between][0]=${dateFilters.from}&filter[_and][0][_and][0][date_created][_between][1]=${dateFilters.to}&sort=date_created`;
+        const filter = `filter[_and][0][_and][1][weather_station_id][status][_eq]=published&filter[_and][0][_and][0][date_created][_between][0]=${dateFilters.from}&filter[_and][0][_and][0][date_created][_between][1]=${dateFilters.to}&sort=-date_created`;
         return `${this.ENDPOINTS.WEATHER_DATA}?${filter}&fields=${fields}`;
     };
 

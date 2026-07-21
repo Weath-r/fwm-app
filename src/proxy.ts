@@ -7,7 +7,9 @@ const languages = configuration.languages.map((lang) => lang.id);
 acceptLanguage.languages(languages);
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|sitemap|robots.txt|assets|favicon.ico|sw.js).*)"],
+    matcher: [
+        "/((?!api|_next/static|_next/image|sitemap|blog|robots.txt|assets|favicon.ico|sw.js).*)",
+    ],
 };
 
 export function proxy(req: NextRequest) {
