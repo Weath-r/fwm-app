@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
     };
 }
 
-export default async function Stations(props: AboutUsParams) {
+export default async function AboutUs(props: AboutUsParams) {
     const params = await props.params;
     const { lng } = params;
     const { t } = await getT("pages");

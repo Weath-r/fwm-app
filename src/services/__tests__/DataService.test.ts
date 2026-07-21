@@ -153,13 +153,13 @@ describe("DataService", () => {
             it("should calculate temperature difference for same station", async () => {
                 const mockData = [
                     {
-                        date_created: "2024-01-01T10:00:00Z",
-                        temperature: 20,
+                        date_created: "2024-01-01T11:00:00Z",
+                        temperature: 22,
                         weather_station_id: { id: 1, name: "Station A" },
                     },
                     {
-                        date_created: "2024-01-01T11:00:00Z",
-                        temperature: 22,
+                        date_created: "2024-01-01T10:00:00Z",
+                        temperature: 20,
                         weather_station_id: { id: 1, name: "Station A" },
                     },
                 ];
@@ -170,8 +170,69 @@ describe("DataService", () => {
 
                 const result = await dataService.fetchWeatherStationsWithData();
 
+                expect(result[0].temperature).toBe(22);
                 expect(result[0].temp_difference).toBe(2);
                 expect(result[0].date_created).toBe("2024-01-01T11:00:00Z");
+            });
+
+            it("should keep the newest reading as the current record and compute the difference against the oldest reading in the window (regression: stale homepage temperature)", async () => {
+                const mockData = [
+                    {
+                        date_created: "2024-01-01T10:55:00Z",
+                        temperature: 33.7,
+                        weather_station_id: { id: 1, name: "Station A" },
+                    },
+                    {
+                        date_created: "2024-01-01T10:30:00Z",
+                        temperature: 34.5,
+                        weather_station_id: { id: 1, name: "Station A" },
+                    },
+                    {
+                        date_created: "2024-01-01T10:05:00Z",
+                        temperature: 35,
+                        weather_station_id: { id: 1, name: "Station A" },
+                    },
+                ];
+
+                mockAxiosInstance.get.mockResolvedValue({
+                    data: { data: mockData },
+                });
+
+                const result = await dataService.fetchWeatherStationsWithData();
+
+                expect(result[0].temperature).toBe(33.7);
+                expect(result[0].date_created).toBe("2024-01-01T10:55:00Z");
+                expect(result[0].temp_difference).toBe(-1.3);
+            });
+
+            it("should leave temp_difference undefined when a station has only one reading in the window", async () => {
+                const mockData = [
+                    {
+                        date_created: "2024-01-01T10:55:00Z",
+                        temperature: 33.7,
+                        weather_station_id: { id: 1, name: "Station A" },
+                    },
+                ];
+
+                mockAxiosInstance.get.mockResolvedValue({
+                    data: { data: mockData },
+                });
+
+                const result = await dataService.fetchWeatherStationsWithData();
+
+                expect(result[0].temperature).toBe(33.7);
+                expect(result[0].temp_difference).toBeUndefined();
+            });
+
+            it("should request weather data newest-first so the dedup loop can trust the first occurrence", async () => {
+                mockAxiosInstance.get.mockResolvedValue({
+                    data: { data: [] },
+                });
+
+                await dataService.fetchWeatherStationsWithData();
+
+                const requestedUrl = mockAxiosInstance.get.mock.calls[0][0];
+                expect(requestedUrl).toContain("sort=-date_created");
             });
 
             it("should sort results by station name", async () => {
