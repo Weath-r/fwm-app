@@ -8,8 +8,6 @@
 export const CACHE_TAGS = {
     configurations: "configurations",
     weatherStations: "weather-stations",
-    latestReadings: "latest-readings",
-    forecasts: "forecasts",
     climatologyData: "climatology-data",
     weatherHazards: "weather-hazards",
     warningLevels: "warning-levels",
