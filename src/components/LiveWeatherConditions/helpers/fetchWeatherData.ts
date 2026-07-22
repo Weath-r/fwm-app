@@ -1,7 +1,5 @@
 import { cache } from "react";
 import { DataService } from "@/services/DataService";
-import { getForecastByStation } from "@/services/getForecastByStation";
-import { getEnvironmentalData } from "@/services/getEnvironmentalData";
 import { applyStationTranslations, buildWeatherData } from "@/utils/weatherDataFormatUtils";
 import { resolveEnvironmentalConditions } from "@/helpers/weatherCalculations";
 import { ForecastData, FrostData } from "@/types";
@@ -20,7 +18,7 @@ export const FetchLiveWeatherStationData = async ({
 
     const [currentWeatherRaw, stationForecast] = await Promise.all([
         dataService.fetchWeatherDataByStation(stationId),
-        isForecastEnabled ? getForecastByStation(stationId) : Promise.resolve([]),
+        isForecastEnabled ? dataService.fetchForecastByStation(stationId) : Promise.resolve([]),
     ]);
 
     if (currentWeatherRaw.length === 0) {
@@ -46,7 +44,7 @@ export const FetchLiveWeatherStationData = async ({
 
     const [frostData, environmentalData] = await Promise.all([
         dataService.fetchFrostDataByMunicipality(station.municipality_id),
-        getEnvironmentalData(station.cluster).catch((error) => {
+        dataService.fetchEnvironmentalDataByStation(station.cluster).catch((error) => {
             console.error(
                 `Environmental data unavailable for station ${station.id} (cluster ${station.cluster}):`,
                 error
