@@ -150,8 +150,25 @@ export class DataService {
                 if (currentRecordIndex === -1) {
                     result.push(element);
                 } else {
-                    const difference =
-                        result[currentRecordIndex].temperature - element.temperature;
+                    const difference = result[currentRecordIndex].temperature - element.temperature;
+                    result[currentRecordIndex].temp_difference = Math.round(difference * 10) / 10;
+                }
+            });
+            result = result.sort((a, b) => {
+                return a.weather_station_id.name.localeCompare(b.weather_station_id.name);
+            });
+            return result;
+        });
+        return this.fetchWithValidation<WeatherDataResponse[]>(filter).then((data) => {
+            let result: WeatherDataResponse[] = [];
+            data.forEach((element: WeatherDataResponse) => {
+                const currentRecordIndex = result.findIndex(
+                    (res) => res.weather_station_id.id === element.weather_station_id.id
+                );
+                if (currentRecordIndex === -1) {
+                    result.push(element);
+                } else {
+                    const difference = result[currentRecordIndex].temperature - element.temperature;
                     result[currentRecordIndex].temp_difference = Math.round(difference * 10) / 10;
                 }
             });
@@ -370,7 +387,7 @@ export class DataService {
         const filter = this.buildForecastByStationFilter(station_id);
         return this.fetchWithValidation<WeatherForecastResponse[]>(
             filter,
-            WeatherForecastDataResponsesSchema
+            WeatherForecastDataResponsesSchema as any
         );
     };
 

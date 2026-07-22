@@ -1,4 +1,4 @@
-import { getLatestReadings } from "@/services/getLatestReadings";
+import { DataService } from "@/services/DataService";
 import { WeatherDataResponse } from "@/types";
 import { calculateWindToBft } from "@/utils/weatherConvertUnits";
 import { urlStationName } from "@/helpers/createStationName";
@@ -34,7 +34,9 @@ function toCardData(station: WeatherDataResponse, lng: string): StationCardData 
 }
 
 export default async function HomepageStationsSection({ lng }: HomepageStationsSectionProps) {
-    const cards = await getLatestReadings()
+    const dataService = new DataService();
+    const cards = await dataService
+        .fetchWeatherStationsWithData()
         .then((data) => data.map((stationData) => toCardData(stationData, lng)))
         .catch(() => [] as StationCardData[]);
 
