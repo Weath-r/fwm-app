@@ -327,10 +327,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: true,
         });
 
-        expect(mockDataService.fetchForecastByStation).toHaveBeenCalledWith(1, {
-            revalidate: 21_600,
-            tags: ["forecasts"],
-        });
+        expect(mockDataService.fetchForecastByStation).toHaveBeenCalledWith(1);
         expect(result.weatherData![0].full_forecast).toBeDefined();
     });
 
@@ -588,9 +585,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(mockDataService.fetchEnvironmentalDataByStation).toHaveBeenCalledWith(1, {
-            revalidate: 900,
-        });
+        expect(mockDataService.fetchEnvironmentalDataByStation).toHaveBeenCalledWith(1);
         expect(result.environmentalConditions).toEqual({ uvIndex: 3, airQualityIndex: 25 });
     });
 

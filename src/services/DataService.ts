@@ -133,38 +133,33 @@ export class DataService {
         );
     };
 
-    fetchWeatherStationsWithData = (
-        next?: NextFetchRequestConfig
-    ): Promise<WeatherDataResponse[]> => {
+    fetchWeatherStationsWithData = (): Promise<WeatherDataResponse[]> => {
         const filter = this.buildWeatherStationsWithDataFilter();
-        return this.fetchWithValidation<WeatherDataResponse[]>(filter, undefined, next).then(
-            (data) => {
-                let result: WeatherDataResponse[] = [];
-                data.forEach((element: WeatherDataResponse) => {
-                    const currentRecordIndex = result.findIndex(
-                        (res) => res.weather_station_id.id === element.weather_station_id.id
-                    );
-                    if (currentRecordIndex === -1) {
-                        result.push(element);
-                    } else {
-                        const difference =
-                            result[currentRecordIndex].temperature - element.temperature;
-                        result[currentRecordIndex].temp_difference =
-                            Math.round(difference * 10) / 10;
-                    }
-                });
-                result = result.sort((a, b) => {
-                    return a.weather_station_id.name.localeCompare(b.weather_station_id.name);
-                });
-                return result;
-            }
-        );
+        return this.fetchWithValidation<WeatherDataResponse[]>(filter).then((data) => {
+            let result: WeatherDataResponse[] = [];
+            data.forEach((element: WeatherDataResponse) => {
+                const currentRecordIndex = result.findIndex(
+                    (res) => res.weather_station_id.id === element.weather_station_id.id
+                );
+                if (currentRecordIndex === -1) {
+                    result.push(element);
+                } else {
+                    const difference =
+                        result[currentRecordIndex].temperature - element.temperature;
+                    result[currentRecordIndex].temp_difference = Math.round(difference * 10) / 10;
+                }
+            });
+            result = result.sort((a, b) => {
+                return a.weather_station_id.name.localeCompare(b.weather_station_id.name);
+            });
+            return result;
+        });
     };
 
     // Stations filter builders
     private buildStationsFilter = (): string => {
         const fields =
-            "id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.weather_condition_icon.asset,elevation,translations.languages_code,translations.name";
+            "id,name,location,website_url&fields=accuweather_location.current_weather_description,accuweather_location.weather_condition_icon.asset,elevation,translations.languages_code,translations.name,weather_station_id.header_bg,weather_station_id.cluster";
         const filter = "filter[_and][0][_and][0][status][_eq]=published";
         return `${this.ENDPOINTS.WEATHER_STATIONS}?fields=${fields}&${filter}`;
     };
@@ -229,15 +224,11 @@ export class DataService {
     // ============================================
     // ENVIRONMENTAL DATA DOMAIN
     // ============================================
-    fetchEnvironmentalDataByStation = (
-        cluster_id: number,
-        next?: NextFetchRequestConfig
-    ): Promise<EnvironmentalData[]> => {
+    fetchEnvironmentalDataByStation = (cluster_id: number): Promise<EnvironmentalData[]> => {
         const filter = this.buildEnvironmentalDataByStationFilter(cluster_id);
         return this.fetchWithValidation<EnvironmentalData[]>(
             filter,
-            EnvironmentalDataSchema as any,
-            next
+            EnvironmentalDataSchema as any
         );
     };
 
@@ -369,15 +360,11 @@ export class DataService {
     // ============================================
     // FORECASTS DOMAIN
     // ============================================
-    fetchForecastByStation = (
-        station_id: number,
-        next?: NextFetchRequestConfig
-    ): Promise<WeatherForecastResponse[]> => {
+    fetchForecastByStation = (station_id: number): Promise<WeatherForecastResponse[]> => {
         const filter = this.buildForecastByStationFilter(station_id);
         return this.fetchWithValidation<WeatherForecastResponse[]>(
             filter,
-            WeatherForecastDataResponsesSchema as any,
-            next
+            WeatherForecastDataResponsesSchema as any
         );
     };
 
