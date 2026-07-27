@@ -8,11 +8,11 @@
 export const CACHE_TAGS = {
     configurations: "configurations",
     weatherStations: "weather-stations",
-    latestReadings: "latest-readings",
-    forecasts: "forecasts",
     climatologyData: "climatology-data",
     weatherHazards: "weather-hazards",
     warningLevels: "warning-levels",
+    blogPosts: "blog-posts",
+    blogCategories: "blog-categories",
 };
 
 export type CacheTag = (typeof CACHE_TAGS)[keyof typeof CACHE_TAGS];
