@@ -13,6 +13,8 @@ import {
     FrostData,
     WeatherHistoricalData,
     EnvironmentalData,
+    BlogPost,
+    BlogCategory,
 } from "@/types";
 import configuration from "@/app/appConfig";
 import { z } from "zod";
@@ -28,6 +30,8 @@ import {
     FrostinDataResponsesSchema,
     HistoricalDataResponse,
     EnvironmentalDataSchema,
+    BlogPostsResponsesSchema,
+    BlogCategoriesResponsesSchema,
 } from "@/schemas";
 
 type HandleResponseParams<T> = {
@@ -66,6 +70,8 @@ export class DataService {
         ENVIRONMENTAL_DATA: "items/environmental_data",
         FILES: "files",
         ASSETS: "assets",
+        BLOG_POSTS: "items/blog",
+        BLOG_CATEGORIES: "items/blog_categories",
     };
 
     constructor() {
@@ -403,6 +409,52 @@ export class DataService {
         const fields = "id,title,filename_download";
         const filter = `filter[_and][0][type][_nnull]=true&filter[_and][1][folder][_eq]=${folderId}&sort[]=-uploaded_on`;
         return `${this.ENDPOINTS.FILES}?${filter}&fields=${fields}`;
+    };
+
+    // ============================================
+    // BLOG DOMAIN
+    // ============================================
+    fetchBlogPosts = (next?: NextFetchRequestConfig): Promise<BlogPost[]> => {
+        const filter = this.buildBlogPostsFilter();
+        return this.fetchWithValidation<BlogPost[]>(filter, BlogPostsResponsesSchema as any, next);
+    };
+
+    fetchBlogPostById = (id: number, next?: NextFetchRequestConfig): Promise<BlogPost | null> => {
+        const filter = this.buildBlogPostByIdFilter(id);
+        return this.fetchWithValidation<BlogPost[]>(
+            filter,
+            BlogPostsResponsesSchema as any,
+            next
+        ).then((posts) => posts[0] ?? null);
+    };
+
+    fetchBlogCategories = (next?: NextFetchRequestConfig): Promise<BlogCategory[]> => {
+        const filter = this.buildBlogCategoriesFilter();
+        return this.fetchWithValidation<BlogCategory[]>(
+            filter,
+            BlogCategoriesResponsesSchema as any,
+            next
+        );
+    };
+
+    // Blog filter builders
+    private buildBlogPostFields = (): string =>
+        "id,slug,title,published_date,featured,tags,cover_image,content,author_name,category.id,category.label,category.slug";
+
+    private buildBlogPostsFilter = (): string => {
+        const filter = "filter[_and][0][status][_eq]=published&sort=-published_date";
+        return `${this.ENDPOINTS.BLOG_POSTS}?${filter}&fields=${this.buildBlogPostFields()}`;
+    };
+
+    private buildBlogPostByIdFilter = (id: number): string => {
+        const filter = `filter[_and][0][status][_eq]=published&filter[_and][1][id][_eq]=${id}&limit=1`;
+        return `${this.ENDPOINTS.BLOG_POSTS}?${filter}&fields=${this.buildBlogPostFields()}`;
+    };
+
+    private buildBlogCategoriesFilter = (): string => {
+        const fields = "id,label,slug";
+        const filter = "filter[_and][0][status][_eq]=published&sort=sort";
+        return `${this.ENDPOINTS.BLOG_CATEGORIES}?${filter}&fields=${fields}`;
     };
 
     // ============================================
