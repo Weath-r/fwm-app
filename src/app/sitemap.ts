@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import configuration from "./appConfig";
 
 import { getWeatherStations } from "@/services/getWeatherStations";
+import { getBlogPosts } from "@/services/getBlogPosts";
 import { urlStationName } from "@/helpers/createStationName";
 
 type SitemapEntry = MetadataRoute.Sitemap[0];
@@ -83,6 +84,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 priority: 0.5,
             }
         ),
+        {
+            url: `${configuration.metadata.site_url}/blog`,
+            lastModified: now,
+            changeFrequency: "daily",
+            priority: 0.7,
+        },
     ];
 
     try {
@@ -107,6 +114,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         routes.push(...stationEntries, ...liveWeatherEntries);
     } catch (error) {
         console.error("Failed to fetch weather stations:", error);
+    }
+
+    try {
+        const posts = await getBlogPosts();
+
+        const blogPostEntries: MetadataRoute.Sitemap = posts.map((post) => ({
+            url: `${configuration.metadata.site_url}/blog/${post.id}/${post.slug}`,
+            lastModified: new Date(post.published_date),
+            changeFrequency: "monthly",
+            priority: 0.6,
+        }));
+
+        routes.push(...blogPostEntries);
+    } catch (error) {
+        console.error("Failed to fetch blog posts:", error);
     }
 
     return routes;
