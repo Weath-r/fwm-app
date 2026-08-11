@@ -11,7 +11,7 @@ import { assetUrl } from "@/helpers/assetsHandling";
 import {
     WeatherDataResponse,
     WeatherForecastResponse,
-    ForecastData,
+    ForecastStructure,
     StationEnvironmentalConditions,
 } from "@/types";
 
@@ -32,8 +32,10 @@ type BuildCityCardProps = {
 
 const FORECAST_TIMEZONE = "Europe/Athens";
 
-function pickForecastSlots(forecast: ForecastData[]): CityWeatherCardProps["forecast"] {
-    if (!forecast.length) return [];
+function pickForecastSlots(
+    forecast: ForecastStructure | undefined
+): CityWeatherCardProps["forecast"] {
+    if (!forecast) return [];
 
     const now = dayjs().tz(FORECAST_TIMEZONE);
     const todayStart = now.startOf("day");
@@ -47,18 +49,24 @@ function pickForecastSlots(forecast: ForecastData[]): CityWeatherCardProps["fore
 
     return Array.from({ length: 4 }, (_item, slotIndex) => {
         const targetMs = nextCanonicalMs + slotIndex * 6 * 3600 * 1000;
-        const closest = forecast.reduce((best, entry) =>
-            Math.abs(entry.time - targetMs) < Math.abs(best.time - targetMs) ? entry : best
+        const closest = forecast.hourly.time.reduce((best, entry) =>
+            Math.abs(dayjs.tz(entry, FORECAST_TIMEZONE).valueOf() - targetMs) <
+            Math.abs(dayjs.tz(best, FORECAST_TIMEZONE).valueOf() - targetMs)
+                ? entry
+                : best
         );
+
+        const closestIndex = forecast.hourly.time.indexOf(closest);
         const hour = dayjs(targetMs).tz(FORECAST_TIMEZONE).hour();
+
         const isTomorrow = targetMs >= tomorrowStartMs;
         const timeLabel = isTomorrow
             ? `+1 ${String(hour).padStart(2, "0")}:00`
             : `${String(hour).padStart(2, "0")}:00`;
         return {
             time: timeLabel,
-            temp: Math.round(closest.temperature),
-            assetId: closest.forecastIcon ?? "",
+            temp: Math.round(forecast.hourly.temperature_2m[closestIndex]),
+            assetId: forecast.hourly.forecastIcon[closestIndex] ?? "",
             description: `${String(hour).padStart(2, "0")}:00 forecast`,
         };
     });
@@ -84,7 +92,7 @@ function buildCityCard({
         currentTemp: Math.round(current.temperature),
         windBeaufort: calculateWindToBft(current.windspd),
         rainMm: Math.round((current.percipitation ?? 0) * 10) / 10,
-        forecast: pickForecastSlots(forecastRecord?.full_forecast ?? []),
+        forecast: pickForecastSlots(forecastRecord?.full_forecast),
         href: `/${lng}/station/${stationId}/${urlStationName(translatedName)}`,
         environmentalConditions,
     };

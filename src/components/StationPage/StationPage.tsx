@@ -54,7 +54,7 @@ export default function StationPage({
 
     const currentWeatherData: WeatherData = {
         ...buildWeatherData(currentWeather),
-        full_forecast: forecast?.full_forecast ?? [],
+        full_forecast: forecast?.full_forecast ?? null,
         frost_data: frostData,
     };
 

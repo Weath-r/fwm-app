@@ -9,7 +9,6 @@ type HourlyPrecipData = {
     period: string;
     precip: number;
     snow: number;
-    accumulated_rain: number;
     hour: number;
 };
 

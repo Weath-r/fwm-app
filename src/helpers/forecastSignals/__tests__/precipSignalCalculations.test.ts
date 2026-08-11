@@ -14,14 +14,12 @@ describe("precipSignalCalculations", () => {
                     period: ForecastPeriod.MORNING,
                     precip: 0.5,
                     snow: 0,
-                    accumulated_rain: 0.5,
                     hour: 9,
                 },
                 {
                     period: ForecastPeriod.MORNING,
                     precip: 0.3,
                     snow: 0,
-                    accumulated_rain: 0.8,
                     hour: 10,
                 },
             ];
@@ -38,14 +36,12 @@ describe("precipSignalCalculations", () => {
                     period: ForecastPeriod.MORNING,
                     precip: 0.5,
                     snow: 0,
-                    accumulated_rain: 0.5,
                     hour: 9,
                 },
                 {
                     period: ForecastPeriod.MORNING,
                     precip: 0.3,
                     snow: 0,
-                    accumulated_rain: 0.8,
                     hour: 10,
                 },
             ];
@@ -63,14 +59,12 @@ describe("precipSignalCalculations", () => {
                     period: ForecastPeriod.MORNING,
                     precip: 0,
                     snow: 0,
-                    accumulated_rain: 0,
                     hour: 9,
                 },
                 {
                     period: ForecastPeriod.MORNING,
                     precip: 0,
                     snow: 0,
-                    accumulated_rain: 0,
                     hour: 10,
                 },
             ];
@@ -87,21 +81,18 @@ describe("precipSignalCalculations", () => {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 0.5,
                     snow: 0,
-                    accumulated_rain: 0.5,
                     hour: 13,
                 },
                 {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 0.6,
                     snow: 0,
-                    accumulated_rain: 1.1,
                     hour: 14,
                 },
                 {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 0.4,
                     snow: 0,
-                    accumulated_rain: 1.5,
                     hour: 15,
                 },
             ];
@@ -118,21 +109,18 @@ describe("precipSignalCalculations", () => {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 4.0,
                     snow: 0,
-                    accumulated_rain: 4.0,
                     hour: 13,
                 },
                 {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 3.5,
                     snow: 0,
-                    accumulated_rain: 7.5,
                     hour: 14,
                 },
                 {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 3.2,
                     snow: 0,
-                    accumulated_rain: 10.7,
                     hour: 15,
                 },
             ];
@@ -148,21 +136,18 @@ describe("precipSignalCalculations", () => {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 0.5,
                     snow: 0,
-                    accumulated_rain: 0.5,
                     hour: 14,
                 },
                 {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 0,
                     snow: 0,
-                    accumulated_rain: 0.5,
                     hour: 15,
                 },
                 {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 0.3,
                     snow: 0,
-                    accumulated_rain: 0.8,
                     hour: 16,
                 },
             ];
@@ -179,14 +164,12 @@ describe("precipSignalCalculations", () => {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 2,
                     snow: 1.5,
-                    accumulated_rain: 0.5,
                     hour: 14,
                 },
                 {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 2,
                     snow: 1.8,
-                    accumulated_rain: 0.2,
                     hour: 15,
                 },
             ];
@@ -203,14 +186,12 @@ describe("precipSignalCalculations", () => {
                     period: ForecastPeriod.MORNING,
                     precip: 0.5,
                     snow: 0,
-                    accumulated_rain: 0.5,
                     hour: 9,
                 },
                 {
                     period: ForecastPeriod.MORNING,
                     precip: 0.3,
                     snow: 0,
-                    accumulated_rain: 0.8,
                     hour: 10,
                 },
             ];
@@ -228,21 +209,18 @@ describe("precipSignalCalculations", () => {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 0.1,
                     snow: 0,
-                    accumulated_rain: 0.1,
                     hour: 14,
                 },
                 {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 2.5,
                     snow: 0,
-                    accumulated_rain: 2.6,
                     hour: 15,
                 },
                 {
                     period: ForecastPeriod.AFTERNOON,
                     precip: 0.05,
                     snow: 0,
-                    accumulated_rain: 2.65,
                     hour: 16,
                 },
             ];
@@ -258,7 +236,6 @@ describe("precipSignalCalculations", () => {
                 period: ForecastPeriod.AFTERNOON,
                 precip: i % 2 === 0 ? 0 : 0.8,
                 snow: 0,
-                accumulated_rain: 0.8 * i,
                 hour: 12 + i,
             }));
 

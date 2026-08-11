@@ -370,7 +370,7 @@ export class DataService {
         const filter = this.buildForecastByStationFilter(station_id);
         return this.fetchWithValidation<WeatherForecastResponse[]>(
             filter,
-            WeatherForecastDataResponsesSchema as any
+            WeatherForecastDataResponsesSchema
         );
     };
 
