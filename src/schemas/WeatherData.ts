@@ -22,24 +22,74 @@ export const WeatherData = z.object({
     assetId: z.string(),
 });
 
+const ForecastHourlyUnits = z.object({
+    time: z.string(),
+    temperature_2m: z.string(),
+    pressure_msl: z.string(),
+    relative_humidity_2m: z.string(),
+    wind_speed_10m: z.string(),
+    wind_direction_10m: z.string(),
+    wind_gusts_10m: z.string(),
+    rain: z.string(),
+    showers: z.string(),
+    snowfall: z.string(),
+    dew_point_2m: z.string(),
+    cloud_cover: z.string(),
+});
+
+const ForecastHourly = z.object({
+    time: z.array(z.string()),
+    temperature_2m: z.array(z.number()),
+    forecastIcon: z.array(z.string()),
+    pressure_msl: z.array(z.number()),
+    relative_humidity_2m: z.array(z.number()),
+    wind_speed_10m: z.array(z.number()),
+    wind_direction_10m: z.array(z.number()),
+    wind_gusts_10m: z.array(z.number()),
+    rain: z.array(z.number()),
+    showers: z.array(z.number()),
+    snowfall: z.array(z.number()),
+    dew_point_2m: z.array(z.number()),
+    cloud_cover: z.array(z.number()),
+});
+
+const ForecastDailyUnits = z.object({
+    time: z.string(),
+    temperature_2m_max: z.string(),
+    temperature_2m_min: z.string(),
+    rain_sum: z.string(),
+    snowfall_sum: z.string(),
+    wind_speed_10m_max: z.string(),
+    wind_gusts_10m_max: z.string(),
+    wind_direction_10m_dominant: z.string(),
+    showers_sum: z.string(),
+    precipitation_probability_max: z.string(),
+});
+
+const ForecastDaily = z.object({
+    time: z.array(z.string()),
+    temperature_2m_max: z.array(z.number()),
+    temperature_2m_min: z.array(z.number()),
+    forecastIcon: z.array(z.string()),
+    rain_sum: z.array(z.number()),
+    snowfall_sum: z.array(z.number()),
+    wind_speed_10m_max: z.array(z.number()),
+    wind_gusts_10m_max: z.array(z.number()),
+    wind_direction_10m_dominant: z.array(z.number()),
+    showers_sum: z.array(z.number()),
+    precipitation_probability_max: z.array(z.number()),
+});
+
+const ForecastStructure = z.object({
+    hourly_units: ForecastHourlyUnits,
+    hourly: ForecastHourly,
+    daily_units: ForecastDailyUnits,
+    daily: ForecastDaily,
+});
+
 export const WeatherForecastData = z.object({
-    id: z.number().min(1),
-    date_created: z.string(),
     station_id: z.number().positive(),
-    full_forecast: z.array(
-        z.object({
-            time: z.optional(z.number()),
-            temperature: z.optional(z.number()),
-            accumulated_rain: z.optional(z.number()),
-            windspd: z.optional(z.number()),
-            winddir: z.optional(z.number()),
-            accumulated_snow: z.optional(z.number()),
-            snow: z.optional(z.number()),
-            cloudcover: z.optional(z.number()),
-            percipitation: z.optional(z.number()),
-            forecastIcon: z.optional(z.string().min(1)),
-        })
-    ),
+    full_forecast: ForecastStructure,
 });
 
 const FrostData = z.object({

@@ -1,6 +1,7 @@
 "use client";
-import { ForecastData, BaseSignal, BasePayload, ForecastPeriod } from "@/types";
+import { BaseSignal, BasePayload, ForecastPeriod } from "@/types";
 import { useT } from "@/i18n/client";
+import { NormalizedHourlyForecast } from "@/components/LiveWeatherConditions/helpers/normalizeForecastHourly";
 
 import { detectTemperatureSignals } from "@/helpers/forecastSignals/temperatureSignalCalculations";
 import { detectWindSignals } from "@/helpers/forecastSignals/windSignalCalculations";
@@ -17,7 +18,7 @@ import { fullDateNoTime } from "@/utils/dateTimeUtils";
 import { ForecastSignalTranslationText } from "./ForecastSignalTranslationText";
 
 type ForecastSummaryProps = {
-    forecast: Partial<Record<string, ForecastData[]>>;
+    forecast: Partial<Record<string, NormalizedHourlyForecast[]>>;
     activeDate: string;
 };
 
@@ -49,7 +50,6 @@ export function ForecastSummary({ forecast, activeDate }: ForecastSummaryProps) 
             return {
                 hour: timestampToHour(item.time),
                 precip: item.percipitation,
-                accumulated_rain: item.accumulated_rain,
                 snow: item.snow,
                 period: hourToPeriod(timestampToHour(item.time)),
             };

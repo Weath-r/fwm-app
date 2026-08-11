@@ -32,6 +32,7 @@ export default async function Homepage({ lng }: HomepageProps) {
                         <MajorCitiesSkeleton
                             heading={majorCitiesHeading}
                             subheading={majorCitiesSubheading}
+                            cardsNumber={majorCityIds.length}
                         />
                     }
                 >

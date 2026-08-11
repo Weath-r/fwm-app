@@ -14,6 +14,11 @@ import BaseWeatherIcon from "@/components/BaseComponents/BaseWeatherIcon";
 import SvgInline from "@/components/Common/SvgInline";
 import CommonButton from "@/components/Common/CommonButton";
 import { ForecastSummary } from "./components/forecast/ForecastSummary";
+import {
+    greekDayKey,
+    getDailyForecastExtremes,
+    normalizeForecastHourly,
+} from "./helpers/normalizeForecastHourly";
 
 type handleDateSelectionBtn = {
     date: string;
@@ -23,7 +28,6 @@ type CalcPercipitationFn = {
     snow: number;
     percipitation: number;
     temperature: number;
-    accumulated_snow: number;
 };
 
 const convertTimeStampToDate = (timestamp: number): string => {
@@ -58,52 +62,26 @@ export function StationWeatherForecastDetails({
     const [activeBtn, setActiveBtn] = useState(activeDate);
     const [forecastDate, setForecastDate] = useState(activeDate);
 
-    const structuredForecast = Object.groupBy(elem.forecast, (forecast) => {
-        const currentForecastTime = new Date(forecast.time);
-        const date = fullDateNoTime(currentForecastTime);
-        return date;
-    });
+    const hasForecast = Boolean(elem.forecast?.hourly.time.length);
+    const normalizedForecast = normalizeForecastHourly(elem.forecast);
+    const structuredForecast = Object.groupBy(normalizedForecast, (forecast) =>
+        greekDayKey(forecast.time)
+    );
 
     const handleDateSelectionBtn = ({ date }: handleDateSelectionBtn) => {
         setActiveBtn(date);
         setForecastDate(date);
     };
 
-    const getExtremeDayValues = (date: string) => {
-        const valuesArr = [];
-        if (!structuredForecast[date]) return {};
-        for (const value of structuredForecast[date]) {
-            if (value.temperature) {
-                valuesArr.push(value.temperature);
-            }
-        }
-        return {
-            max: Math.max(...valuesArr),
-            min: Math.min(...valuesArr),
-        };
-    };
+    const getExtremeDayValues = (date: string) => getDailyForecastExtremes(elem.forecast, date);
 
     const SNOW_MODE_TEMP = 1.5;
 
-    const calculatePercipitation = ({
-        snow,
-        percipitation,
-        temperature,
-        accumulated_snow,
-    }: CalcPercipitationFn) => {
+    const calculatePercipitation = ({ snow, percipitation, temperature }: CalcPercipitationFn) => {
         const isCold = temperature <= SNOW_MODE_TEMP;
-        const hasAccumulatedSnow = accumulated_snow > 0;
         const hasFreshSnow = snow > 0;
 
-        // Snow mode: cold + accumulated snow we need to show the proper suffix
-        if (isCold && hasAccumulatedSnow) {
-            return {
-                value: hasFreshSnow ? snow : percipitation,
-                suffix: Measurements.CM,
-            };
-        }
-
-        // Cold but no accumulated snow -> show fresh snow only
+        // Cold with fresh snow -> show snow accumulation
         if (isCold && hasFreshSnow) {
             return {
                 value: snow,
@@ -123,7 +101,7 @@ export function StationWeatherForecastDetails({
             <h4 className="mb-3 text-xs font-extrabold uppercase tracking-wide text-primary">
                 {title}
             </h4>
-            {elem.forecast.length > 0 && (
+            {hasForecast && (
                 <section>
                     <div className="flex gap-2 overflow-x-auto pb-1.5">
                         {Object.keys(structuredForecast).map((item, index, datesArray) => {
@@ -135,6 +113,7 @@ export function StationWeatherForecastDetails({
                                         dateObjectInputDDMMYY(activeDate).valueOf()
                                       ? true
                                       : false;
+                            const extremes = getExtremeDayValues(item);
                             return (
                                 shouldRenderDate && (
                                     <div key={item} className="relative w-full min-w-[76px]">
@@ -157,10 +136,12 @@ export function StationWeatherForecastDetails({
                                                         {convertStringToDate(item)}
                                                     </p>
                                                 </div>
-                                                <div className="flex w-full flex-col">
-                                                    <p>{getExtremeDayValues(item).max}</p>
-                                                    <p>{getExtremeDayValues(item).min}</p>
-                                                </div>
+                                                {extremes && (
+                                                    <div className="flex w-full flex-col">
+                                                        <p>{extremes.maxT}</p>
+                                                        <p>{extremes.minT}</p>
+                                                    </div>
+                                                )}
                                             </div>
                                         </CommonButton>
                                         {isActive && (
@@ -205,7 +186,6 @@ export function StationWeatherForecastDetails({
                                         snow: forecast.snow || 0,
                                         percipitation: forecast.percipitation || 0,
                                         temperature: forecast.temperature || 0,
-                                        accumulated_snow: forecast.accumulated_snow || 0,
                                     });
 
                                     return (
@@ -261,7 +241,7 @@ export function StationWeatherForecastDetails({
                     </div>
                 </section>
             )}
-            {elem.forecast.length === 0 && (
+            {!hasForecast && (
                 <p className="text-sm text-primary">
                     {i18n.getFixedT(selectedLanguage, "stationModal")("forecastNotAvailable")}
                 </p>

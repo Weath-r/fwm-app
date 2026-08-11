@@ -2,7 +2,7 @@ import { cache } from "react";
 import { DataService } from "@/services/DataService";
 import { applyStationTranslations, buildWeatherData } from "@/utils/weatherDataFormatUtils";
 import { resolveEnvironmentalConditions } from "@/helpers/weatherCalculations";
-import { ForecastData, FrostData } from "@/types";
+import { ForecastStructure, FrostData } from "@/types";
 
 type FetchDataParameters = {
     lng: string;
@@ -32,13 +32,13 @@ export const FetchLiveWeatherStationData = async ({
         applyStationTranslations(elem, lng);
         return {
             ...buildWeatherData(elem),
-            full_forecast: [] as ForecastData[],
+            full_forecast: null as ForecastStructure | null,
             frost_data: null as FrostData | null,
         };
     });
 
     if (isForecastEnabled && currentWeather.length > 0) {
-        currentWeather[0].full_forecast = stationForecast[0]?.full_forecast || [];
+        currentWeather[0].full_forecast = stationForecast[0]?.full_forecast ?? null;
     }
     const station = currentWeather[0].station;
 
