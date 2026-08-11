@@ -1,4 +1,4 @@
-import { ForecastData } from "./weatherForecast";
+import { ForecastStructure } from "./weatherForecast";
 
 type CommonWeatherData = {
     temperature: number;
@@ -37,7 +37,7 @@ export type WeatherData = CommonWeatherData & {
     station: WeatherStation;
     assetId: string;
     weatherDescription: string;
-    full_forecast: ForecastData[];
+    full_forecast: ForecastStructure | null;
     frost_data?: FrostData | null;
 };
 

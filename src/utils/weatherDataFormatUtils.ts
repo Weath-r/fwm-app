@@ -40,7 +40,7 @@ export const buildWeatherData = (elem: WeatherDataResponse) => {
         station: elem.weather_station_id,
         weatherDescription: elem.weather_condition,
         assetId: elem.weather_condition_icon,
-        full_forecast: [],
+        full_forecast: null,
     };
 };
 

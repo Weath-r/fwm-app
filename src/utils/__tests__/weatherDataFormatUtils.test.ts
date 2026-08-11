@@ -32,7 +32,7 @@ describe("weatherDataFormatUtils", () => {
                 station: 1,
                 weatherDescription: "Sunny",
                 assetId: "sunny.png",
-                full_forecast: [],
+                full_forecast: null,
             });
         });
 
@@ -59,7 +59,7 @@ describe("weatherDataFormatUtils", () => {
             expect(result.station).toBe(42);
         });
 
-        it("should initialize full_forecast as empty array", () => {
+        it("should initialize full_forecast as null", () => {
             const input: WeatherDataResponse = {
                 date_created: "2024-01-01T00:00:00Z",
                 temperature: 20,
@@ -76,8 +76,7 @@ describe("weatherDataFormatUtils", () => {
 
             const result = buildWeatherData(input);
 
-            expect(result.full_forecast).toEqual([]);
-            expect(Array.isArray(result.full_forecast)).toBe(true);
+            expect(result.full_forecast).toBeNull();
         });
     });
 

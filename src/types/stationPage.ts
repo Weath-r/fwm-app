@@ -1,4 +1,4 @@
-import { ForecastData, GraphVariablesSuffixes } from "@/types";
+import { ForecastStructure, GraphVariablesSuffixes } from "@/types";
 
 export type FetchStationDataPaginated = {
     station_id: number;
@@ -23,6 +23,6 @@ export type StationPageCombinedGraph = {
 };
 
 export type StationPageForecastData = {
-    forecast: ForecastData[];
+    forecast: ForecastStructure | null;
     station: string;
 };

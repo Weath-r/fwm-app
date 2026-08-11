@@ -1,7 +1,7 @@
 import { FetchLiveWeatherStationData } from "../fetchWeatherData";
 import { DataService } from "@/services/DataService";
 import * as weatherDataFormatUtils from "@/utils/weatherDataFormatUtils";
-import { WeatherData, ForecastData, FrostData } from "@/types";
+import { WeatherData, FrostData } from "@/types";
 
 // Mock DataService
 jest.mock("@/services/DataService");
@@ -79,18 +79,38 @@ const mockEnvironmentalData = [
 
 const mockForecastData = [
     {
-        full_forecast: [
-            {
-                time: 100,
-                cloudcover: 50,
-                temperature: 22,
-                precipitation: 0,
-                forecastIcon: "sun",
-                snow: 0,
-                accumulated_rain: 0,
-                accumulated_snow: 0,
+        full_forecast: {
+            hourly_units: {},
+            hourly: {
+                time: ["2026-08-11T00:00Z"],
+                temperature_2m: [22],
+                forecastIcon: ["sun"],
+                pressure_msl: [1013],
+                relative_humidity_2m: [50],
+                wind_speed_10m: [5],
+                wind_direction_10m: [180],
+                wind_gusts_10m: [8],
+                rain: [0],
+                showers: [0],
+                snowfall: [0],
+                dew_point_2m: [10],
+                cloud_cover: [50],
             },
-        ],
+            daily_units: {},
+            daily: {
+                time: ["2026-08-11"],
+                temperature_2m_max: [25],
+                temperature_2m_min: [15],
+                forecastIcon: ["sun"],
+                rain_sum: [0],
+                snowfall_sum: [0],
+                wind_speed_10m_max: [10],
+                wind_gusts_10m_max: [15],
+                wind_direction_10m_dominant: [180],
+                showers_sum: [0],
+                precipitation_probability_max: [0],
+            },
+        },
     },
 ];
 
@@ -126,7 +146,7 @@ const mockBuiltWeatherData = {
     },
     assetId: "test",
     weatherDescription: "Clear",
-    full_forecast: [] as ForecastData[],
+    full_forecast: null as WeatherData["full_forecast"],
     frost_data: null as FrostData | null,
 } as unknown as WeatherData;
 
@@ -356,7 +376,7 @@ describe("FetchLiveWeatherStationData", () => {
         expect(mockDataService.fetchForecastByStation).not.toHaveBeenCalled();
     });
 
-    it("should set empty forecast array when forecast fetch returns empty", async () => {
+    it("should set forecast to null when forecast fetch returns empty", async () => {
         const mockDataService = {
             fetchWeatherDataByStation: jest.fn().mockResolvedValue(mockWeatherResponse),
             fetchForecastByStation: jest.fn().mockResolvedValue([]),
@@ -378,7 +398,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: true,
         });
 
-        expect(result.weatherData![0].full_forecast).toEqual([]);
+        expect(result.weatherData![0].full_forecast).toBeNull();
     });
 
     it("should fetch frost data by municipality", async () => {
@@ -558,8 +578,7 @@ describe("FetchLiveWeatherStationData", () => {
             isForecastEnabled: false,
         });
 
-        expect(result.weatherData![0].full_forecast).toBeDefined();
-        expect(Array.isArray(result.weatherData![0].full_forecast)).toBe(true);
+        expect(result.weatherData![0].full_forecast).toBeNull();
         expect(result.weatherData![0].frost_data).toBeDefined();
     });
 

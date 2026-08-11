@@ -12,21 +12,6 @@ import {
     ForecastPeriod,
 } from "./enums/weatherForecastEnums";
 
-export type ForecastData = {
-    temperature: number;
-    dewpoint?: number;
-    windspd: number;
-    winddir: number;
-    windgust?: number;
-    percipitation: number;
-    accumulated_rain: number;
-    accumulated_snow: number;
-    snow: number;
-    cloudcover: number;
-    time: number;
-    forecastIcon: string;
-};
-
 type GfsForecastObject = {
     data: number[];
     header: {
@@ -38,16 +23,74 @@ export type ForecastGFSData = {
     [k: string]: GfsForecastObject[];
 };
 
-export type ForecastLayerData = {
-    lat: number;
-    lng: number;
-    temp: number;
-    elevation: number;
+type ForecastHourlyUnits = {
+    time: string;
+    temperature_2m: string;
+    pressure_msl: string;
+    relative_humidity_2m: string;
+    wind_speed_10m: string;
+    wind_direction_10m: string;
+    wind_gusts_10m: string;
+    rain: string;
+    showers: string;
+    snowfall: string;
+    dew_point_2m: string;
+    cloud_cover: string;
+};
+
+export type ForecastHourly = {
+    time: string[];
+    temperature_2m: number[];
+    forecastIcon: string[];
+    pressure_msl: number[];
+    relative_humidity_2m: number[];
+    wind_speed_10m: number[];
+    wind_direction_10m: number[];
+    wind_gusts_10m: number[];
+    rain: number[];
+    showers: number[];
+    snowfall: number[];
+    dew_point_2m: number[];
+    cloud_cover: number[];
+};
+
+export type ForecastDailyUnits = {
+    time: string;
+    temperature_2m_max: string;
+    temperature_2m_min: string;
+    rain_sum: string;
+    snowfall_sum: string;
+    wind_speed_10m_max: string;
+    wind_gusts_10m_max: string;
+    wind_direction_10m_dominant: string;
+    showers_sum: string;
+    precipitation_probability_max: string;
+};
+
+export type ForecastDaily = {
+    time: string[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
+    forecastIcon: string[];
+    rain_sum: number[];
+    snowfall_sum: number[];
+    wind_speed_10m_max: number[];
+    wind_gusts_10m_max: number[];
+    wind_direction_10m_dominant: number[];
+    showers_sum: number[];
+    precipitation_probability_max: number[];
+};
+
+export type ForecastStructure = {
+    hourly_units: ForecastHourlyUnits;
+    hourly: ForecastHourly;
+    daily_units: ForecastDailyUnits;
+    daily: ForecastDaily;
 };
 
 export type WeatherForecastResponse = {
     station_id: number;
-    full_forecast: ForecastData[];
+    full_forecast: ForecastStructure;
 };
 
 export type TemperatureLayerData = {

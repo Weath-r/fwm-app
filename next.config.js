@@ -5,6 +5,7 @@ const nextConfig = {
     poweredByHeader: false,
     images: {
         dangerouslyAllowSVG: true,
+        // dangerouslyAllowLocalIP: true,
         remotePatterns: [
             {
                 protocol: "https",

@@ -31,7 +31,7 @@ export default function LiveWeatherConditionsPage({
     const selectedLanguage = i18n.language;
     const isPage = variant === "page";
     const fullForecastData = {
-        forecast: weatherData[0].full_forecast || [],
+        forecast: weatherData[0].full_forecast || null,
         station: weatherData[0].station.name,
     };
 
