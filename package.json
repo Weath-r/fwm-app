@@ -1,6 +1,6 @@
 {
     "name": "fwm-app",
-    "version": "1.18.11",
+    "version": "1.18.12",
     "private": true,
     "scripts": {
         "preinstall": "npx only-allow pnpm",
@@ -48,6 +48,7 @@
         "d3": "7.9.0",
         "d3-contour": "4.0.2",
         "dayjs": "1.11.21",
+        "fuse.js": "7.5.0",
         "highcharts": "11.4.7",
         "highcharts-react-official": "3.2.1",
         "i18next": "25.3.2",
