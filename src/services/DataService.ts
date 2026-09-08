@@ -150,8 +150,7 @@ export class DataService {
                 if (currentRecordIndex === -1) {
                     result.push(element);
                 } else {
-                    const difference =
-                        result[currentRecordIndex].temperature - element.temperature;
+                    const difference = result[currentRecordIndex].temperature - element.temperature;
                     result[currentRecordIndex].temp_difference = Math.round(difference * 10) / 10;
                 }
             });

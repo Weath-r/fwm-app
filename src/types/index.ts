@@ -12,6 +12,7 @@ export * from "./FthiotidaForecasts";
 export * from "./loading_messages";
 export * from "./climateWeatherData";
 export * from "./blog";
+export * from "./search";
 export * from "./enums/graphEnums";
 export * from "./enums/stationTypesEnum";
 export * from "./enums/weatherForecastEnums";

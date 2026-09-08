@@ -27,6 +27,10 @@
         "title": "{{station}} weather now",
         "description": "Live weather data from the {{station}} station, Central Greece. MyWeathr provides real-time updates, forecasts, and local alerts for {{station}}."
     },
+    "search": {
+        "title": "Search station",
+        "description": "Search for weather stations in Central Greece. MyWeathr allows you to quickly find stations, view live data, and access forecasts."
+    },
     "breadcrumbs": {
         "home": "Home",
         "stations": "Weather Stations",
