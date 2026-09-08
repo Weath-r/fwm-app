@@ -9,10 +9,11 @@ type StationLinkProp = {
     children?: React.ReactNode;
     lang: string;
     paramsQuery?: Record<string, string>[];
+    onBeforeNavigate?: () => void;
 };
 
 export default function StationsLink(props: Readonly<StationLinkProp>) {
-    const { 
+    const {
         pageName = "station",
         stationId,
         stationName,
@@ -20,6 +21,7 @@ export default function StationsLink(props: Readonly<StationLinkProp>) {
         className = "",
         lang,
         paramsQuery = [],
+        onBeforeNavigate,
     } = props;
     const decodedStationName = urlStationName(stationName);
     let url = `/${lang}/${pageName}/${stationId}/${decodedStationName}`;
@@ -36,9 +38,10 @@ export default function StationsLink(props: Readonly<StationLinkProp>) {
     }
 
     return (
-        <Link 
-            className={className} 
+        <Link
+            className={className}
             href={url}
+            onClick={() => onBeforeNavigate?.()}
         >
             {children}
         </Link>

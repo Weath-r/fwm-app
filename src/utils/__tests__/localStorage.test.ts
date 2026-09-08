@@ -1,11 +1,29 @@
 import {
     FAVOURITES_STATION_LOCAL_STORAGE_KEY,
     SHOW_FAVOURITES_STATION_LOCAL_STORAGE_KEY,
+    RECENT_SEARCHES_LOCAL_STORAGE_KEY,
     getFavouritesStationList,
     storeFavouriteStationsList,
     getShowFavouriteStations,
     storeShowFavouriteStations,
+    getRecentSearches,
+    saveRecentSearch,
+    clearRecentSearches,
 } from "../localStorage";
+import { SearchableStation } from "@/types";
+
+const createStation = (id: number): SearchableStation => ({
+    id,
+    temperature: 20,
+    windSpeed: 10,
+    windDirection: 90,
+    weatherConditionIcon: "sunny",
+    name_el: `Station ${id} EL`,
+    name_en: `Station ${id} EN`,
+    name_el_latin: `Station ${id} Latin`,
+    prefecture_el: `Prefecture ${id} EL`,
+    prefecture_en: `Prefecture ${id} EN`,
+});
 
 describe("localStorage", () => {
     // Mock localStorage
@@ -37,6 +55,7 @@ describe("localStorage", () => {
         it("should have correct localStorage keys", () => {
             expect(FAVOURITES_STATION_LOCAL_STORAGE_KEY).toBe("favouriteStations");
             expect(SHOW_FAVOURITES_STATION_LOCAL_STORAGE_KEY).toBe("showFavouriteStations");
+            expect(RECENT_SEARCHES_LOCAL_STORAGE_KEY).toBe("myWeatherSearches");
         });
     });
 
@@ -194,6 +213,93 @@ describe("localStorage", () => {
 
             const retrieved = getShowFavouriteStations();
             expect(retrieved).toBe(true);
+        });
+    });
+
+    describe("getRecentSearches", () => {
+        it("should return empty array when no data in localStorage", () => {
+            const result = getRecentSearches();
+
+            expect(result).toEqual([]);
+        });
+
+        it("should return stored recent search IDs", () => {
+            const stationIds = [1, 2];
+            localStorage.setItem(RECENT_SEARCHES_LOCAL_STORAGE_KEY, JSON.stringify(stationIds));
+
+            const result = getRecentSearches();
+
+            expect(result).toEqual(stationIds);
+        });
+
+        it("should return empty array when stored value is malformed JSON", () => {
+            localStorage.setItem(RECENT_SEARCHES_LOCAL_STORAGE_KEY, "not-json");
+
+            const result = getRecentSearches();
+
+            expect(result).toEqual([]);
+        });
+
+        it("should return empty array when window is undefined (SSR)", () => {
+            const originalWindow = global.window;
+            // @ts-expect-error ignore
+            delete global.window;
+
+            const result = getRecentSearches();
+
+            expect(result).toEqual([]);
+
+            global.window = originalWindow;
+        });
+    });
+
+    describe("saveRecentSearch", () => {
+        it("should store the first recent search as an ID", () => {
+            saveRecentSearch(createStation(1));
+
+            expect(getRecentSearches()).toEqual([1]);
+        });
+
+        it("should add new searches to the front of the list", () => {
+            saveRecentSearch(createStation(1));
+            saveRecentSearch(createStation(2));
+
+            expect(getRecentSearches()).toEqual([2, 1]);
+        });
+
+        it("should move a duplicate station to the front instead of adding it twice", () => {
+            saveRecentSearch(createStation(1));
+            saveRecentSearch(createStation(2));
+            saveRecentSearch(createStation(1));
+
+            expect(getRecentSearches()).toEqual([1, 2]);
+        });
+
+        it("should cap the list at the maximum number of recent searches", () => {
+            saveRecentSearch(createStation(1));
+            saveRecentSearch(createStation(2));
+            saveRecentSearch(createStation(3));
+            saveRecentSearch(createStation(4));
+
+            const result = getRecentSearches();
+
+            expect(result).toHaveLength(3);
+            expect(result).toEqual([4, 3, 2]);
+        });
+    });
+
+    describe("clearRecentSearches", () => {
+        it("should remove stored recent searches", () => {
+            saveRecentSearch(createStation(1));
+
+            clearRecentSearches();
+
+            expect(getRecentSearches()).toEqual([]);
+            expect(localStorage.getItem(RECENT_SEARCHES_LOCAL_STORAGE_KEY)).toBeNull();
+        });
+
+        it("should not throw when there is nothing to clear", () => {
+            expect(() => clearRecentSearches()).not.toThrow();
         });
     });
 });

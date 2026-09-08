@@ -5,6 +5,7 @@ import { usePostHog } from "posthog-js/react";
 import { useT } from "@/i18n/client";
 import { calculateActiveClass } from "@/helpers/internationalization";
 import HeaderChangeLanguageMenu from "./HeaderChangeLanguageMenu";
+import SearchButton from "./SearchButton";
 
 export default function HeaderMenu() {
     const pathname = usePathname();
@@ -34,7 +35,8 @@ export default function HeaderMenu() {
                     {i18n.getFixedT(selectedLanguage, "common")(element.value)}
                 </Link>
             ))}
-            <div className="mr-2 border-l-2 border-light_white pl-2 align-middle">
+            <div className="mr-2 border-l-2 border-light_white pl-2 align-middle flex items-center gap-2">
+                <SearchButton />
                 <HeaderChangeLanguageMenu></HeaderChangeLanguageMenu>
             </div>
         </section>

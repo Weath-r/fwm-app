@@ -7,6 +7,7 @@ import SvgInline from "../Common/SvgInline";
 import { useT } from "@/i18n/client";
 import { calculateActiveClass } from "@/helpers/internationalization";
 import HeaderChangeLanguageMenu from "./HeaderChangeLanguageMenu";
+import SearchButton from "./SearchButton";
 
 export default function MobileHeaderMenu() {
     const pathname = usePathname();
@@ -18,35 +19,32 @@ export default function MobileHeaderMenu() {
 
     return (
         <NavigationMenu.Root className="relative z-10 flex w-full justify-end pr-4">
-            	<NavigationMenu.List className="center m-0 flex list-none">
+            <NavigationMenu.List className="center m-0 flex list-none">
                 <NavigationMenu.Item>
-                    <NavigationMenu.Trigger 
-                        className="flex items-center font-bold text-primary">
+                    <NavigationMenu.Trigger className="flex items-center font-bold text-primary">
                         <SvgInline path="/icons/menu.svg" className="w-5 fill-primary"></SvgInline>
                     </NavigationMenu.Trigger>
-                    <NavigationMenu.Content 
-                        className="absolute left-[-4px] top-10 w-full rounded-md bg-white p-4 shadow-2xl sm:w-auto"
-                    >
+                    <NavigationMenu.Content className="absolute left-[-4px] top-10 w-full rounded-md bg-white p-4 shadow-2xl sm:w-auto">
                         <ul className="m-0 flex list-none flex-col sm:w-[500px]">
                             {menu.map((elem) => (
-                                <li 
-                                    className="grid"
-                                    key={elem.text}
-                                >
+                                <li className="grid" key={elem.text}>
                                     <NavigationMenu.Link asChild>
                                         <Link
                                             className={`text-md p-2 pl-0 text-primary ${
-                                                calculateActiveClass(pathname, elem.pathName, selectedLanguage) ? "font-bold text-success" : ""
+                                                calculateActiveClass(
+                                                    pathname,
+                                                    elem.pathName,
+                                                    selectedLanguage
+                                                )
+                                                    ? "font-bold text-success"
+                                                    : ""
                                             }`}
                                             href={`/${selectedLanguage}/${elem.pathName}`}
                                             onClick={() =>
-                                                posthog?.capture(
-                                                    "mobile_header_menu_nav_clicked",
-                                                    {
-                                                        pathName: elem.pathName,
-                                                        text: elem.text,
-                                                    }
-                                                )
+                                                posthog?.capture("mobile_header_menu_nav_clicked", {
+                                                    pathName: elem.pathName,
+                                                    text: elem.text,
+                                                })
                                             }
                                         >
                                             {i18n.getFixedT(selectedLanguage, "common")(elem.value)}
@@ -54,7 +52,8 @@ export default function MobileHeaderMenu() {
                                     </NavigationMenu.Link>
                                 </li>
                             ))}
-                            <li className="mb-2 border-t-2 border-light_white pt-2">
+                            <li className="mb-2 border-t-2 border-light_white pt-2 flex items-center gap-2">
+                                <SearchButton />
                                 <HeaderChangeLanguageMenu></HeaderChangeLanguageMenu>
                             </li>
                         </ul>
