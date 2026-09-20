@@ -4,7 +4,7 @@ import { ClientProvider } from "@/providers/clientProvider";
 import Header from "@/components/Header/Header";
 import PostHogPageView from "./PostHogPageView";
 
-import { Suspense, ReactNode } from "react";
+import { Suspense } from "react";
 import DayjsLocaleProvider from "@/providers/DayjsLocaleProvider";
 import { ConfigStoreHydrator } from "@/providers/ConfigStoreHydrator";
 import { getConfiguration, getMenu } from "@/services/getConfiguration";
@@ -137,14 +137,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
 type RootLayoutProps = {
     children: React.ReactNode;
     params: Promise<{ lng: string }>;
-    searchModal: ReactNode;
 };
 
-export default async function RootLayout({
-    children,
-    params,
-    searchModal,
-}: Readonly<RootLayoutProps>) {
+export default async function RootLayout({ children, params }: Readonly<RootLayoutProps>) {
     const { lng } = await params;
     const [featureFlags, menu, { t }] = await Promise.all([
         getConfiguration(),
@@ -172,7 +167,6 @@ export default async function RootLayout({
                         <PostHogPageView />
                         <Header></Header>
                         {children}
-                        {searchModal}
                     </Suspense>
                 </ClientProvider>
                 <div id="portal"></div>
