@@ -5,5 +5,7 @@
     "searchPlaceholder": "Search station...",
     "searchInputAriaLabel": "Search station",
     "pageTitle": "Search Station",
-    "clearSearches": "Clear"
+    "clearSearches": "Clear",
+    "noStationsMatch": "No stations found that match your search",
+    "tryAgain": "Try a nearby town, or check the spelling — station names use their local Greek spelling."
 }

@@ -13,7 +13,7 @@ type SearchPageClientProps = {
     data: StationSearchItem[];
 };
 
-export default function SearchPageClient({ data }: Readonly<SearchPageClientProps>) {
+export default function SearchContent({ data }: Readonly<SearchPageClientProps>) {
     const [results, setResults] = useState<StationSearchResult[]>([]);
     const [userTouchedResult, setUserToutchedResult] = useState<boolean>(false);
     const [previousSearchIds, setPreviousSearchIds] = useState(getRecentSearches);
@@ -80,11 +80,8 @@ export default function SearchPageClient({ data }: Readonly<SearchPageClientProp
                     <div className="flex size-12 items-center justify-center rounded-full bg-light_white">
                         <NoSymbolIcon className="size-6 fill-primary" />
                     </div>
-                    <p className="font-bold text-primary">No stations match</p>
-                    <p className="max-w-[26ch] text-sm text-primary opacity-50">
-                        Try a nearby town, or check the spelling — station names use their local
-                        Greek spelling.
-                    </p>
+                    <p className="font-bold text-primary">{t("noStationsMatch")}</p>
+                    <p className="max-w-[26ch] text-sm text-primary opacity-50">{t("tryAgain")}</p>
                 </div>
             )}
             {results.length > 0 && (
