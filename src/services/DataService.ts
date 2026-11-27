@@ -373,9 +373,9 @@ export class DataService {
         );
     };
 
-    fetchFthiotidaForecasts = (): Promise<FthiotidaForecast[]> => {
+    fetchFthiotidaForecasts = (next?: NextFetchRequestConfig): Promise<FthiotidaForecast[]> => {
         const filter = this.buildFthiotidaForecastsFilter();
-        return this.fetchWithValidation(filter);
+        return this.fetchWithValidation(filter, undefined, next);
     };
 
     // Forecasts filter builders
@@ -385,7 +385,7 @@ export class DataService {
     };
 
     private buildFthiotidaForecastsFilter = (): string => {
-        return `${this.ENDPOINTS.FTHIOTIDA_FORECASTS}?fields=forecast&sort=-id&limit=10`;
+        return `${this.ENDPOINTS.FTHIOTIDA_FORECASTS}?fields=id,forecast&sort=-id&limit=10`;
     };
 
     // ============================================

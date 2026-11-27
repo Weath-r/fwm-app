@@ -13,6 +13,7 @@ export const CACHE_TAGS = {
     warningLevels: "warning-levels",
     blogPosts: "blog-posts",
     blogCategories: "blog-categories",
+    fthiotidaForecasts: "fthiotida-forecasts",
 };
 
 export type CacheTag = (typeof CACHE_TAGS)[keyof typeof CACHE_TAGS];

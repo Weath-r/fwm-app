@@ -7,7 +7,8 @@ structural decisions. Update it when the shape of the system changes.
 |---|---|
 | [`current-architecture.md`](./current-architecture.md) | As-is: system context, frontend layering, caching rules, and the detailed `weather_data` flow with its known inefficiencies |
 | [`weather-data-websocket.md`](./weather-data-websocket.md) | Target design: `weather_data` over Directus Realtime — topology, socket lifecycle, per-page impact, Directus prerequisites, migration order |
-| [`architecture.html`](./architecture.html) | Both documents in one page with rendered, pan/zoom-able diagrams. Fully self-contained (~2.5 MB, Mermaid inlined) — open it directly in a browser, works offline |
+| [`fthiotida-homepage-section.md`](./fthiotida-homepage-section.md) | Fthiotida-Meteogroup forecast section on the homepage (steps 1–3 built, behind a flag) — data flow & caching, layout, rendering, slab layers, marker placement and wind zones, motion, performance rules, measurement, build order. |
+| [`architecture.html`](./architecture.html) | All three documents in one page with rendered, pan/zoom-able diagrams. Fully self-contained (~2.5 MB, Mermaid inlined) — open it directly in a browser, works offline |
 
 Notes:
 

@@ -3,6 +3,7 @@
 > Reference document. Reflects the codebase as of 2026-07-20 (branch `development`, v1.18.x).
 > Companion HTML version (rendered diagrams, offline): [`architecture.html`](./architecture.html)
 > Target realtime design: [`weather-data-websocket.md`](./weather-data-websocket.md)
+> Target homepage Fthiotida section: [`fthiotida-homepage-section.md`](./fthiotida-homepage-section.md)
 
 ## 1. System context
 
@@ -161,3 +162,8 @@ Still open — these are the pressure points the Directus WebSocket design addre
    crawlers write new readings continuously.
 4. **`DataService` instantiated per component** — harmless but signals no shared data layer on the
    client.
+5. **`/fthiotida-forecast` reads `fthiotida_forecasts` unvalidated and uncached:** the route
+   fetches client-side on mount and casts the payload. The homepage section already reads it through
+   a tolerant schema and the tagged cached getter `getFthiotidaForecasts`
+   ([`fthiotida-homepage-section.md`](./fthiotida-homepage-section.md)); the route moves onto that
+   layer when it is revamped after the section ships.

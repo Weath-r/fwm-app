@@ -13,6 +13,7 @@ export enum Measurements {
     SPEED = "km/h",
     MILLIMETER = "mm",
     CELCIUS = "°C",
+    DEGREE = "°",
     BFT = "Bft",
     CM = "cm",
     MMHR = "mm/hr",

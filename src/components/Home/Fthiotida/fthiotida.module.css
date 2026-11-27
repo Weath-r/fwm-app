@@ -1,0 +1,1475 @@
+.section {
+    --sky: linear-gradient(180deg, #9dbbd5 0%, #d6e3ed 50%, #f0f3f5 100%);
+    --ink: #16252f;
+    --sub: rgba(22, 37, 47, 0.8);
+    --panel: rgba(255, 255, 255, 0.46);
+    --line: rgba(255, 255, 255, 0.7);
+    --chip: rgba(255, 255, 255, 0.62);
+    --solid: rgba(255, 255, 255, 0.88);
+    --track: rgba(22, 37, 47, 0.12);
+    --dot: rgba(22, 37, 47, 0.32);
+    --on: #16252f;
+    --on-ink: #ffffff;
+    --sheet: #ffffff;
+    --tile: rgba(22, 37, 47, 0.05);
+    --precipitation: #25609c;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    color: var(--ink);
+    background: var(--sky);
+}
+
+.section[data-daypart="morning"] {
+    --sky: linear-gradient(180deg, #bcd6ec 0%, #e3ecf2 50%, #f4efe8 100%);
+}
+
+.section[data-daypart="golden"] {
+    --sky: linear-gradient(180deg, #efae84 0%, #f5cfae 42%, #f3e6d9 100%);
+}
+
+.section[data-daypart="night"] {
+    --sky:
+        radial-gradient(
+            90% 70% at 85% -10%,
+            rgba(70, 100, 150, 0.55) 0%,
+            rgba(70, 100, 150, 0) 60%
+        ),
+        linear-gradient(180deg, #0a1322 0%, #13223a 55%, #1e2f48 100%);
+    --ink: #f2f6fa;
+    --sub: rgba(242, 246, 250, 0.78);
+    --panel: rgba(8, 16, 28, 0.38);
+    --line: rgba(255, 255, 255, 0.14);
+    --chip: rgba(8, 16, 28, 0.42);
+    --solid: rgba(10, 19, 34, 0.86);
+    --track: rgba(242, 246, 250, 0.18);
+    --dot: rgba(242, 246, 250, 0.45);
+    --on: #f2f6fa;
+    --on-ink: #16252f;
+    --sheet: #0c1624;
+    --tile: rgba(242, 246, 250, 0.07);
+    --precipitation: #a9d4ff;
+}
+
+.header {
+    height: auto;
+    min-height: 132px;
+}
+
+.stage {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 0.669;
+    isolation: isolate;
+    overflow: clip;
+    border-radius: 10px;
+}
+
+.billboard.billboardCompact {
+    flex-direction: row;
+    align-items: center;
+}
+
+.billboard.billboardCompact .object {
+    z-index: 1;
+    margin: -25px -29px;
+    transform: scale(0.36);
+}
+
+.billboard.billboardCompact .label {
+    flex-direction: row;
+    margin: 0 0 0 -30px;
+    padding: 4px 9px 4px 32px;
+    border-radius: 999px;
+}
+
+.viewport {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5.13%;
+    height: 99%;
+    perspective-origin: 50% 50%;
+}
+
+@media (min-width: 640px) {
+    .stage {
+        aspect-ratio: 1 / 0.629;
+    }
+
+    .viewport {
+        top: -0.9%;
+        height: 105.29%;
+    }
+}
+
+.slab {
+    position: absolute;
+    inset: 0;
+    transform-origin: 50% 50%;
+    transition: transform 0.9s cubic-bezier(0.22, 0.8, 0.18, 1);
+}
+
+.slabMoving {
+    will-change: transform;
+}
+
+.relief {
+    object-fit: fill;
+    pointer-events: none;
+}
+
+.ground {
+    position: absolute;
+    width: 15.9%;
+    height: 9.2%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+
+.sunlight {
+    background: radial-gradient(closest-side, rgba(255, 214, 120, 0.6), rgba(255, 214, 120, 0));
+}
+
+.cloudShadow {
+    background: radial-gradient(closest-side, rgba(18, 30, 44, 0.4), rgba(18, 30, 44, 0));
+    animation: groundDrift 7s ease-in-out infinite;
+}
+
+.wet {
+    background: radial-gradient(closest-side, rgba(30, 60, 92, 0.5), rgba(30, 60, 92, 0));
+    animation: groundDrift 6s ease-in-out infinite;
+}
+
+.snowGlow {
+    background: radial-gradient(closest-side, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0));
+}
+
+.frost {
+    background: radial-gradient(closest-side, rgba(190, 230, 255, 0.9), rgba(190, 230, 255, 0));
+}
+
+.heat {
+    background: radial-gradient(closest-side, rgba(255, 120, 60, 0.5), rgba(255, 120, 60, 0));
+}
+
+.dustPatch {
+    background: radial-gradient(closest-side, rgba(205, 160, 100, 0.55), rgba(205, 160, 100, 0));
+}
+
+.wind {
+    position: absolute;
+    width: 20.7%;
+    height: 11.8%;
+    overflow: hidden;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+}
+
+.wind::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -110px;
+    right: 0;
+    background-image: repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0 30px,
+        rgba(255, 255, 255, 0.95) 30px 70px,
+        rgba(255, 255, 255, 0) 70px 110px
+    );
+    -webkit-mask-image: repeating-linear-gradient(180deg, #000 0 2px, transparent 2px 12px);
+    mask-image: repeating-linear-gradient(180deg, #000 0 2px, transparent 2px 12px);
+    animation: windFlow var(--flow-duration, 2.4s) linear infinite;
+}
+
+.spotlight {
+    position: absolute;
+    left: -30%;
+    top: -30%;
+    width: 160%;
+    height: 160%;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+
+.billboards {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.billboard {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    pointer-events: auto;
+    transform-origin: 50% 100%;
+    transition:
+        transform 0.9s cubic-bezier(0.22, 0.8, 0.18, 1),
+        opacity 0.6s ease;
+}
+
+.billboard:focus-visible {
+    outline: none;
+}
+
+.billboard:focus-visible .label {
+    box-shadow:
+        0 0 0 3px #ffffff,
+        0 0 0 5px #3d5361;
+}
+
+.label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    margin-top: -8px;
+    padding: 5px 11px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 20px -8px rgba(14, 26, 38, 0.45);
+    white-space: nowrap;
+}
+
+.labelValues {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    font-variant-numeric: tabular-nums;
+}
+
+.labelHigh {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.labelLow {
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.72;
+}
+
+.labelPrecipitation {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #25609c;
+}
+
+.windPill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px 4px 6px;
+    border-radius: 999px;
+    background: rgba(14, 26, 38, 0.86);
+    color: #f2f6fa;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    transform-origin: 50% 50%;
+    transition:
+        transform 0.9s cubic-bezier(0.22, 0.8, 0.18, 1),
+        opacity 0.6s ease;
+}
+
+.object {
+    position: relative;
+    display: block;
+    width: 92px;
+    height: 78px;
+}
+
+.float {
+    position: absolute;
+    inset: 0;
+    animation: float 5.5s ease-in-out infinite;
+}
+
+.sun {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 30%, #fff8d6 0%, #ffd65a 42%, #f4a62a 100%);
+    box-shadow:
+        0 0 28px 10px rgba(255, 196, 77, 0.45),
+        inset -5px -7px 12px rgba(196, 104, 0, 0.35);
+}
+
+.sunSolo {
+    right: 21px;
+    top: 12px;
+    width: 50px;
+    height: 50px;
+}
+
+.sunHot {
+    background: radial-gradient(circle at 34% 30%, #fff1c2 0%, #ffae3a 40%, #ef5a2a 100%);
+}
+
+.sunHot::after {
+    content: "";
+    position: absolute;
+    inset: -16px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 110, 40, 0.55), rgba(255, 110, 40, 0) 70%);
+    animation: heatPulse 2.6s ease-in-out infinite;
+}
+
+.sunDim {
+    background: radial-gradient(circle at 34% 30%, #fff0d6 0%, #e9bd84 45%, #c48a4c 100%);
+    box-shadow:
+        0 0 20px 6px rgba(220, 160, 90, 0.35),
+        inset -4px -6px 10px rgba(140, 80, 20, 0.3);
+}
+
+.rays {
+    position: absolute;
+    inset: -14px;
+    border-radius: 50%;
+    background: repeating-conic-gradient(rgba(255, 214, 102, 0.6) 0 7deg, transparent 7deg 30deg);
+    -webkit-mask: radial-gradient(circle, transparent 0 30px, #000 31px 38px, transparent 39px);
+    mask: radial-gradient(circle, transparent 0 30px, #000 31px 38px, transparent 39px);
+    animation: spin 48s linear infinite;
+}
+
+.sunHot .rays {
+    background: repeating-conic-gradient(rgba(255, 140, 60, 0.7) 0 7deg, transparent 7deg 30deg);
+    animation-duration: 20s;
+}
+
+.cloud {
+    position: absolute;
+    left: 8px;
+    top: 36px;
+    width: 70px;
+    height: 28px;
+    border-radius: 16px;
+    background: radial-gradient(120% 140% at 30% 0%, #ffffff 0%, #eef2f6 55%, #c9d3dd 100%);
+    box-shadow:
+        inset -6px -7px 12px rgba(86, 106, 128, 0.28),
+        0 12px 20px -6px rgba(26, 44, 66, 0.32);
+    animation: drift 7s ease-in-out infinite;
+}
+
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, #eef2f6 55%, #cfd8e1 100%);
+    box-shadow: inset -5px -6px 10px rgba(86, 106, 128, 0.22);
+}
+
+.cloud::before {
+    width: 32px;
+    height: 32px;
+    left: 9px;
+    top: -17px;
+}
+
+.cloud::after {
+    width: 40px;
+    height: 40px;
+    left: 27px;
+    top: -25px;
+}
+
+.cloudBack {
+    left: 36px;
+    top: 22px;
+    width: 50px;
+    height: 20px;
+    border-radius: 12px;
+    opacity: 0.92;
+    animation-duration: 9.5s;
+    animation-direction: reverse;
+}
+
+.cloudBack::before {
+    width: 22px;
+    height: 22px;
+    left: 6px;
+    top: -12px;
+}
+
+.cloudBack::after {
+    width: 28px;
+    height: 28px;
+    left: 19px;
+    top: -18px;
+}
+
+.cloudDark {
+    background: radial-gradient(120% 140% at 30% 0%, #c6cfd9 0%, #93a1b0 55%, #6a7a8b 100%);
+    box-shadow:
+        inset -6px -7px 12px rgba(30, 44, 60, 0.35),
+        0 12px 20px -6px rgba(16, 28, 42, 0.4);
+}
+
+.cloudDark::before,
+.cloudDark::after {
+    background: radial-gradient(circle at 35% 30%, #cdd5de 0%, #9aa7b5 55%, #72818f 100%);
+    box-shadow: inset -5px -6px 10px rgba(30, 44, 60, 0.3);
+}
+
+.precipitation {
+    position: absolute;
+    left: 16px;
+    top: 58px;
+    width: 60px;
+    height: 30px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent);
+    mask-image: linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent);
+}
+
+.precipitation::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(var(--tile-height) * -1);
+    bottom: 0;
+    background-size: var(--tile-width) var(--tile-height);
+    animation: fall var(--fall-duration) linear infinite;
+}
+
+.rain {
+    --tile-width: 12px;
+    --tile-height: 18px;
+    --fall-duration: 0.6s;
+}
+
+.rain::before {
+    background-image:
+        linear-gradient(
+            90deg,
+            transparent 0 5px,
+            rgba(79, 151, 224, 0.95) 5px 7px,
+            transparent 7px
+        ),
+        linear-gradient(
+            90deg,
+            transparent 0 11px,
+            rgba(79, 151, 224, 0.6) 11px 12px,
+            transparent 12px
+        );
+    -webkit-mask-image: repeating-linear-gradient(
+        180deg,
+        transparent 0 4px,
+        #000 4px calc(var(--tile-height) - 4px),
+        transparent calc(var(--tile-height) - 4px) var(--tile-height)
+    );
+    mask-image: repeating-linear-gradient(
+        180deg,
+        transparent 0 4px,
+        #000 4px calc(var(--tile-height) - 4px),
+        transparent calc(var(--tile-height) - 4px) var(--tile-height)
+    );
+}
+
+.rainLight {
+    --tile-width: 20px;
+    --tile-height: 24px;
+    --fall-duration: 0.9s;
+}
+
+.snow {
+    --tile-width: 16px;
+    --tile-height: 16px;
+    --fall-duration: 2.6s;
+}
+
+.snow::before {
+    background-image:
+        radial-gradient(circle at 25% 25%, #ffffff 0 2.5px, transparent 3px),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.85) 0 2px, transparent 2.5px);
+}
+
+.snowLight {
+    --tile-width: 24px;
+    --tile-height: 22px;
+    --fall-duration: 3s;
+}
+
+.snowHeavy {
+    --tile-width: 12px;
+    --tile-height: 12px;
+    --fall-duration: 1.8s;
+}
+
+.bolt {
+    position: absolute;
+    left: 38px;
+    top: 58px;
+    width: 16px;
+    height: 26px;
+    background: #ffd34d;
+    clip-path: polygon(55% 0, 0 58%, 42% 58%, 30% 100%, 100% 38%, 58% 38%, 80% 0);
+    filter: drop-shadow(0 0 6px rgba(255, 211, 77, 0.95));
+    animation: flash 3.6s linear infinite;
+}
+
+.band {
+    position: absolute;
+    height: 8px;
+    border-radius: 8px;
+    animation: bandSway 6s ease-in-out infinite;
+}
+
+.fogBand {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0.95),
+        rgba(255, 255, 255, 0)
+    );
+}
+
+.dustBand {
+    height: 9px;
+    background: linear-gradient(
+        90deg,
+        rgba(196, 150, 92, 0),
+        rgba(196, 150, 92, 0.95),
+        rgba(196, 150, 92, 0)
+    );
+    animation-duration: 5s;
+}
+
+.band:nth-of-type(1) {
+    top: 28px;
+    left: 10px;
+    width: 72px;
+}
+
+.band:nth-of-type(2) {
+    top: 42px;
+    left: 22px;
+    width: 60px;
+    animation-delay: -2s;
+}
+
+.band:nth-of-type(3) {
+    top: 56px;
+    left: 10px;
+    width: 76px;
+    animation-delay: -4s;
+}
+
+.shimmer {
+    position: absolute;
+    left: 20px;
+    top: 60px;
+    width: 52px;
+    height: 24px;
+    background-image: repeating-linear-gradient(
+        90deg,
+        transparent 0 10px,
+        rgba(255, 120, 50, 0.75) 10px 13px
+    );
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 40%, transparent);
+    mask-image: linear-gradient(180deg, transparent, #000 40%, transparent);
+    animation: rise 1.8s ease-in infinite;
+}
+
+.ice {
+    position: absolute;
+    left: 23px;
+    top: 12px;
+    width: 46px;
+    height: 46px;
+    filter: drop-shadow(0 0 8px rgba(150, 210, 255, 0.9));
+    animation: spin 24s linear infinite;
+}
+
+.ice::before,
+.ice::after,
+.iceBar {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 20px;
+    width: 46px;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #a9dcff, #ffffff 50%, #a9dcff);
+}
+
+.ice::before {
+    transform: rotate(60deg);
+}
+
+.ice::after {
+    transform: rotate(-60deg);
+}
+
+.gust {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: visible;
+}
+
+.gustPath {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 50 130;
+    filter: drop-shadow(0 1px 2px rgba(20, 40, 60, 0.55));
+    animation: dash 1.5s linear infinite;
+}
+
+.gustPath:nth-of-type(2) {
+    animation-delay: -0.5s;
+}
+
+.gustPath:nth-of-type(3) {
+    animation-delay: -1s;
+}
+
+.fallbackIcon {
+    position: absolute;
+    left: 14px;
+    top: 7px;
+    width: 64px;
+    height: 64px;
+}
+
+.muted {
+    color: var(--sub);
+}
+
+.credit {
+    border: 1px solid var(--line);
+    background: var(--chip);
+    color: var(--ink);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.markDark,
+.section[data-daypart="night"] .markLight {
+    display: none;
+}
+
+.section[data-daypart="night"] .markDark {
+    display: block;
+}
+
+.dayToggle {
+    display: flex;
+    gap: 4px;
+    min-height: 54px;
+    box-sizing: border-box;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--solid);
+}
+
+.dayButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 96px;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+.dayButton[aria-pressed="true"] {
+    background: var(--on);
+    color: var(--on-ink);
+}
+
+.dayButton:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.dayButton:focus-visible,
+.pillButton:focus-visible,
+.railRow:focus-visible,
+.chip:focus-visible,
+.sheetClose:focus-visible,
+.footerLink:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.pendingDot,
+.breathingDot {
+    border-radius: 50%;
+    background: currentColor;
+    animation: breath 3s ease-in-out infinite;
+}
+
+.pendingDot {
+    width: 7px;
+    height: 7px;
+}
+
+.breathingDot {
+    width: 10px;
+    height: 10px;
+}
+
+.body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+    padding: 0 16px;
+}
+
+.railRow {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) 120px;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 44px;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.railRow:hover,
+.pillButton:hover {
+    background: rgba(127, 140, 155, 0.2);
+}
+
+.railRange {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) 30px;
+    align-items: center;
+    gap: 6px;
+    font-variant-numeric: tabular-nums;
+}
+
+.track {
+    position: relative;
+    display: block;
+    height: 5px;
+    border-radius: 5px;
+    background: var(--track);
+}
+
+.trackFill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 5px;
+}
+
+.precipitationBadge {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--precipitation);
+}
+
+.areaIcon {
+    position: relative;
+    display: block;
+    width: 30px;
+    height: 26px;
+}
+
+.areaIcon .object {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.34);
+}
+
+.areaIcon *,
+.areaIcon *::before,
+.areaIcon *::after {
+    animation: none !important;
+}
+
+.card {
+    animation: cardIn 0.55s cubic-bezier(0.22, 0.8, 0.18, 1);
+}
+
+.cardObject {
+    flex-shrink: 0;
+}
+
+.cardHigh {
+    font-size: 52px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.tile {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--tile);
+}
+
+.pillButton {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 8px;
+    background: rgba(127, 140, 155, 0.16);
+    color: inherit;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.strip {
+    position: relative;
+    height: 18px;
+    margin: 0 7px;
+}
+
+.stripLine {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 8px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--track);
+}
+
+.stripDot,
+.stripDotSelected {
+    position: absolute;
+    top: 9px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.stripDot {
+    width: 8px;
+    height: 8px;
+    background: var(--dot);
+}
+
+.stripDotSelected {
+    z-index: 1;
+    width: 14px;
+    height: 14px;
+    box-shadow: 0 0 0 3px #ffffff;
+}
+
+.chips {
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 8px 16px 12px;
+    scroll-padding-inline: 16px;
+    overflow-x: auto;
+    list-style: none;
+    scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+    display: none;
+}
+
+.chip {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    box-sizing: border-box;
+    width: 124px;
+    min-height: 108px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--solid);
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.chip[aria-pressed="true"] {
+    border-color: var(--on);
+}
+
+.mobilePanel {
+    margin: 8px 16px 0;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--panel);
+}
+
+.sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    max-height: 78vh;
+    box-sizing: border-box;
+    padding: 10px 20px 24px;
+    overflow-y: auto;
+    border-top: 1px solid var(--line);
+    border-radius: 16px 16px 0 0;
+    background: var(--sheet);
+    color: var(--ink);
+    box-shadow: 0 -20px 50px -20px rgba(20, 35, 50, 0.4);
+    animation: sheetIn 0.45s cubic-bezier(0.22, 0.8, 0.18, 1);
+}
+
+.sheetTop {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    align-items: center;
+    margin: 0 -8px 4px;
+}
+
+.sheetHandle {
+    display: block;
+    grid-column: 2;
+    width: 40px;
+    height: 4px;
+    margin: 0 auto;
+    border-radius: 4px;
+    background: var(--track);
+}
+
+.sheetClose {
+    grid-column: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(127, 140, 155, 0.18);
+    color: inherit;
+    cursor: pointer;
+}
+
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    min-height: 56px;
+    box-sizing: border-box;
+    margin: 16px;
+    padding: 6px 8px 6px 16px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel);
+    font-size: 13px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.footerLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 8px;
+    color: inherit;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.tint {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease;
+}
+
+.tint[data-daypart="golden"] {
+    background: #ff9a4d;
+    opacity: 0.16;
+}
+
+.tint[data-daypart="night"] {
+    background: #0a1628;
+    opacity: 0.55;
+}
+
+.townLight {
+    position: absolute;
+    width: 2.4%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        #fff2cf 0 18%,
+        rgba(255, 207, 122, 0.75) 30%,
+        rgba(255, 207, 122, 0) 70%
+    );
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: opacity 1.2s ease;
+}
+
+.snowCap {
+    position: absolute;
+    width: 9%;
+    height: 6.5%;
+    border-radius: 50%;
+    background: radial-gradient(
+        closest-side,
+        #ffffff,
+        rgba(244, 247, 250, 0.85) 60%,
+        rgba(255, 255, 255, 0)
+    );
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+
+.section[data-daypart="night"] .label {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(9, 18, 30, 0.86);
+    color: #f2f6fa;
+}
+
+.section[data-daypart="night"] .labelPrecipitation {
+    color: #a9d4ff;
+}
+
+.placeholderLabel {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.62);
+    color: rgba(22, 37, 47, 0.78);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px -6px rgba(14, 26, 38, 0.35);
+    pointer-events: none;
+}
+
+.section[data-daypart="night"] .placeholderLabel {
+    background: rgba(9, 18, 30, 0.6);
+    color: rgba(242, 246, 250, 0.82);
+}
+
+@media (min-width: 1024px) {
+    .body {
+        position: relative;
+        padding: 0 24px;
+    }
+
+    .stage {
+        max-width: none;
+        aspect-ratio: 1 / 0.609;
+        border-radius: 10px;
+    }
+
+    .viewport {
+        top: -4.22%;
+        height: 108.75%;
+    }
+
+    .railStrip {
+        padding: 14px 18px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        backdrop-filter: blur(20px) saturate(140%);
+        -webkit-backdrop-filter: blur(20px) saturate(140%);
+    }
+
+    .railList {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 28px;
+    }
+
+    .floatingCard {
+        position: absolute;
+        top: 8px;
+        right: 40px;
+        z-index: 2;
+        width: 340px;
+        max-height: 560px;
+        box-sizing: border-box;
+        padding: 18px;
+        overflow-y: auto;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--sheet);
+        box-shadow: 0 24px 48px -24px rgba(14, 26, 38, 0.45);
+        transform: translateZ(0);
+        will-change: transform;
+    }
+
+    .footer {
+        margin: 16px 24px 24px;
+    }
+}
+
+.section[data-paused="true"] *,
+.section[data-paused="true"] *::before,
+.section[data-paused="true"] *::after {
+    animation-play-state: paused !important;
+}
+
+.section[data-paused="true"] .card,
+.section[data-paused="true"] .sheet {
+    animation-play-state: running !important;
+}
+
+.section[data-tier="lite"] .precipitation,
+.section[data-tier="lite"] .shimmer {
+    display: none;
+}
+
+.section[data-tier="still"] *,
+.section[data-tier="still"] *::before,
+.section[data-tier="still"] *::after {
+    animation: none !important;
+}
+
+.section[data-tier="still"] .slab,
+.section[data-tier="still"] .billboard,
+.section[data-tier="still"] .windPill {
+    transition-duration: 0.2s;
+}
+
+@keyframes breath {
+    0%,
+    100% {
+        opacity: 0.45;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateX(18px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes sheetIn {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: none;
+    }
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes drift {
+    0%,
+    100% {
+        transform: translateX(-4px);
+    }
+    50% {
+        transform: translateX(4px);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fall {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(var(--tile-height));
+    }
+}
+
+@keyframes flash {
+    0%,
+    86%,
+    100% {
+        opacity: 0;
+    }
+    88%,
+    92% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes bandSway {
+    0%,
+    100% {
+        transform: translateX(-6px);
+        opacity: 0.55;
+    }
+    50% {
+        transform: translateX(6px);
+        opacity: 0.95;
+    }
+}
+
+@keyframes heatPulse {
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.12);
+    }
+}
+
+@keyframes rise {
+    0% {
+        transform: translateY(6px) scaleY(0.6);
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-12px) scaleY(1.1);
+        opacity: 0;
+    }
+}
+
+@keyframes dash {
+    from {
+        stroke-dashoffset: 180;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes groundDrift {
+    0%,
+    100% {
+        transform: translate(-50%, -50%) translateX(-8px);
+    }
+    50% {
+        transform: translate(-50%, -50%) translateX(8px);
+    }
+}
+
+@keyframes windFlow {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(110px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section *,
+    .section *::before,
+    .section *::after {
+        animation: none !important;
+    }
+
+    .slab,
+    .billboard,
+    .windPill {
+        transition-duration: 0.2s;
+    }
+}
+
+.skyArc {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.skyArcPath {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+}
+
+.skyArcPath path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-dasharray: 1.5 6;
+    stroke-linecap: round;
+    opacity: 0.32;
+}
+
+.skyArcTime {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.55;
+}
+
+.skyArcSun {
+    position: absolute;
+    width: 14px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #ffe7a3;
+    box-shadow:
+        0 0 0 3px rgba(255, 231, 163, 0.35),
+        0 0 22px 8px rgba(255, 220, 140, 0.45);
+    transform: translate(-50%, -50%);
+}
+
+.skyArc[data-daypart="morning"] .skyArcSun {
+    background: #ffd98f;
+}
+
+.skyArc[data-daypart="golden"] .skyArcSun {
+    background: #ffab66;
+    box-shadow:
+        0 0 0 3px rgba(255, 171, 102, 0.35),
+        0 0 26px 10px rgba(255, 150, 80, 0.5);
+}
+
+.skyMoon {
+    position: absolute;
+    top: 9%;
+    left: 86%;
+    width: 18px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #e8edf5;
+    box-shadow:
+        inset -6px 2px 0 0 #142540,
+        0 0 24px 6px rgba(170, 196, 235, 0.25);
+    opacity: 0.75;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.daylightTrack {
+    position: relative;
+    flex: 0 0 auto;
+    width: 96px;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--track);
+}
+
+.daylightFill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #ffd98f, #ffb45e);
+}
+
+.daylightDot {
+    position: absolute;
+    top: 50%;
+    width: 10px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #ffc46b;
+    box-shadow:
+        0 0 0 2px var(--panel),
+        0 0 10px 2px rgba(255, 196, 107, 0.6);
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 639px) {
+    .skyArc {
+        display: none;
+    }
+
+    .skyMoon {
+        width: 12px;
+        box-shadow:
+            inset -4px 2px 0 0 #142540,
+            0 0 16px 4px rgba(170, 196, 235, 0.25);
+    }
+}

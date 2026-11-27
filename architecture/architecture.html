@@ -125,11 +125,12 @@
 <header>
     <div>
         <h1>FWM App — Architecture Reference</h1>
-        <div class="sub">Snapshot 2026-07-20 · branch development · sources: architecture/*.md</div>
+        <div class="sub">Snapshot 2026-07-20 (Fthiotida section design added 2026-11-25) · branch development · sources: architecture/*.md</div>
     </div>
     <nav class="tabs">
         <button id="tabBtnCurrent" class="active">Current architecture</button>
         <button id="tabBtnWs">weather_data → WebSocket</button>
+        <button id="tabBtnFth">Fthiotida section</button>
         <button id="themeToggle" title="Toggle light/dark">◐</button>
     </nav>
 </header>
@@ -206,6 +207,7 @@
         <li><strong>StationsProvider mounted per layout</strong> (home &amp; weather-map) — metadata and warnings re-fetched on navigation between them.</li>
         <li><strong>Staleness:</strong> map / list viewers see data frozen at mount time while crawlers keep writing.</li>
         <li><code>DataService</code> instantiated per component — a smell showing there is no shared client data layer.</li>
+        <li><strong>/fthiotida-forecast reads fthiotida_forecasts unvalidated and uncached:</strong> the route fetches client-side on mount and casts the payload. The homepage section already reads it through a tolerant schema and the tagged cached getter <code>getFthiotidaForecasts</code>; the route moves onto that layer when it is revamped after the section ships.</li>
     </ol>
 </section>
 
@@ -303,6 +305,229 @@
         <li><strong>Event payload depth</strong> — keep subscription fields shallow; heavy relational data comes from <code>StationsProvider</code> metadata joined by stationId.</li>
         <li><strong>Map marker product question</strong> — live readings vs. AccuWeather icons: additive or replacement? Decide before step 6.</li>
         <li><strong>SEO invariant</strong> — homepage and station pages keep server-rendering the snapshot; realtime is hydration-time enhancement only.</li>
+    </ul>
+</section>
+
+<!-- ============================== TAB 3: FTHIOTIDA SECTION ============================== -->
+<section class="tab" id="tabFth">
+    <p><span class="pill">target</span>Decision: a new homepage section, below Warnings, presents Fthiotida-Meteogroup's forecast as a <strong>2.5D "living diorama"</strong>: one tilted relief of the prefecture with a soft 3D weather object standing on each of the 9 areas, wind flowing over 6 wind zones, and a sky that follows the <strong>local clock only</strong>. Built with the existing stack: Next.js RSC + one client island, CSS 3D transforms and CSS animations, pre-rendered images. <strong>No WebGL, no 3D or animation library.</strong> The existing <code>/fthiotida-forecast</code> route <strong>stays and is revamped</strong> afterwards, on the same data layer and components. <strong>Status (2026-11-26):</strong> build steps 1–3 are done and the section runs behind the feature flag; launch (step 4) waits on the revalidation call and the final relief artwork. Current state baseline: [<code>current-architecture.md</code>](./current-architecture.md) · Design canvas (mockups + full design spec): <a href="https://claude.ai/artifact/5JrzwXzL4xiKQZmRRKK9NY">https://claude.ai/artifact/5JrzwXzL4xiKQZmRRKK9NY</a></p>
+
+    <h2>1 · Product decisions this design implements</h2>
+    <table>
+        <tr><th>Decision</th><th>Consequence for the build</th></tr>
+        <tr><td>Meteogroup publishes once a day at <strong>no fixed time (09:00–20:00)</strong></td><td>Section has a <strong>Today | Tomorrow</strong> switch. Defaults to Tomorrow once published, otherwise Today; Tomorrow shows as pending. Dormant state only when neither exists</td></tr>
+        <tr><td><strong>Sky = time of day only</strong> (morning, day, golden hour, night)</td><td>No weather-driven sky logic. The weather lives in the per-area objects</td></tr>
+        <tr><td>Conditions come from the Meteogroup form</td><td>Each entry already stores a <strong>condition key</strong> (<code>weatherConditions.value</code>); one CSS weather object per key. Unknown keys fall back to the stored Directus icon</td></tr>
+        <tr><td><strong>Snow level is per area</strong> (<code>snow</code>, metres; <code>0</code> = none)</td><td>Each of the 4 mountain snow caps fades by its own area's level</td></tr>
+        <tr><td><strong>Rain probability is optional</strong> (rarely filled in)</td><td>Droplet badges and the card's rain-chance tile render only when a value exists</td></tr>
+        <tr><td>Partner credit</td><td>Brand-kit marks (SVG) in the header chip; slab silhouette is the brand kit's exact 59-point outline</td></tr>
+        <tr><td>Existing <code>/fthiotida-forecast</code> route</td><td><strong>Kept and revamped</strong> after the section ships, reusing its data layer and components. The section's "Forecast archive" links point to it</td></tr>
+    </table>
+
+    <h2>2 · Stored data (observed)</h2>
+    <p>Observed on 2026-11-25 through the public REST endpoint and the Directus MCP (<code>items/fthiotida_forecasts</code>): <strong>409 records</strong> from 2025-07-20 to 2026-11-25. The <code>forecast</code> field is a Directus JSON column, and REST returns it as a parsed object.</p>
+    <div class="diagram-card" data-diagram="fthShape"></div>
+    <table>
+        <tr><th>Finding</th><th>Consequence</th></tr>
+        <tr><td>The same 15 keys in all 409 records (capitalised: <code>Lamia</code>, <code>Kamena</code>, <code>Parnasos</code>…)</td><td>Area roles come from a fixed key map. <code>locationType</code> (<code>temp</code>/<code>wind</code>) exists only on recent records, so it can't be relied on</td></tr>
+        <tr><td><code>weatherConditions</code> = <code>{ icon, label, value }</code>; 15 distinct <code>value</code> keys used so far (table below)</td><td>Map by **<code>value</code>**, never by label: one label is stored as "Kαύσωνας" with a Latin K</td></tr>
+        <tr><td><code>forecast_date</code> is <code>DD/MM/YYYY</code>; 2 old records have no dates</td><td>Parse <code>DD/MM/YYYY</code>; records without a date are dropped</td></tr>
+        <tr><td><strong>33 of 369 dates have more than one record</strong> (up to 6); <code>date_updated</code> is never set</td><td>Corrections arrive as <strong>new records, never edits</strong>: the **newest record per <code>forecast_date</code>** wins (highest <code>id</code>). Revalidating on create covers corrections too</td></tr>
+        <tr><td><code>precipProbability</code> is set on only 6 of 171 entries that have the field, and 3 of those are strings</td><td>Optional in the UI; coerce strings to numbers</td></tr>
+        <tr><td><code>snow</code>: <code>0</code> = no snow level, <code>&gt; 0</code> = metres (154 entries), <code>null</code> on wind zones and older records</td><td>Snow level shown and caps drawn only when <code>&gt; 0</code></td></tr>
+        <tr><td><code>tmax</code>, <code>tmin</code> and <code>weatherConditions</code> are occasionally <code>null</code></td><td>Partial state: that area shows "No forecast"</td></tr>
+        <tr><td>Every entry has <code>location: [lon, lat]</code></td><td>Slab anchors are <strong>computed from real coordinates</strong>, not placed by hand</td></tr>
+    </table>
+    <p><strong>Condition keys observed</strong> (label → <code>value</code>, number of uses in 409 records):</p>
+    <table>
+        <tr><th>Label</th><th><code>value</code></th><th>Uses</th><th>Object</th></tr>
+        <tr><td>Ηλιοφάνεια</td><td><code>sunny</code></td><td>1069</td><td>sun</td></tr>
+        <tr><td>Διαστήματα ηλιοφάνειας</td><td><code>mostly_cloudy</code></td><td>882</td><td>sun behind cloud</td></tr>
+        <tr><td>Σχεδόν αίθριος</td><td><code>intermittent_clouds</code></td><td>688</td><td>sun with a wisp</td></tr>
+        <tr><td>Διαστήματα βροχής</td><td><code>mostly_cloudy_w_showers</code></td><td>545</td><td>sun, slate cloud, light drops</td></tr>
+        <tr><td>Βροχή</td><td><code>rain</code></td><td>212</td><td>slate cloud, rain</td></tr>
+        <tr><td>Ασθενής βροχή</td><td><code>showers</code></td><td>93</td><td>pale cloud, light drops</td></tr>
+        <tr><td>Καταιγίδα</td><td><code>t-storms</code></td><td>37</td><td>two slate clouds, bolt</td></tr>
+        <tr><td>Βαριά Χιονόπτωση</td><td><code>snow</code></td><td>35</td><td>heavy clouds, heavy snow</td></tr>
+        <tr><td>Kαύσωνας</td><td><code>hot</code></td><td>27</td><td>hot sun, heat shimmer</td></tr>
+        <tr><td>Συννεφιασμένος</td><td><code>cloudy</code></td><td>36</td><td>two clouds (two icon assets in use)</td></tr>
+        <tr><td>Ελαφριά Χιονόπτωση</td><td><code>flurries</code></td><td>20</td><td>cloud, light snow</td></tr>
+        <tr><td>Σκόνη</td><td><code>dust</code></td><td>18</td><td>dim sun, dust bands</td></tr>
+        <tr><td>Πάγος</td><td><code>ice</code></td><td>5</td><td>ice crystal</td></tr>
+        <tr><td>Ομίχλη</td><td><code>fog</code></td><td>3</td><td>fog bands</td></tr>
+        <tr><td>Ισχυρός Άνεμος</td><td><code>windy</code></td><td>1</td><td>gust lines</td></tr>
+    </table>
+    <p>The night options in the form (Ξαστεριά, Διαστήματα ξαστεριάς, and the night variants) have <strong>never been used</strong>. Their objects are designed but low priority, and their keys get added when first seen.</p>
+
+    <h2>3 · Data flow and caching</h2>
+    <div class="diagram-card" data-diagram="fthData"></div>
+    <ul>
+        <li><strong>Tag, don't poll.</strong> Forecasts are written in discrete batches, which by the caching rule of thumb means a tag. Forecasts are created by a <code>POST</code> to <code>items/fthiotida_forecasts</code>; there is <strong>no Flow today</strong>. Before launch, the owner adds a revalidation call on creation (<code>/api/revalidate?tag=fthiotida-forecasts</code>), either as a Directus Flow on the create event or from the publishing client right after its <code>POST</code> succeeds. Corrections are also new records, so revalidating on create covers them.</li>
+        <li><strong>Safety TTL depends on that call.</strong> Until the call exists, the TTL is the only way a new forecast reaches the homepage, so keep it at <strong>10 minutes</strong>. Once the call is live, raise it to <strong>1 hour</strong>, where it is only a fallback for a failed call.</li>
+        <li><strong>Tolerant validation at the boundary.</strong> The JSON stays as it is. <code>fetchFthiotidaForecasts()</code> returns the raw records and the getter parses them (<code>parseForecastRecords</code>). The schema checks only what the section reads, and in two levels:<ul><li><strong>Record:</strong> <code>forecast.dates.forecast_date</code> is required. <code>forecast.data</code> may have any keys.</li><li><strong>Each of the 15 entries:</strong> every field is optional, with numbers coerced (<code>"40"</code> → 40, <code>""</code>/<code>null</code> → missing).</li></ul></li>
+    </ul>
+    <p>The getter uses <code>safeParse</code> per record and per entry. A failure drops only that record or that area, is logged, and never fails the section. Unknown fields pass through (<code>z.looseObject</code>, Zod 4).</p>
+    <ul>
+        <li><strong>Today/Tomorrow is decided at render time.</strong> The homepage is <code>force-dynamic</code>, so the RSC picks the newest record per <code>forecast_date</code> (Europe/Athens) on every request while the fetch itself stays cached. The client re-checks on mount only to cover a midnight boundary.</li>
+        <li><strong>The client gets a shaped model, not raw records.</strong> That means area id, slab anchor, object key, values, wind, snow level and an optional rain probability, plus regional extremes for the list bars and comparison strip. No <code>DataService</code> call happens in the browser for this section.</li>
+    </ul>
+
+    <h2>4 · Rendering architecture</h2>
+    <div class="diagram-card" data-diagram="fthTree"></div>
+    <h3>Layout</h3>
+    <table>
+        <tr><th>Breakpoint</th><th>Map</th><th>Area list</th><th>Selected area</th></tr>
+        <tr><td>Desktop (≥ 1024 px)</td><td>full card width, rounded and clipped</td><td><code>AreaRail</code> as a 3 × 3 grid under the map</td><td><code>AreaCard</code> floats over the sea at the top right of the map</td></tr>
+        <tr><td>Tablet (640–1023 px)</td><td>full width, rounded and clipped</td><td><code>AreaChips</code></td><td><code>AreaSheet</code> (bottom sheet)</td></tr>
+        <tr><td>Phone (&lt; 640 px)</td><td>edge to edge (bleeds into the 16 px side padding)</td><td><code>AreaChips</code></td><td><code>AreaSheet</code></td></tr>
+    </table>
+    <p>The stage is cropped to the shape: its aspect ratio is the projected outline height plus room above the northern edge for markers (<code>1 / 0.669</code> phone, <code>1 / 0.629</code> tablet, <code>1 / 0.609</code> desktop), and the viewport is offset inside it (<code>top</code> / <code>height</code> in <code>fthiotida.module.css</code>). <code>isolation: isolate</code> and <code>overflow: clip</code> keep the focus zoom inside the stage, so it never covers the header.</p>
+    <p>The floating card and the mobile bottom sheet are <strong>solid</strong> panels (<code>--sheet</code>, with <code>--tile</code> for the tiles inside); the floating card also gets its own compositing layer (<code>transform: translateZ(0)</code>). A blurred panel over the tilted 3D layers rendered washed out in Chrome, with dimmed map labels bleeding through.</p>
+    <h3>Empty state</h3>
+    <p>Shown only when there is no forecast for today or tomorrow (in practice, a skipped day).</p>
+    <ul>
+        <li><strong>Map in full colour</strong>, with the 9 area names as soft, non-interactive labels where the markers usually stand (<code>placeholderAreas()</code> in <code>sectionModel.ts</code>, from the fixed <code>location</code> and <code>markerNudge</code> of each area in <code>areas.ts</code>). The sun arc or moon, town lights and sea stay as on a normal day.</li>
+        <li><strong>One slim card</strong> (<code>DormantPanel</code>): "Η νέα πρόγνωση ετοιμάζεται", a line saying the Fthiotida-Meteogroup team is preparing it and the map updates by itself, and one button to the live conditions. No publishing time window is promised. The archive link stays in the footer.</li>
+    </ul>
+    <h3>Slab layers (bottom → top)</h3>
+    <p>All slab layers tilt and zoom together, so they stay registered to the terrain. The billboards are positioned from the same geometry but drawn upright.</p>
+    <table>
+        <tr><th>#</th><th>Layer</th><th>Driven by</th><th>Current form</th></tr>
+        <tr><td>1</td><td>Base relief</td><td>always</td><td><strong>placeholder</strong> PNG rendered from real coordinates (<code>relief-placeholder-v3.png</code>, about 106 KB after <code>next/image</code>); final DEM hillshade artwork still to come</td></tr>
+        <tr><td>2</td><td>Snow caps × 4 (Oiti, Parnassos, Orthris, western ranges)</td><td><code>snow</code> of Oiti, Amfikleia, Orthris and West: <code>opacity = clamp((peak − snow) / 900)</code>, hidden when <code>snow</code> is 0</td><td>CSS (<code>SnowCaps</code>), one element per peak</td></tr>
+        <tr><td>3</td><td>Time-of-day tint</td><td>local clock: golden #FF9A4D 16%, night #0A1628 55%</td><td>CSS overlay clipped to the outline</td></tr>
+        <tr><td>4</td><td>Town lights</td><td>local clock (night)</td><td>CSS dots at 9 town coordinates</td></tr>
+        <tr><td>5</td><td>Ground effects</td><td>each area's condition key: sun pool, cloud shadow, wet, snow glow, frost, heat, dust</td><td>CSS: 1 radial-gradient div per area</td></tr>
+        <tr><td>6</td><td>Wind flow</td><td>each wind zone's <code>windDirection</code> (+180°) and <code>wmax</code></td><td>CSS: 1 textured element per zone</td></tr>
+        <tr><td>7</td><td>Selection spotlight</td><td>focused area</td><td>CSS: 1 gradient layer, repainted only on selection change</td></tr>
+    </table>
+    <h3>Anchors from real coordinates</h3>
+    <ul>
+        <li><strong>Projection.</strong> <code>utils/geoToSlab.ts</code> maps each entry's <code>location: [lon, lat]</code> to the 1480 × 980 slab frame with one affine transform. The transform was fitted (ICP) between the OSM boundary of Fthiotida (relation 554405) and the brand kit's 59-point outline.</li>
+        <li><strong>Marker nudges.</strong> Area centroids from the forecast tool sit on coasts and edges, so each area in <code>helpers/fthiotida/areas.ts</code> has a hand-set <code>markerNudge: { right, down }</code> in slab pixels, applied before the 3D tilt. It holds at every screen size and camera position. These values are owned by the product owner; change them there, not in code that derives positions.</li>
+        <li><strong>Snapping.</strong> <code>snapInsideOutline</code> pulls any point that ends up off the land back inside the outline (18–72 px in from the nearest edge). With the current nudges Lamia, East, Lokrida and especially Amfikleia (about 145 px) are snapped, so they don't sit exactly where the nudge puts them.</li>
+    </ul>
+    <h3>Markers</h3>
+    <ul>
+        <li><strong>One size for all.</strong> Billboards don't scale with perspective depth; only the focused one grows (× 1.3).</li>
+        <li><strong>Desktop and tablet:</strong> icon above a temperature label (icon + temperatures only). Area names are not drawn on the map; screen readers get them from each marker's <code>aria-label</code>, and sighted users read them in the area list or the card.</li>
+        <li><strong>Phones (map narrower than 600 px): compact pin.</strong> One rounded pill per area, with the icon shrunk to about 33 px beside the high temperature (about 78 × 30 px in total). This is half the height of the stacked marker, which is what used to collide in the western cluster (West, North, Lamia, Oiti). Wind pills shrink to 0.57× on phones.</li>
+        <li><strong>Collision avoidance.</strong> <code>utils/screenPlacement.ts</code> (<code>placeBoxes</code>) places markers front to back in screen space. Each tries a list of candidate offsets (<code>BILLBOARD_OFFSETS</code>) and takes the first one that overlaps nothing and stays inside the stage; otherwise the least-overlapping one. Wind pills are placed after, with the markers as obstacles (<code>WIND_PILL_OFFSETS</code>). The offsets are not per-region positions; per-region placement is the job of <code>markerNudge</code>.</li>
+    </ul>
+    <h3>Wind tile</h3>
+    <p>Each area has a fixed <code>windZone</code> in <code>helpers/fthiotida/areas.ts</code>, and the card shows that zone (<code>areaWind</code> in <code>helpers/fthiotida/areaSummary.ts</code>). Nearest-by-distance is only a fallback when the assigned zone is missing from a forecast, because distance changes whenever a marker is nudged.</p>
+    <table>
+        <tr><th>Area</th><th>Wind zone</th></tr>
+        <tr><td>Lamia</td><td>Maliakos</td></tr>
+        <tr><td>North Fthiotida</td><td>Domokos</td></tr>
+        <tr><td>Mt. Orthris</td><td>Domokos</td></tr>
+        <tr><td>East Fthiotida</td><td>Oreoi</td></tr>
+        <tr><td>West Fthiotida</td><td>Makrakomi</td></tr>
+        <tr><td>Kamena Vourla</td><td>Maliakos</td></tr>
+        <tr><td>Mt. Oiti</td><td>Makrakomi</td></tr>
+        <tr><td>Amfikleia</td><td>Parnasos</td></tr>
+        <tr><td>Lokrida</td><td>Evvoikos</td></tr>
+    </table>
+    <h3>Camera and motion technique</h3>
+    <ul>
+        <li><strong>Slab:</strong> <code>perspective</code> = map width × 2600 / 820 (softer than the first build's 1500 / 820, so the northern half isn't drawn much smaller), <code>rotateX(32deg)</code> at rest. Focused → <code>rotateX(40deg) scale(1.55) translate(…)</code> centring the area. CSS transition 900 ms <code>cubic-bezier(.22,.8,.18,1)</code>.</li>
+        <li><strong>Billboards:</strong> <code>utils/dioramaProjection.ts</code> exposes a pure function, <code>projectToScreen(point, camera)</code>, that reproduces the CSS transform maths (rotate → perspective divide). Results are applied as <code>translate3d(x, y, 0) scale(s)</code> and **never as <code>left/top</code>**. Unit-tested against known transforms.</li>
+        <li><strong>Daypart and sky:</strong> <code>useSky()</code> (<code>hooks/useDaypart.ts</code>) computes sunrise, sunset, the noon sun height and the daypart for Lamia (38.90° N, 22.43° E) with <code>utils/sunTimes.ts</code>, re-checked every 10 min through <code>useSyncExternalStore</code>. Morning is the first 3 h after sunrise, golden hour the last 90 min before sunset. It runs client-side because the cached server output can't know the viewer's clock; the server renders the day sky.</li>
+    </ul>
+    <ul>
+        <li><strong>Tiers:</strong> <code>useMotionTier()</code> sets <code>data-tier</code> on the section:<ul><li><strong>Full:</strong> everything else.</li><li><strong>Lite:</strong> <code>navigator.deviceMemory ≤ 4</code>, <code>hardwareConcurrency ≤ 4</code>, Save-Data or <code>prefers-reduced-data</code>.</li><li><strong>Still:</strong> <code>prefers-reduced-motion</code>.</li></ul></li>
+        <li><strong>Pause:</strong> an <code>IntersectionObserver</code> sets <code>data-paused</code> (<code>animation-play-state: paused</code>) off screen. Idle loops settle after 20 s and resume on scroll, hover or tap.</li>
+        <li>**<code>will-change: transform</code>** goes on the slab only while a camera move is running (<code>cameraMoving</code>, cleared on <code>transitionend</code>).</li>
+    </ul>
+    <h3>Sun and moon</h3>
+    <ul>
+        <li><strong>Desktop and tablet (≥ 640 px): sun arc.</strong> <code>diorama/SkyArc.tsx</code> draws a faint dotted arc in the sky above the map, from sunrise on the right (east) to sunset on the left (west), with the times at its ends. The sun is a small dot (14 px) placed by how far the day has gone (<code>daylightProgress</code>). The arc is taller in summer and flatter in winter (from the noon sun height), and is raised whenever it would touch the map's back edge. Markers draw above it.</li>
+        <li><strong>Phones (&lt; 640 px): daylight bar.</strong> No sun in the sky (it was mistaken for a weather icon next to the pins). The footer shows <code>Ανατολή 07:25 ━━●━━ Δύση 17:10</code> instead (<code>DaylightBar.tsx</code>); at night it shows the next sunrise.</li>
+        <li><strong>Night:</strong> a small crescent moon at a fixed spot in the top right, on every size. No arc.</li>
+        <li><strong>Sky colour:</strong> the background gradient per daypart stays; the old fixed glows (which sat behind the title and the credit chip, and had morning and evening mirrored) are gone.</li>
+        <li>Strength (arc 32%, times 55% opacity) is still to be tuned.</li>
+    </ul>
+
+    <h2>5 · Performance rules (binding)</h2>
+    <table>
+        <tr><th>Rule</th><th>How</th></tr>
+        <tr><td>Animate only <code>transform</code> and <code>opacity</code></td><td>No animated box-shadow, background/mask-position, filter or layout props. Exception: gust lines (<code>stroke-dashoffset</code>, 3 small paths)</td></tr>
+        <tr><td>≤ 3 <code>backdrop-filter</code> surfaces</td><td>Desktop: credit chip, footer, area list. Mobile: credit chip, footer. Labels, pills, the day switch, the floating card and the bottom sheet are solid</td></tr>
+        <tr><td>Terrain is an image</td><td>No runtime SVG filters, no <code>mix-blend-mode</code></td></tr>
+        <tr><td>Camera moves by transform</td><td>Billboards via <code>translate3d</code>, slab <code>will-change</code> only during the move</td></tr>
+        <tr><td>≤ 60 concurrent animations</td><td>Rain/snow = one textured element per object; wind = one per zone; stars grouped</td></tr>
+        <tr><td>Pause off screen, settle when idle</td><td><code>data-paused</code>, 20 s settle</td></tr>
+        <tr><td>Load late, reserve space</td><td>Images load at fetchpriority low when within one viewport (<code>rootMargin</code>); section and skeleton share the same fixed height, so CLS = 0</td></tr>
+        <tr><td>Small JS</td><td>Client island &lt; 10 KB gzipped, CSS-only motion (Anime.js not used here)</td></tr>
+    </table>
+    <p class="note"><strong>Budget:</strong> ≤ 60 animations · ≤ 3 blur surfaces · about 180 KB images · &lt; 10 KB JS gzipped · CLS 0.</p>
+    <p><strong>Measured in the step 2 spike</strong> (production build, headless Chrome, desktop): idle 60 fps with no paints, 0 dropped frames per camera move, INP 40 ms, 33 animations, relief 106 KB. The homepage's CLS of 0.03 came from the Major Cities and Warnings skeletons, not this section. Re-measure on a mid-range Android and an iPhone before launch, since the layout has changed since the spike.</p>
+
+    <h2>6 · Measuring performance</h2>
+    <table>
+        <tr><th>Layer</th><th>Tooling</th><th>What it answers</th></tr>
+        <tr><td><strong>Lab</strong> (during development)</td><td>Chrome DevTools Performance at 4× CPU throttle; Rendering → Paint flashing, Layer borders, Frame rendering stats; Layers panel. Real devices: mid-range Android via <code>chrome://inspect</code>, iPhone via Safari Web Inspector Timelines</td><td>Does it hit the pass criteria on weak hardware?</td></tr>
+        <tr><td><strong>Automated</strong> (preview deploys, optional)</td><td>Lighthouse CI with CLS/TBT budgets on <code>/[lng]</code>; Playwright + Chrome DevTools Protocol trace: 10 s idle + one area tap, fail on dropped frames or long tasks</td><td>Did a change regress it?</td></tr>
+        <tr><td><strong>Field</strong> (production)</td><td><code>useReportWebVitals</code> from <code>next/web-vitals</code> sends INP/CLS/LCP to <strong>PostHog</strong> (already installed), tagged with route and tier; <code>PerformanceObserver('long-animation-frame')</code> while the section is visible, sampled at about 10%</td><td>Is it smooth for real users, per tier?</td></tr>
+    </table>
+    <p class="note"><strong>Pass criteria (go/no-go for the spike):</strong> no idle frame over 16 ms, at most 2 dropped frames per camera move, INP &lt; 200 ms, CLS 0, layer memory within budget.</p>
+
+    <h2>7 · Modules in <code>fwm-app</code></h2>
+    <table>
+        <tr><th>Module</th><th>Role</th></tr>
+        <tr><td><code>src/schemas/FthiotidaForecasts.ts</code></td><td>tolerant Zod 4 schemas (record + entry, <code>z.looseObject</code>, coerced optional numbers, condition <code>{ icon?, label?, value }</code>)</td></tr>
+        <tr><td><code>src/services/cacheTags.ts</code></td><td><code>fthiotidaForecasts: "fthiotida-forecasts"</code></td></tr>
+        <tr><td><code>src/services/getFthiotidaForecasts.ts</code></td><td>cached getter: last 10 records (<code>sort=-id</code>), tag + 10 min TTL (1 h once the create call exists), React <code>cache()</code></td></tr>
+        <tr><td><code>DataService.fetchFthiotidaForecasts</code></td><td>accepts cache options; returns raw records for the getter to parse</td></tr>
+        <tr><td><code>src/helpers/fthiotida/forecastDays.ts</code></td><td><code>parseForecastRecords</code> (newest record per <code>forecast_date</code>), <code>selectForecastDays</code> (today/tomorrow in Europe/Athens)</td></tr>
+        <tr><td><code>src/helpers/fthiotida/areas.ts</code></td><td>fixed key map: 15 keys → role, translation key, <code>location</code>, <code>markerNudge</code>, <code>windZone</code>, snow-cap peak (Oiti 2,152 m · Parnassos 2,457 m via Amfikleia · Orthris 1,726 m · western ranges ≈ 2,300 m via West); town coordinates; <code>snowCapOpacity</code></td></tr>
+        <tr><td><code>src/helpers/fthiotida/conditions.ts</code></td><td>condition <code>value</code> → weather object + ground effect; unknown keys fall back to the stored icon asset</td></tr>
+        <tr><td><code>src/helpers/fthiotida/sectionModel.ts</code></td><td><code>buildDayModel</code>: areas (anchor, condition, values, wind zone), winds, snow caps; <code>placeholderAreas</code> for the empty state</td></tr>
+        <tr><td><code>src/helpers/fthiotida/areaSummary.ts</code></td><td>temperature colours, regional range and bars, comparison strip, compass points, <code>areaWind</code>, ordinals</td></tr>
+        <tr><td><code>src/helpers/fthiotida/featureFlag.ts</code></td><td><code>isFthiotidaForecastsEnabled</code></td></tr>
+        <tr><td><code>src/utils/geoToSlab.ts</code></td><td><code>[lon, lat]</code> → slab, brand outline, <code>isInsideOutline</code>, <code>snapInsideOutline</code>, <code>nudgeSlabPoint</code></td></tr>
+        <tr><td><code>src/utils/dioramaProjection.ts</code></td><td>camera (<code>createCamera</code>), CSS transform, <code>projectToScreen</code></td></tr>
+        <tr><td><code>src/utils/screenPlacement.ts</code></td><td><code>placeBoxes</code> + candidate offsets for markers and wind pills</td></tr>
+        <tr><td><code>src/utils/sunTimes.ts</code></td><td>sunrise/sunset, daypart, <code>sunPosition</code> (azimuth and elevation), <code>daylightProgress</code>, <code>formatClockTime</code></td></tr>
+        <tr><td><code>src/hooks/useDaypart.ts</code>, <code>src/hooks/useMotionTier.ts</code></td><td><code>useSky</code> (daypart, sunrise, sunset, noon sun height); Full/Lite/Still + paused state</td></tr>
+        <tr><td><code>src/components/Home/Fthiotida/</code></td><td><code>FthiotidaSection</code>, <code>FthiotidaSectionView</code>, <code>FthiotidaSkeleton</code>, <code>FthiotidaHeader</code>, <code>FthiotidaFooter</code>, <code>DaylightBar</code>, <code>DayToggle</code>, <code>fthiotida.module.css</code> (tokens per daypart, keyframes, tiers). Section root has <code>id="fthiotida"</code></td></tr>
+        <tr><td><code>…/Fthiotida/diorama/</code></td><td><code>ReliefDiorama</code>, <code>WeatherObject</code>, <code>GroundEffect</code>, <code>WindFlow</code>, <code>SnowCaps</code>, <code>SkyArc</code></td></tr>
+        <tr><td><code>…/Fthiotida/panel/</code></td><td><code>AreaRail</code>, <code>AreaCard</code>, <code>ComparisonStrip</code>, <code>AreaIcon</code>, <code>DormantPanel</code></td></tr>
+        <tr><td><code>…/Fthiotida/mobile/</code></td><td><code>AreaChips</code>, <code>AreaSheet</code></td></tr>
+        <tr><td><code>src/i18n/locales/{en,el}/fthiotida.json</code></td><td>section copy, area names, condition labels, compass points, Beaufort names (Greek per ΕΜΥ)</td></tr>
+        <tr><td><code>src/types/measurements.ts</code></td><td>adds <code>DEGREE</code></td></tr>
+        <tr><td><code>public/assets/fthiotida/</code></td><td>placeholder relief, brand-kit marks (light/dark SVG)</td></tr>
+        <tr><td><code>src/app/[lng]/(home)/page.homepage.tsx</code></td><td>mount under Warnings in <code>Suspense</code>, gated by <code>isFthiotidaForecastsEnabled(featureFlags)</code>: the <code>home_fthiotida_forecasts</code> configuration with <code>{ "enable": true }</code>. Fails closed: a missing flag, malformed config or failed configuration fetch means off. **The flag is <code>enable: true</code> in production**, so switch it off before deploying, or ship the mount and the section together</td></tr>
+        <tr><td>Revalidation on create <em>(owner, before launch)</em></td><td>after each new forecast is created: <code>POST /api/revalidate?tag=fthiotida-forecasts</code> (Bearer secret), as a Directus Flow on <code>items.create</code> or from the publishing client after its <code>POST</code>. No Flow exists today</td></tr>
+    </table>
+    <h3>Revamping the existing route (after launch)</h3>
+    <table>
+        <tr><th>Item</th><th>Action</th></tr>
+        <tr><td><code>/[lng]/fthiotida-forecast</code></td><td>keeps its URL, nav item, sitemap entries and metadata; revamped in its own design using the new components (<code>ReliefDiorama</code>, <code>WeatherObject</code>, <code>AreaCard</code>) plus browsing past days</td></tr>
+        <tr><td>Data</td><td>moves onto the tolerant schema and the area/condition maps. Browsing past days needs a second getter variant that fetches by <code>forecast_date</code> range; the homepage only needs the last 10 records</td></tr>
+        <tr><td><code>src/components/FthiotidaForecasts/</code></td><td>replaced by the revamp (page, calendar, cards, loading and empty states)</td></tr>
+        <tr><td><code>src/types/FthiotidaForecasts.ts</code></td><td>delete; types are inferred from the new schemas (the current type also declares the dates as <code>number</code>, while they are <code>DD/MM/YYYY</code> strings)</td></tr>
+        <tr><td><code>src/helpers/fthiotidaForecastLocations.tsx</code></td><td>delete; replaced by <code>helpers/fthiotida/areas.ts</code> + <code>geoToSlab.ts</code></td></tr>
+        <tr><td><code>public/assets/map_shapes/*.png</code></td><td>delete once the old cards are gone</td></tr>
+        <tr><td>i18n <code>forecasts.json</code> → <code>FthiotidaForecasts.*</code></td><td>area names move to <code>fthiotida.json</code>, shared by the section and the route</td></tr>
+        <tr><td>Tests</td><td>update <code>fthiotidaForecastLocations.test.ts</code> and <code>DataService.test.ts</code></td></tr>
+    </table>
+
+    <h2>8 · Build order</h2>
+    <div class="diagram-card" data-diagram="fthBuild"></div>
+
+    <h2>9 · Risks &amp; open questions</h2>
+    <ul>
+        <li><strong>Launch dependency: revalidation on create.</strong> No Flow exists yet; the owner adds the call before launch. Without it, a new forecast can take up to one TTL to reach the homepage. That's why the TTL stays at 10 minutes until the call is live.</li>
+        <li><strong>Relief artwork is still a placeholder.</strong> Steps 2–3 ran on a placeholder relief rendered from real coordinates. The final DEM hillshade, clipped to the brand outline, is still to come; keep it near the 106 KB of the placeholder.</li>
+        <li><strong>Snapped markers.</strong> Lamia, East, Lokrida and Amfikleia have nudges that land off the land and get snapped back, Amfikleia by about 145 px. If a marker looks misplaced, nudge it inland in <code>areas.ts</code>; the tests only require every area to end up on land after snapping.</li>
+        <li><strong>Floating card over 3D layers.</strong> Headless Chrome drew the desktop card faded, with map labels showing through. It is now a solid panel on its own layer; confirm in real browsers (Chrome, Safari, Firefox) before launch.</li>
+        <li><strong>Rain probability may stay empty.</strong> It's in the data model but almost never filled in. If it stays that way, consider dropping it from the card to keep the design honest.</li>
+        <li><strong>Section height on desktop.</strong> The full-width layout is about 1,250 px tall at 1440 px wide, so it no longer fits one laptop screen. Accepted for clarity; revisit if engagement data says otherwise.</li>
+        <li><strong>Night condition keys are unseen.</strong> Add them to the condition map when they first appear; the fallback to the stored icon covers the gap.</li>
+        <li><strong>Tier detection gaps.</strong> <code>navigator.deviceMemory</code> is Chromium-only. Safari and Firefox default to Full, which is acceptable because iOS GPUs handle this budget well. Field data per tier confirms it.</li>
+        <li><strong>Midnight boundary.</strong> The server picks Today/Tomorrow per request in Athens time, and the client re-checks on mount. A page left open across midnight keeps its day until the next interaction or reload.</li>
+        <li><strong>Revamp scope is open.</strong> The route keeps its URL, metadata and search ranking. What it shows (past days, more detail per area) gets its own design once the homepage section has shipped.</li>
     </ul>
 </section>
 
@@ -2773,6 +2998,259 @@ const DIAGRAMS = {
     store --> homeC
     store --> modal
     store --> spCard`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthShape: {
+        title: "Fthiotida forecasts — stored record shape",
+        src: `flowchart TB
+    rec["fthiotida_forecasts record<br/>id · date_created · date_updated · forecast (JSON)"]
+    dates["forecast.dates<br/>created · forecast_date (DD/MM/YYYY)<br/>forecast_start_hour · forecast_end_hour · forecast_range"]
+    data["forecast.data — 15 fixed keys"]
+    temp["9 forecast areas<br/>Lamia · North · Orthris · East · West ·<br/>Kamena · Oiti · Amfikleia · Lokrida<br/>tmax · tmin · weatherConditions · snow ·<br/>precipProbability · location"]
+    wind["6 wind zones<br/>Maliakos · Evvoikos · Oreoi ·<br/>Domokos · Makrakomi · Parnasos<br/>wmin · wmax · windDirection · location"]
+    cond["weatherConditions<br/>icon (Directus asset id) · label (Greek) · value (key)"]
+    rec --> dates
+    rec --> data
+    data --> temp
+    data --> wind
+    temp --> cond`
+    },
+    fthData: {
+        title: "Fthiotida forecasts — data flow and caching",
+        src: `flowchart LR
+    meteo["Fthiotida-Meteogroup<br/>publishes once a day<br/>(09:00–20:00, irregular)"]
+    subgraph directus["Directus"]
+        coll[("items/fthiotida_forecasts")]
+        flow["On create — to be added before launch<br/>POST /api/revalidate?tag=fthiotida-forecasts"]
+        coll --> flow
+    end
+    subgraph server["Next.js server"]
+        reval["/api/revalidate<br/>secret-gated"]
+        getter["getFthiotidaForecasts()<br/>last ~10 records · tolerant Zod parse<br/>Data Cache: tag + safety TTL"]
+        section["FthiotidaSection (RSC)<br/>newest record per date ·<br/>today/tomorrow by Athens date ·<br/>shape view model"]
+        reval -->|"revalidateTag"| getter
+        getter --> section
+    end
+    subgraph browser["Browser"]
+        view["FthiotidaSectionView (client island)<br/>day switch · focus · daypart · tier"]
+    end
+    meteo -->|"POST items/fthiotida_forecasts<br/>(create; corrections are new records too)"| coll
+    flow --> reval
+    coll -->|"REST, sort -id"| getter
+    section -->|"props: ready-to-render model"| view`
+    },
+    fthTree: {
+        title: "Fthiotida section — rendering architecture",
+        src: `flowchart TB
+    page["page.homepage.tsx<br/>Suspense + FthiotidaSkeleton (same layout)<br/>behind home_fthiotida_forecasts flag"]
+    rsc["FthiotidaSection (RSC)<br/>getFthiotidaForecasts → selectForecastDays → buildDayModel"]
+    view["FthiotidaSectionView ('use client')<br/>state: day · focusedKey · spotlightKey · cameraMoving<br/>hooks: useDaypart · useMotionTier"]
+    subgraph header["FthiotidaHeader"]
+        toggle["DayToggle<br/>aria-pressed, pending state"]
+        credit["Credit chip<br/>brand-kit mark (light/dark)"]
+    end
+    subgraph stage["diorama/"]
+        diorama["ReliefDiorama<br/>clipped, cropped stage · perspective + tilted slab<br/>projectToScreen() + placeBoxes() for billboards"]
+        slab["Slab layers<br/>relief · SnowCaps · tint · town lights ·<br/>GroundEffect · WindFlow · spotlight"]
+        billboards["Billboards (upright, equal size)<br/>WeatherObject + temperatures × 9 ·<br/>wind pills × 6"]
+        diorama --> slab
+        diorama --> billboards
+    end
+    subgraph panel["panel/ (desktop ≥ 1024 px)"]
+        list["AreaRail<br/>3 × 3 grid under the map ·<br/>low–high bars on one scale"]
+        card["AreaCard, floating over the map<br/>values · ComparisonStrip · wind tile ·<br/>rain-chance tile (only if provided) · snow level"]
+    end
+    subgraph mobile["mobile/ (below 1024 px)"]
+        chips["AreaChips<br/>horizontal scroll"]
+        sheet["AreaSheet<br/>bottom sheet with AreaCard"]
+    end
+    footer["FthiotidaFooter<br/>wind legend · daylight bar (phones) · archive link"]
+    page --> rsc --> view
+    view --> header
+    view --> stage
+    view --> panel
+    view --> mobile
+    view --> footer`
+    },
+    fthBuild: {
+        title: "Fthiotida section — build order with go/no-go gate",
+        src: `flowchart TB
+    s1["1 · Data layer ✓<br/>tolerant schema · cache tag · getter ·<br/>key map · condition map"]
+    s2["2 · Performance spike ✓<br/>ReliefDiorama + 9 WeatherObjects, placeholder relief image,<br/>behind the flag"]
+    gate{"Pass criteria met<br/>on mid-range Android + iPhone?"}
+    fix["Simplify: drop particles in Full tier,<br/>reduce animation count, re-measure"]
+    s3["3 · Full section behind the flag ✓<br/>area list · card · comparison strip · day switch · tiers ·<br/>full-width layout · marker nudges · wind zones"]
+    art["In parallel: relief artwork<br/>DEM → hillshade → clip → AVIF + caps + night lights<br/>+ georeference for geoToSlab"]
+    s4["4 · Launch<br/>revalidation on create live (owner) · TTL → 1h ·<br/>enable flag · watch PostHog vitals for a week"]
+    s5["5 · Revamp /fthiotida-forecast<br/>own design · same data layer + components ·<br/>browse past days · remove old components"]
+    s1 --> s2 --> gate
+    gate -->|"no"| fix --> s2
+    gate -->|"yes"| s3 --> s4 --> s5
+    art -.-> s3`
     }
 };
 
@@ -2885,6 +3363,7 @@ function setupTabs() {
     const map = [
         ["tabBtnCurrent", "tabCurrent"],
         ["tabBtnWs", "tabWs"],
+        ["tabBtnFth", "tabFth"],
     ];
     map.forEach(([btnId, secId]) => {
         document.getElementById(btnId).addEventListener("click", () => {

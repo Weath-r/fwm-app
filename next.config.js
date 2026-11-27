@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: "standalone",
-    allowedDevOrigins: ["192.168.68.105"],
+    allowedDevOrigins: ["192.168.68.102"],
     poweredByHeader: false,
     images: {
         dangerouslyAllowSVG: true,
