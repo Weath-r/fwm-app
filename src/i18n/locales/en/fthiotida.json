@@ -1,0 +1,114 @@
+{
+    "eyebrow": {
+        "today": "Today",
+        "tomorrow": "Tomorrow"
+    },
+    "title": {
+        "today": "Weather today in Fthiotida",
+        "tomorrow": "Weather tomorrow in Fthiotida"
+    },
+    "subtitle": "Weather forecast for Lamia and 8 more areas",
+    "creditPrefix": "Forecast by",
+    "areaLabel": "{{name}}: high {{high}}°, low {{low}}°",
+    "areas": {
+        "lamia": "Lamia",
+        "mt_oiti": "Mt. Oiti",
+        "north_fthiotida": "North Fthiotida",
+        "east_fthiotida": "East Fthiotida",
+        "mt_orthris": "Mt. Orthris",
+        "west_fthiotida": "West Fthiotida",
+        "amfiklia": "Amfiklia",
+        "lokrida": "Lokrida",
+        "kamena_vourla": "Kamena Vourla",
+        "oreoi": "Oreoi",
+        "n_fthiotida": "N.Fthiotida",
+        "w_fthiotida": "W.Fthiotida",
+        "maliakos_gulf": "Maliakos gulf",
+        "mt_Parnassos": "Mt. Parnassos",
+        "evvoikos_gulf": "Evvoikos gulf"
+    },
+    "dayToggle": {
+        "label": "Forecast day",
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "pending": "Tomorrow’s forecast isn’t published yet"
+    },
+    "rail": {
+        "heading": "{{count}} areas",
+        "hint": "Select an area to fly the camera there.",
+        "chips": "Areas"
+    },
+    "card": {
+        "back": "All areas",
+        "close": "Close",
+        "precipitation": "Chance of precipitation",
+        "wind": "Wind · {{name}}",
+        "snowLevel": "Snow above {{level}}",
+        "comparisonSummary": "{{name}} high {{high}}, {{rank}}. Area highs range from {{low}} to {{max}}.",
+        "noForecast": "No forecast"
+    },
+    "rank": {
+        "warmest": "Warmest of {{total}}",
+        "coldest": "Coldest of {{total}}",
+        "nthWarmest": "{{position}} warmest of {{total}}",
+        "nthColdest": "{{position}} coldest of {{total}}"
+    },
+    "footer": {
+        "windLegend": "Wind lines flow with the wind · faster = stronger ({{unit}})",
+        "archive": "All Fthiotida weather forecasts",
+        "sunrise": "Sunrise",
+        "sunset": "Sunset",
+        "daylight": "Sunrise {{sunrise}}, sunset {{sunset}}",
+        "nextSunrise": "Night · sunrise at {{time}}"
+    },
+    "dormant": {
+        "eyebrow": "Fthiotida Meteogroup · daily local forecast",
+        "title": "Fthiotida weather forecast",
+        "subtitle": "No forecast published yet",
+        "heading": "A new forecast is on its way",
+        "body": "The Fthiotida Meteogroup team is preparing the next local forecast. The map updates automatically as soon as it is published.",
+        "live": "See live conditions"
+    },
+    "conditions": {
+        "sunny": "Sunny",
+        "intermittent_clouds": "Mostly clear",
+        "mostly_cloudy": "Sunny intervals",
+        "cloudy": "Cloudy",
+        "fog": "Fog",
+        "showers": "Light rain",
+        "mostly_cloudy_w_showers": "Showers",
+        "rain": "Rain",
+        "t-storms": "Thunderstorm",
+        "flurries": "Light snow",
+        "snow": "Heavy snow",
+        "ice": "Ice",
+        "hot": "Heatwave",
+        "windy": "Strong wind",
+        "dust": "Dust"
+    },
+    "directions": {
+        "N": "N",
+        "NE": "NE",
+        "E": "E",
+        "SE": "SE",
+        "S": "S",
+        "SW": "SW",
+        "W": "W",
+        "NW": "NW"
+    },
+    "beaufort": [
+        "Calm",
+        "Light air",
+        "Light breeze",
+        "Gentle breeze",
+        "Moderate breeze",
+        "Fresh breeze",
+        "Strong breeze",
+        "Near gale",
+        "Gale",
+        "Strong gale",
+        "Storm",
+        "Violent storm",
+        "Hurricane force"
+    ]
+}

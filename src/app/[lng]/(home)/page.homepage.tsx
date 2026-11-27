@@ -8,6 +8,9 @@ import HomepageWarningsSection from "@/components/Home/Warnings/HomepageWarnings
 import HomepageWarningsSkeleton from "@/components/Home/Warnings/HomepageWarningsSkeleton";
 import HomepageStationsSection from "@/components/Home/Stations/HomepageStationsSection";
 import HomepageStationsSkeleton from "@/components/Home/Stations/HomepageStationsSkeleton";
+import FthiotidaSection from "@/components/Home/Fthiotida/FthiotidaSection";
+import FthiotidaSkeleton from "@/components/Home/Fthiotida/FthiotidaSkeleton";
+import { isFthiotidaForecastsEnabled } from "@/helpers/fthiotida/featureFlag";
 
 type MajorCitiesFlag = { enable: boolean; stationIds: number[] };
 type HomepageProps = { lng: string };
@@ -18,6 +21,7 @@ export default async function Homepage({ lng }: HomepageProps) {
 
     const majorCities = featureFlags.major_cities as MajorCitiesFlag | undefined;
     const majorCityIds = majorCities?.enable ? majorCities.stationIds : [];
+    const showFthiotidaForecasts = isFthiotidaForecastsEnabled(featureFlags);
 
     const majorCitiesHeading = t("majorCities.heading");
     const majorCitiesSubheading = t("majorCities.subheading");
@@ -48,6 +52,12 @@ export default async function Homepage({ lng }: HomepageProps) {
             <Suspense fallback={<HomepageWarningsSkeleton lng={lng} />}>
                 <HomepageWarningsSection lng={lng} />
             </Suspense>
+
+            {showFthiotidaForecasts && (
+                <Suspense fallback={<FthiotidaSkeleton />}>
+                    <FthiotidaSection lng={lng} />
+                </Suspense>
+            )}
 
             <Suspense fallback={<HomepageStationsSkeleton lng={lng} />}>
                 <HomepageStationsSection lng={lng} />

@@ -7,3 +7,4 @@ export * from "./ClimatologyData";
 export * from "./HistoricalDataSchema";
 export * from "./EnvironmentalData";
 export * from "./Blog";
+export * from "./FthiotidaForecasts";

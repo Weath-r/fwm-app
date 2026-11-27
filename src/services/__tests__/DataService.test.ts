@@ -678,6 +678,18 @@ describe("DataService", () => {
 
                 expect(result).toEqual(mockForecasts);
             });
+
+            it("should request ids with the forecasts and pass cache options through", async () => {
+                const next = { revalidate: 600, tags: ["fthiotida-forecasts"] };
+                mockAxiosInstance.get.mockResolvedValue({ data: { data: [] } });
+
+                await dataService.fetchFthiotidaForecasts(next);
+
+                expect(global.fetch).toHaveBeenCalledWith(
+                    expect.stringContaining("fields=id,forecast&sort=-id&limit=10"),
+                    expect.objectContaining({ next })
+                );
+            });
         });
     });
 
