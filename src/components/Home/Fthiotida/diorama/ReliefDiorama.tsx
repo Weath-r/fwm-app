@@ -11,8 +11,8 @@ import type {
 } from "@/helpers/fthiotida/sectionModel";
 import { createCamera, projectToScreen, slabTransform } from "@/utils/dioramaProjection";
 import { SLAB_OUTLINE, geoToSlab, snapInsideOutline, type SlabPoint } from "@/utils/geoToSlab";
-import type { Daypart } from "@/utils/sunTimes";
-import type { Sky } from "@/hooks/useDaypart";
+import type { Daypart } from "@/utils/sky";
+import type { Sky } from "@/hooks/useSky";
 import {
     BILLBOARD_OFFSETS,
     WIND_PILL_OFFSETS,
@@ -20,7 +20,9 @@ import {
     type ScreenBox,
 } from "@/utils/screenPlacement";
 import GroundEffect from "./GroundEffect";
+import MoonPhaseIcon from "./MoonPhaseIcon";
 import SkyArc from "./SkyArc";
+import { useDaylightText } from "../useDaylightText";
 import SnowCaps from "./SnowCaps";
 import WeatherObject from "./WeatherObject";
 import WindFlow from "./WindFlow";
@@ -122,6 +124,9 @@ export default function ReliefDiorama({
     const restingCamera = createCamera(width);
     const restingOutline = SLAB_OUTLINE.map(([x, y]) => projectToScreen({ x, y }, restingCamera));
     const centre = spotlightCentre(spotlightAnchor);
+    const daylightText = useDaylightText(sky);
+    const moonIllumination = `${Math.round(sky.moon.illumination * 100)}${Measurements.PERCENTAGE}`;
+    const arcLandTop = (x: number) => landTopAt(x, restingOutline) + headroom;
 
     const stageBounds: ScreenBox = {
         left: 0,
@@ -210,13 +215,49 @@ export default function ReliefDiorama({
 
     return (
         <div className={styles.stage}>
-            {daypart === "night" && <span className={styles.skyMoon} aria-hidden="true" />}
-            <SkyArc
-                sky={sky}
-                width={width}
-                stageHeight={stageHeight}
-                landTopAt={(x) => landTopAt(x, restingOutline) + headroom}
-            />
+            {daypart !== "night" && sky.sunrise > 0 && (
+                <SkyArc
+                    rise={sky.sunrise}
+                    set={sky.sunset}
+                    now={sky.now}
+                    peakElevationDegrees={sky.noonElevationDegrees}
+                    tone={daypart}
+                    width={width}
+                    stageHeight={stageHeight}
+                    landTopAt={arcLandTop}
+                    caption={daylightText.short}
+                    renderMarker={(position) => (
+                        <span className={styles.skyArcSun} style={position} />
+                    )}
+                />
+            )}
+            {daypart === "night" && sky.moonRise > 0 && (
+                <>
+                    <SkyArc
+                        rise={sky.moonRise}
+                        set={sky.moonSet}
+                        now={sky.now}
+                        peakElevationDegrees={sky.moonPeakElevationDegrees}
+                        tone="night"
+                        width={width}
+                        stageHeight={stageHeight}
+                        landTopAt={arcLandTop}
+                        renderMarker={(position) => (
+                            <>
+                                <MoonPhaseIcon
+                                    moon={sky.moon}
+                                    className={styles.skyArcMoon}
+                                    style={position}
+                                />
+                                <span className={styles.skyArcMoonLabel} style={position}>
+                                    {moonIllumination}
+                                </span>
+                            </>
+                        )}
+                    />
+                    <MoonPhaseIcon moon={sky.moon} className={styles.skyMoon} />
+                </>
+            )}
             <div
                 ref={viewportRef}
                 className={styles.viewport}

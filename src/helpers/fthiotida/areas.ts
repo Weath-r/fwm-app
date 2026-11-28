@@ -118,9 +118,6 @@ export const FTHIOTIDA_TOWNS: [number, number][] = [
     [22.643, 38.808],
 ];
 
-export const isFthiotidaAreaKey = (key: string): key is FthiotidaAreaKey =>
-    Object.prototype.hasOwnProperty.call(FTHIOTIDA_AREAS, key);
-
 const SNOW_CAP_FADE_METERS = 900;
 
 export const snowCapOpacity = (peakMeters: number, snowLevelMeters?: number): number => {

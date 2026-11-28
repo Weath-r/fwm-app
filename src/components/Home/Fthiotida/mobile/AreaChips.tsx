@@ -17,7 +17,7 @@ export default function AreaChips({ areas, focusedKey, onSelect, areaLabel }: Ar
     return (
         <ul aria-label={t("rail.chips")} className={styles.chips}>
             {areas.map((area) => (
-                <li key={area.key}>
+                <li key={area.key} className="flex">
                     <button
                         type="button"
                         className={styles.chip}
@@ -29,7 +29,7 @@ export default function AreaChips({ areas, focusedKey, onSelect, areaLabel }: Ar
                         <span className="text-[13px] font-semibold leading-tight">
                             {t(`areas.${area.translationKey}`)}
                         </span>
-                        <span className="text-[15px] font-bold tabular-nums">
+                        <span className="mt-auto text-[15px] font-bold tabular-nums">
                             {area.high === undefined ? "–" : `${area.high}${Measurements.DEGREE}`}{" "}
                             {area.low !== undefined && (
                                 <span className={`${styles.muted} font-medium`}>

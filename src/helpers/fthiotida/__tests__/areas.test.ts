@@ -1,10 +1,5 @@
 import { geoToSlab, isInsideOutline, nudgeSlabPoint, snapInsideOutline } from "@/utils/geoToSlab";
-import {
-    FTHIOTIDA_AREAS,
-    isFthiotidaAreaKey,
-    snowCapOpacity,
-    type FthiotidaAreaDefinition,
-} from "../areas";
+import { FTHIOTIDA_AREAS, snowCapOpacity, type FthiotidaAreaDefinition } from "../areas";
 
 const STORED_KEYS = [
     "Lamia",
@@ -26,8 +21,7 @@ const STORED_KEYS = [
 
 describe("FTHIOTIDA_AREAS", () => {
     it("defines every key stored in Directus", () => {
-        STORED_KEYS.forEach((key) => expect(isFthiotidaAreaKey(key)).toBe(true));
-        expect(Object.keys(FTHIOTIDA_AREAS)).toHaveLength(STORED_KEYS.length);
+        expect(Object.keys(FTHIOTIDA_AREAS).sort()).toEqual([...STORED_KEYS].sort());
     });
 
     it("has 9 forecast areas and 6 wind zones", () => {
@@ -35,11 +29,6 @@ describe("FTHIOTIDA_AREAS", () => {
 
         expect(roles.filter((role) => role === "area")).toHaveLength(9);
         expect(roles.filter((role) => role === "wind")).toHaveLength(6);
-    });
-
-    it("rejects unknown and prototype keys", () => {
-        expect(isFthiotidaAreaKey("Atalanti")).toBe(false);
-        expect(isFthiotidaAreaKey("toString")).toBe(false);
     });
 });
 

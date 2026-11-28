@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useT } from "@/i18n/client";
 import { Measurements } from "@/types";
-import type { Sky } from "@/hooks/useDaypart";
+import type { Sky } from "@/hooks/useSky";
 import DaylightBar from "./DaylightBar";
 import styles from "./fthiotida.module.css";
 

@@ -2,14 +2,7 @@
 import { useT } from "@/i18n/client";
 import { Measurements } from "@/types";
 import type { DioramaArea, DioramaWind } from "@/helpers/fthiotida/sectionModel";
-import {
-    areaWind,
-    compassPoint,
-    highsComparison,
-    rangeBar,
-    temperatureColour,
-    type TemperatureRange,
-} from "@/helpers/fthiotida/areaSummary";
+import { areaWind, compassPoint, highsComparison } from "@/helpers/fthiotida/areaSummary";
 import WeatherObject from "../diorama/WeatherObject";
 import ComparisonStrip from "./ComparisonStrip";
 import styles from "../fthiotida.module.css";
@@ -18,21 +11,11 @@ type AreaCardProps = {
     area: DioramaArea;
     areas: DioramaArea[];
     winds: DioramaWind[];
-    range: TemperatureRange | null;
     dateLabel: string;
     onBack?: () => void;
-    titleId?: string;
 };
 
-export default function AreaCard({
-    area,
-    areas,
-    winds,
-    range,
-    dateLabel,
-    onBack,
-    titleId,
-}: AreaCardProps) {
+export default function AreaCard({ area, areas, winds, dateLabel, onBack }: AreaCardProps) {
     const { t } = useT("fthiotida");
     const name = t(`areas.${area.translationKey}`);
     const conditionLabel = area.conditionValue
@@ -42,10 +25,6 @@ export default function AreaCard({
         : t("card.noForecast");
     const comparison = highsComparison(areas, area.key);
     const wind = areaWind(area, winds);
-    const bar =
-        range && area.low !== undefined && area.high !== undefined
-            ? rangeBar(area.low, area.high, range)
-            : null;
 
     return (
         <div className={`${styles.card} flex h-full flex-col gap-3.5`}>
@@ -74,10 +53,7 @@ export default function AreaCard({
                     >
                         {dateLabel}
                     </p>
-                    <h3
-                        id={titleId}
-                        className="m-0 text-[28px] font-bold leading-tight tracking-tight"
-                    >
+                    <h3 className="m-0 text-[28px] font-bold leading-tight tracking-tight">
                         {name}
                     </h3>
                     <p className={`${styles.muted} m-0 text-[15px]`}>{conditionLabel}</p>
@@ -100,18 +76,6 @@ export default function AreaCard({
                     </span>
                 )}
             </div>
-            {bar && (
-                <span className={styles.track}>
-                    <span
-                        className={styles.trackFill}
-                        style={{
-                            left: `${bar.left}%`,
-                            width: `${bar.width}%`,
-                            background: `linear-gradient(90deg, ${temperatureColour(area.low as number)}, ${temperatureColour(area.high as number)})`,
-                        }}
-                    />
-                </span>
-            )}
             {comparison && area.high !== undefined && (
                 <ComparisonStrip comparison={comparison} areaName={name} selectedHigh={area.high} />
             )}

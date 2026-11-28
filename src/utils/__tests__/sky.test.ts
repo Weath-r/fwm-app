@@ -1,4 +1,16 @@
-import { daylightProgress, daypartAt, formatClockTime, sunPosition, sunTimes } from "../sunTimes";
+import {
+    daylightMinutes,
+    daylightProgress,
+    daypartAt,
+    formatClockTime,
+    moonLitPath,
+    moonPass,
+    moonPhase,
+    moonPhaseName,
+    signedMinutes,
+    sunPosition,
+    sunTimes,
+} from "../sky";
 
 const LAMIA = { latitude: 38.9, longitude: 22.43 };
 const minutesUtc = (date: Date) => date.getUTCHours() * 60 + date.getUTCMinutes();
@@ -83,5 +95,81 @@ describe("daylightProgress and formatClockTime", () => {
     it("formats times in Athens with a 24-hour clock", () => {
         expect(formatClockTime(Date.parse("2026-11-27T05:25:00Z"))).toBe("07:25");
         expect(formatClockTime(Date.parse("2026-11-27T15:10:00Z"))).toBe("17:10");
+    });
+});
+
+describe("moonPhase", () => {
+    it("is full on 24 November 2026", () => {
+        const moon = moonPhase(new Date("2026-11-24T15:00:00Z"));
+
+        expect(moon.illumination).toBeGreaterThan(0.99);
+        expect(moon.phase).toBeCloseTo(0.5, 2);
+    });
+
+    it("is new on 9 December 2026", () => {
+        expect(moonPhase(new Date("2026-12-09T00:00:00Z")).illumination).toBeLessThan(0.01);
+    });
+});
+
+describe("moonLitPath", () => {
+    it("lights the right half at first quarter", () => {
+        expect(moonLitPath(0.25, 12)).toBe("M12 0 A12 12 0 0 1 12 24 A0 12 0 0 0 12 0 Z");
+    });
+
+    it("lights the left half at last quarter", () => {
+        expect(moonLitPath(0.75, 12)).toBe("M12 0 A12 12 0 0 0 12 24 A0 12 0 0 1 12 0 Z");
+    });
+
+    it("bulges the terminator outwards for a waxing crescent and inwards for a waxing gibbous", () => {
+        expect(moonLitPath(0.1, 12)).toMatch(/0 0 0 12 0 Z$/);
+        expect(moonLitPath(0.4, 12)).toMatch(/0 0 1 12 0 Z$/);
+    });
+
+    it("covers the whole disk at full moon", () => {
+        expect(moonLitPath(0.5, 12)).toBe("M12 0 A12 12 0 0 0 12 24 A12 12 0 0 0 12 0 Z");
+    });
+});
+
+describe("moonPhaseName", () => {
+    it.each([
+        [0.01, "new"],
+        [0.1, "waxingCrescent"],
+        [0.25, "firstQuarter"],
+        [0.4, "waxingGibbous"],
+        [0.5, "full"],
+        [0.66, "waningGibbous"],
+        [0.75, "lastQuarter"],
+        [0.9, "waningCrescent"],
+        [0.99, "new"],
+    ])("names phase %s as %s", (phase, name) => {
+        expect(moonPhaseName(phase)).toBe(name);
+    });
+});
+
+describe("moonPass", () => {
+    it("follows the moon from yesterday's rise to tomorrow's set", () => {
+        const pass = moonPass(new Date("2026-11-24T22:00:00Z"), 38.9, 22.43);
+
+        expect(pass?.rise.toISOString().slice(0, 16)).toBe("2026-11-24T14:42");
+        expect(pass?.set.toISOString().slice(0, 16)).toBe("2026-11-25T06:29");
+        expect(pass?.peakElevationDegrees).toBeGreaterThan(60);
+    });
+
+    it("returns nothing while the moon is below the horizon", () => {
+        expect(moonPass(new Date("2026-11-28T18:00:00Z"), 38.9, 22.43)).toBeNull();
+    });
+});
+
+describe("daylightMinutes and signedMinutes", () => {
+    it("gives Lamia about 9 h 44 min of daylight on 27 November", () => {
+        expect(
+            Math.round(daylightMinutes(sunTimes(new Date("2026-11-27T12:00:00Z"), 38.9, 22.43)))
+        ).toBe(584);
+    });
+
+    it("signs a change and hides one that rounds to zero", () => {
+        expect(signedMinutes(-1.6)).toBe("−2");
+        expect(signedMinutes(1.2)).toBe("+1");
+        expect(signedMinutes(0.3)).toBeNull();
     });
 });

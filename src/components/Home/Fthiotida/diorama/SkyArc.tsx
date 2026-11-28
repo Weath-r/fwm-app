@@ -1,12 +1,18 @@
-import type { Sky } from "@/hooks/useDaypart";
-import { daylightProgress, formatClockTime } from "@/utils/sunTimes";
+import type { CSSProperties, ReactNode } from "react";
+import { daylightProgress, formatClockTime, type Daypart } from "@/utils/sky";
 import styles from "../fthiotida.module.css";
 
 type SkyArcProps = {
-    sky: Sky;
+    rise: number;
+    set: number;
+    now: number;
+    peakElevationDegrees: number;
+    tone: Daypart;
     width: number;
     stageHeight: number;
     landTopAt: (x: number) => number;
+    renderMarker: (position: CSSProperties) => ReactNode;
+    caption?: string;
 };
 
 const ARC_SAMPLES = 40;
@@ -15,16 +21,25 @@ const SET_RATIO = 0.07;
 const BASE_RATIO = 0.17;
 const AMPLITUDE_RATIO = 0.13;
 const LAND_GAP = 18;
-const HIGHEST_NOON = 72;
+const HIGHEST_ELEVATION = 72;
+const CAPTION_GAP = 18;
 
-export default function SkyArc({ sky, width, stageHeight, landTopAt }: SkyArcProps) {
-    if (!sky.sunrise || sky.daypart === "night") {
-        return null;
-    }
+export default function SkyArc({
+    rise,
+    set,
+    now,
+    peakElevationDegrees,
+    tone,
+    width,
+    stageHeight,
+    landTopAt,
+    renderMarker,
+    caption,
+}: SkyArcProps) {
     const amplitude =
         stageHeight *
         AMPLITUDE_RATIO *
-        (0.55 + 0.45 * Math.min(1, Math.max(0, sky.noonElevationDegrees / HIGHEST_NOON)));
+        (0.55 + 0.45 * Math.min(1, Math.max(0, peakElevationDegrees / HIGHEST_ELEVATION)));
     const pointAt = (progress: number, base: number) => ({
         x: width * (RISE_RATIO - progress * (RISE_RATIO - SET_RATIO)),
         y: base - amplitude * Math.sin(Math.PI * progress),
@@ -44,23 +59,30 @@ export default function SkyArc({ sky, width, stageHeight, landTopAt }: SkyArcPro
             return `${index === 0 ? "M" : "L"}${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
         })
         .join(" ");
-    const progress = daylightProgress(sky.now, sky.sunrise, sky.sunset);
-    const sun = pointAt(progress, base);
-    const rise = pointAt(0, base);
-    const set = pointAt(1, base);
+    const marker = pointAt(daylightProgress(now, rise, set), base);
+    const start = pointAt(0, base);
+    const end = pointAt(1, base);
 
     return (
-        <div className={styles.skyArc} data-daypart={sky.daypart} aria-hidden="true">
+        <div className={styles.skyArc} data-daypart={tone} aria-hidden="true">
             <svg width={width} height={stageHeight} className={styles.skyArcPath}>
                 <path d={path} />
             </svg>
-            <span className={styles.skyArcTime} style={{ left: rise.x, top: rise.y + 8 }}>
-                {formatClockTime(sky.sunrise)}
+            <span className={styles.skyArcTime} style={{ left: start.x, top: start.y + 8 }}>
+                {formatClockTime(rise)}
             </span>
-            <span className={styles.skyArcTime} style={{ left: set.x, top: set.y + 8 }}>
-                {formatClockTime(sky.sunset)}
+            <span className={styles.skyArcTime} style={{ left: end.x, top: end.y + 8 }}>
+                {formatClockTime(set)}
             </span>
-            <span className={styles.skyArcSun} style={{ left: sun.x, top: sun.y }} />
+            {caption && (
+                <span
+                    className={styles.skyArcCaption}
+                    style={{ left: width / 2, top: base - amplitude + CAPTION_GAP }}
+                >
+                    {caption}
+                </span>
+            )}
+            {renderMarker({ left: marker.x, top: marker.y })}
         </div>
     );
 }

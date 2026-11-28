@@ -3,26 +3,22 @@
         "today": "Σήμερα",
         "tomorrow": "Αύριο"
     },
-    "title": {
-        "today": "Καιρός σήμερα στη Φθιώτιδα",
-        "tomorrow": "Καιρός αύριο στη Φθιώτιδα"
-    },
-    "subtitle": "Πρόγνωση καιρού για τη Λαμία και 8 ακόμη περιοχές",
+    "title": "Πρόγνωση καιρού για Φθιώτιδα",
     "creditPrefix": "Πρόγνωση από",
     "areaLabel": "{{name}}: μέγιστη {{high}}°, ελάχιστη {{low}}°",
     "areas": {
         "lamia": "Λαμία",
         "mt_oiti": "Όρος Οίτη",
-        "north_fthiotida": "Βορ. Φθιώτιδα",
-        "east_fthiotida": "Ανατ. Φθιώτιδα",
+        "north_fthiotida": "Βόρεια Φθιώτιδα",
+        "east_fthiotida": "Ανατολική Φθιώτιδα",
         "mt_orthris": "Όρος Όρθρυς",
-        "west_fthiotida": "Δυτ. Φθιώτιδα",
+        "west_fthiotida": "Δυτική Φθιώτιδα",
         "amfiklia": "Αμφίκλεια",
         "lokrida": "Λοκρίδα",
         "kamena_vourla": "Καμένα Βούρλα",
         "oreoi": "Ωρεοί",
-        "n_fthiotida": "Β.Φθιώτιδα",
-        "w_fthiotida": "Δ.Φθιώτιδα",
+        "n_fthiotida": "Βόρεια Φθιώτιδα",
+        "w_fthiotida": "Δυτική Φθιώτιδα",
         "maliakos_gulf": "Μαλιακός κόλπος",
         "mt_Parnassos": "Όρος Παρνασσός",
         "evvoikos_gulf": "Ευβοϊκός κόλπος"
@@ -59,12 +55,11 @@
         "sunrise": "Ανατολή",
         "sunset": "Δύση",
         "daylight": "Ανατολή {{sunrise}}, δύση {{sunset}}",
-        "nextSunrise": "Νύχτα · ανατολή στις {{time}}"
+        "night": "Νύχτα · {{phase}} {{illumination}}",
+        "nextSunrise": "Ανατολή στις {{time}}"
     },
     "dormant": {
         "eyebrow": "Fthiotida Meteogroup · καθημερινή τοπική πρόγνωση",
-        "title": "Πρόγνωση καιρού Φθιώτιδας",
-        "subtitle": "Δεν έχει δημοσιευτεί πρόγνωση ακόμη",
         "heading": "Η νέα πρόγνωση ετοιμάζεται",
         "body": "Η ομάδα του Fthiotida Meteogroup ετοιμάζει τη νέα τοπική πρόγνωση. Ο χάρτης θα ενημερωθεί αυτόματα μόλις δημοσιευτεί.",
         "live": "Δείτε τις ζωντανές συνθήκες"
@@ -110,5 +105,20 @@
         "Θύελλα",
         "Ισχυρή θύελλα",
         "Κυκλώνας"
-    ]
+    ],
+    "moonPhases": {
+        "new": "νέα σελήνη",
+        "waxingCrescent": "αύξων μηνίσκος",
+        "firstQuarter": "πρώτο τέταρτο",
+        "waxingGibbous": "αύξων αμφίκυρτος",
+        "full": "πανσέληνος",
+        "waningGibbous": "φθίνων αμφίκυρτος",
+        "lastQuarter": "τελευταίο τέταρτο",
+        "waningCrescent": "φθίνων μηνίσκος"
+    },
+    "daylight": {
+        "length": "{{hours}} ώρ. {{minutes}}′ ημέρας",
+        "changeFromYesterday": "{{change}}′ από χθες",
+        "changeShort": "{{change}}′"
+    }
 }
