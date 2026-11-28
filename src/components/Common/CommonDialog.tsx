@@ -12,6 +12,7 @@ type DialogContentProps = React.PropsWithChildren<
     onClose?: () => void;
     scrollable?: boolean;
     flush?: boolean;
+    variant?: "centered" | "sheet";
 };
 
 export const DialogContent = React.forwardRef<
@@ -19,7 +20,16 @@ export const DialogContent = React.forwardRef<
     DialogContentProps
 >(
     (
-        { children, dialogTitle, closeModalButton, scrollable = false, flush = false, ...props },
+        {
+            children,
+            dialogTitle,
+            closeModalButton,
+            scrollable = false,
+            flush = false,
+            variant = "centered",
+            className,
+            ...props
+        },
         forwardedRef
     ) => {
         const defaultCloseButton = (
@@ -49,6 +59,28 @@ export const DialogContent = React.forwardRef<
         }, []);
 
         const dialogClasses = scrollable ? "overflow-y-auto" : "overflow-y-hidden";
+
+        if (variant === "sheet") {
+            return (
+                <DialogPrimitive.Portal container={portalContainer}>
+                    <DialogPrimitive.Overlay className="fixed inset-0 z-10 bg-black/50" />
+                    <DialogPrimitive.Content
+                        {...props}
+                        ref={forwardedRef}
+                        aria-describedby={undefined}
+                        className={`fixed inset-x-0 bottom-0 z-10 max-h-[85vh] overflow-y-auto overscroll-contain rounded-t-2xl focus:outline-none ${
+                            flush ? "" : "p-4"
+                        } ${className ?? "bg-white"}`}
+                        onEscapeKeyDown={handleEscapeKeyDown}
+                    >
+                        <DialogPrimitive.Title className="sr-only">
+                            {dialogTitle}
+                        </DialogPrimitive.Title>
+                        {children}
+                    </DialogPrimitive.Content>
+                </DialogPrimitive.Portal>
+            );
+        }
 
         return (
             <DialogPrimitive.Portal container={portalContainer}>
@@ -92,3 +124,4 @@ DialogContent.displayName = "DialogContent";
 
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
+export const DialogClose = DialogPrimitive.Close;

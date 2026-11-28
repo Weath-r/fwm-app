@@ -1,7 +1,8 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { useT } from "@/i18n/client";
-import { useSky } from "@/hooks/useDaypart";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useSky } from "@/hooks/useSky";
 import { useMotionTier } from "@/hooks/useMotionTier";
 import {
     placeholderAreas,
@@ -31,11 +32,10 @@ type FthiotidaSectionViewProps = {
     tomorrow: FthiotidaDay | null;
 };
 
-const SHEET_TITLE_ID = "fthiotida-sheet-title";
-
 export default function FthiotidaSectionView({ lng, today, tomorrow }: FthiotidaSectionViewProps) {
     const { t } = useT("fthiotida");
     const sky = useSky();
+    const compact = useMediaQuery("(max-width: 1023px)");
     const { daypart } = sky;
     const { ref, tier, paused } = useMotionTier<HTMLElement>();
     const [selectedDay, setSelectedDay] = useState<DayKind>(tomorrow ? "tomorrow" : "today");
@@ -97,16 +97,14 @@ export default function FthiotidaSectionView({ lng, today, tomorrow }: Fthiotida
         [areaName, t]
     );
 
-    const card = (titleId?: string, onBack?: () => void) =>
+    const card = (onBack?: () => void) =>
         focusedArea &&
         current && (
             <AreaCard
                 area={focusedArea}
                 areas={areas}
                 winds={winds}
-                range={range}
                 dateLabel={current.dateLabel}
-                titleId={titleId}
                 onBack={onBack}
             />
         );
@@ -125,11 +123,10 @@ export default function FthiotidaSectionView({ lng, today, tomorrow }: Fthiotida
             <FthiotidaHeader
                 eyebrow={
                     current
-                        ? `${t(`eyebrow.${dayKind}`)} · ${current.dateLabel}`
+                        ? `${t(`eyebrow.${dayKind}`)} - ${current.dateLabel}`
                         : t("dormant.eyebrow")
                 }
-                title={current ? t(`title.${dayKind}`) : t("dormant.title")}
-                subtitle={current ? t("subtitle") : t("dormant.subtitle")}
+                title={t("title")}
                 creditPrefix={t("creditPrefix")}
                 titleId="fthiotida-title"
                 actions={
@@ -160,7 +157,7 @@ export default function FthiotidaSectionView({ lng, today, tomorrow }: Fthiotida
                 />
                 {focusedArea && (
                     <aside className={`${styles.floatingCard} hidden lg:block`}>
-                        {card(undefined, () => changeFocus(null))}
+                        {card(() => changeFocus(null))}
                     </aside>
                 )}
                 <aside
@@ -192,9 +189,13 @@ export default function FthiotidaSectionView({ lng, today, tomorrow }: Fthiotida
                         areaLabel={areaLabel}
                     />
                 )}
-                {focusedArea && (
-                    <AreaSheet titleId={SHEET_TITLE_ID} onClose={() => changeFocus(null)}>
-                        {card(SHEET_TITLE_ID)}
+                {focusedArea && compact && (
+                    <AreaSheet
+                        title={areaName(focusedArea.translationKey)}
+                        daypart={daypart}
+                        onClose={() => changeFocus(null)}
+                    >
+                        {card()}
                     </AreaSheet>
                 )}
             </div>

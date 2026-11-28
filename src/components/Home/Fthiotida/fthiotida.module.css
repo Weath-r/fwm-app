@@ -1,4 +1,5 @@
-.section {
+.section,
+.sheet {
     --sky: linear-gradient(180deg, #9dbbd5 0%, #d6e3ed 50%, #f0f3f5 100%);
     --ink: #16252f;
     --sub: rgba(22, 37, 47, 0.8);
@@ -13,6 +14,9 @@
     --sheet: #ffffff;
     --tile: rgba(22, 37, 47, 0.05);
     --precipitation: #25609c;
+}
+
+.section {
     position: relative;
     overflow: hidden;
     border-radius: 12px;
@@ -28,7 +32,8 @@
     --sky: linear-gradient(180deg, #efae84 0%, #f5cfae 42%, #f3e6d9 100%);
 }
 
-.section[data-daypart="night"] {
+.section[data-daypart="night"],
+.sheet[data-daypart="night"] {
     --sky:
         radial-gradient(
             90% 70% at 85% -10%,
@@ -961,17 +966,9 @@
 }
 
 .sheet {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 60;
-    max-height: 78vh;
     box-sizing: border-box;
     padding: 10px 20px 24px;
-    overflow-y: auto;
     border-top: 1px solid var(--line);
-    border-radius: 16px 16px 0 0;
     background: var(--sheet);
     color: var(--ink);
     box-shadow: 0 -20px 50px -20px rgba(20, 35, 50, 0.4);
@@ -1393,6 +1390,25 @@
     opacity: 0.55;
 }
 
+.skyArcCaption {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    opacity: 0.55;
+}
+
+.skyArcMoonLabel {
+    position: absolute;
+    transform: translate(16px, -50%);
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.6;
+}
+
 .skyArcSun {
     position: absolute;
     width: 14px;
@@ -1421,15 +1437,50 @@
     top: 9%;
     left: 86%;
     width: 18px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: #e8edf5;
-    box-shadow:
-        inset -6px 2px 0 0 #142540,
-        0 0 24px 6px rgba(170, 196, 235, 0.25);
-    opacity: 0.75;
+    height: 18px;
+    overflow: visible;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 8px rgba(170, 196, 235, 0.45));
     transform: translate(-50%, -50%);
     pointer-events: none;
+}
+
+.skyArcMoon {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    overflow: visible;
+    filter: drop-shadow(0 0 8px rgba(170, 196, 235, 0.45));
+    transform: translate(-50%, -50%);
+}
+
+@media (min-width: 640px) {
+    .skyMoon {
+        display: none;
+    }
+}
+
+.footerMoon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.footerMoon .moonDark {
+    fill: currentColor;
+    opacity: 0.18;
+}
+
+.footerMoon .moonLit {
+    fill: currentColor;
+}
+
+.moonDark {
+    fill: rgba(232, 237, 245, 0.14);
+}
+
+.moonLit {
+    fill: #e8edf5;
 }
 
 .daylightTrack {
@@ -1468,8 +1519,6 @@
 
     .skyMoon {
         width: 12px;
-        box-shadow:
-            inset -4px 2px 0 0 #142540,
-            0 0 16px 4px rgba(170, 196, 235, 0.25);
+        height: 12px;
     }
 }

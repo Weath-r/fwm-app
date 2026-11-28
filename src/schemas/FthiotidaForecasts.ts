@@ -37,4 +37,3 @@ export const FthiotidaForecastRecordSchema = z.object({
 });
 
 export type FthiotidaForecastEntry = z.infer<typeof FthiotidaForecastEntrySchema>;
-export type FthiotidaForecastRecord = z.infer<typeof FthiotidaForecastRecordSchema>;

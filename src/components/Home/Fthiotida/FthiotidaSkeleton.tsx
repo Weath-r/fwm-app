@@ -12,13 +12,12 @@ export default function FthiotidaSkeleton() {
             <FthiotidaHeader
                 eyebrow={
                     <>
-                        {t("eyebrow.tomorrow")} ·{" "}
+                        {t("eyebrow.tomorrow")} -{" "}
                         <span className="inline-block h-2.5 w-36 animate-pulse rounded-full bg-white/60 align-middle" />
                     </>
                 }
                 placeholder
-                title={t("title.tomorrow")}
-                subtitle={t("subtitle")}
+                title={t("title")}
                 creditPrefix={t("creditPrefix")}
                 actions={<span className={`${styles.dayToggle} w-52 animate-pulse`} />}
             />

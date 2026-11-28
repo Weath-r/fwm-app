@@ -5,7 +5,7 @@ import styles from "./fthiotida.module.css";
 type FthiotidaHeaderProps = {
     eyebrow: ReactNode;
     title: string;
-    subtitle: string;
+    subtitle?: string;
     creditPrefix: string;
     titleId?: string;
     actions?: ReactNode;
@@ -38,7 +38,7 @@ export default function FthiotidaHeader({
                 >
                     {title}
                 </Title>
-                <p className={`${styles.muted} m-0 text-base`}>{subtitle}</p>
+                {subtitle && <p className={`${styles.muted} m-0 text-base`}>{subtitle}</p>}
             </div>
             <div className="flex flex-wrap items-start justify-end gap-3">
                 {actions}

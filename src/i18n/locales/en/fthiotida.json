@@ -3,11 +3,7 @@
         "today": "Today",
         "tomorrow": "Tomorrow"
     },
-    "title": {
-        "today": "Weather today in Fthiotida",
-        "tomorrow": "Weather tomorrow in Fthiotida"
-    },
-    "subtitle": "Weather forecast for Lamia and 8 more areas",
+    "title": "Weather forecast for Fthiotida",
     "creditPrefix": "Forecast by",
     "areaLabel": "{{name}}: high {{high}}°, low {{low}}°",
     "areas": {
@@ -21,8 +17,8 @@
         "lokrida": "Lokrida",
         "kamena_vourla": "Kamena Vourla",
         "oreoi": "Oreoi",
-        "n_fthiotida": "N.Fthiotida",
-        "w_fthiotida": "W.Fthiotida",
+        "n_fthiotida": "North Fthiotida",
+        "w_fthiotida": "West Fthiotida",
         "maliakos_gulf": "Maliakos gulf",
         "mt_Parnassos": "Mt. Parnassos",
         "evvoikos_gulf": "Evvoikos gulf"
@@ -59,12 +55,11 @@
         "sunrise": "Sunrise",
         "sunset": "Sunset",
         "daylight": "Sunrise {{sunrise}}, sunset {{sunset}}",
-        "nextSunrise": "Night · sunrise at {{time}}"
+        "night": "Night · {{phase}} {{illumination}}",
+        "nextSunrise": "Sunrise at {{time}}"
     },
     "dormant": {
         "eyebrow": "Fthiotida Meteogroup · daily local forecast",
-        "title": "Fthiotida weather forecast",
-        "subtitle": "No forecast published yet",
         "heading": "A new forecast is on its way",
         "body": "The Fthiotida Meteogroup team is preparing the next local forecast. The map updates automatically as soon as it is published.",
         "live": "See live conditions"
@@ -110,5 +105,20 @@
         "Storm",
         "Violent storm",
         "Hurricane force"
-    ]
+    ],
+    "moonPhases": {
+        "new": "new moon",
+        "waxingCrescent": "waxing crescent",
+        "firstQuarter": "first quarter",
+        "waxingGibbous": "waxing gibbous",
+        "full": "full moon",
+        "waningGibbous": "waning gibbous",
+        "lastQuarter": "last quarter",
+        "waningCrescent": "waning crescent"
+    },
+    "daylight": {
+        "length": "{{hours}} h {{minutes}} min of daylight",
+        "changeFromYesterday": "{{change}} min vs yesterday",
+        "changeShort": "{{change}} min"
+    }
 }
